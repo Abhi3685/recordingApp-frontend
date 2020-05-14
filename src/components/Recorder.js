@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import RecordRTC from 'recordrtc';
 import axios from 'axios';
 
@@ -40,7 +40,10 @@ function captureScreen(callback) {
 }
 
 function captureCamera(cb) {
-    navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(cb);
+    navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true
+    }).then(cb);
 }
 
 function keepStreamActive(stream) {
@@ -53,7 +56,7 @@ function keepStreamActive(stream) {
 
 var stopCallback = () => {
     recorder.stopRecording(function () {
-        console.log('End time: ' + Date.now());
+        console.log('Time Duration: ' + (Date.now() - startTime) / 1000);
         var blob = recorder.getBlob();
         document.querySelector('video').srcObject = null;
         document.querySelector('video').src = URL.createObjectURL(blob);
@@ -68,9 +71,9 @@ var stopCallback = () => {
     });
 };
 
-var recorder, myScreen, myCamera;
+var recorder, myScreen, myCamera, startTime;
 
-function start() {
+function start(pos) {
     captureScreen(function (screen) {
         myScreen = screen;
         keepStreamActive(screen);
@@ -84,12 +87,12 @@ function start() {
 
             camera.width = 310;
             camera.height = 300;
-            camera.top = screen.height - camera.height - 50;
-            camera.left = screen.width - camera.width - 50;
+            camera.top = pos.top + 100;
+            camera.left = pos.left > 20 ? pos.left - 10 : pos.left;
 
             recorder = RecordRTC([screen, camera], {
                 type: 'video',
-                mimeType: 'video/mp4',
+                mimeType: 'video/webm',
                 timeSlice: 5000,
                 ondataavailable: function (blob) {
                     var reader = new FileReader();
@@ -104,7 +107,7 @@ function start() {
             });
 
             recorder.startRecording();
-            console.log('Start time: ' + Date.now());
+            startTime = Date.now();
         });
     });
 }
@@ -137,14 +140,16 @@ export default function Recorder() {
             document.querySelector('h1').innerHTML = error;
             document.querySelector('video').style.display = 'none';
         }
-    });
+    }, []);
+
+    const [pos, setPos] = useState({ top: 10, left: 10 });
 
     return (
         <div>
             <h1>Video & Screen Recording Demo</h1>
 
             <div>
-                <button onClick={start}>Start Recording</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button onClick={() => start(pos)}>Start Recording</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <button onClick={stopCallback}>Stop Recording</button>
             </div>
 

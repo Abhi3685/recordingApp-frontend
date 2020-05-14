@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import RecordRTC from 'recordrtc';
 import Draggable from 'react-draggable';
 import { useHistory } from 'react-router-dom';
@@ -35,11 +35,9 @@ var start = () => {
 function getConfig() {
     var mode = document.getElementsByName("mode_options")[0].value;
     var isAudioEnabled = document.getElementsByName("isAudioEnabled")[0].value;
-    var camSource = document.getElementsByName("video_options")[0].value;
-    var micSource = document.getElementsByName("mic_options")[0].value;
     var camPosition = dragCircle.getBoundingClientRect();
     console.log('Selected Configuration: ');
-    console.log({ mode, isAudioEnabled, camSource, micSource, camPositionTop: camPosition.top, camPositionLeft: camPosition.left });
+    console.log({ mode, isAudioEnabled, camPositionTop: camPosition.top, camPositionLeft: camPosition.left });
     clearConfig();
 }
 
@@ -54,23 +52,11 @@ function clearConfig() {
 }
 
 export default function Home() {
-    const [cameras, setCameras] = useState([]);
-    const [mics, setMics] = useState([]);
-
     let history = useHistory();
 
     useEffect(() => {
         video = document.querySelector('video');
         dragCircle = document.querySelector('.dragCircle');
-        function getConnectedDevices(type, callback) {
-            navigator.mediaDevices.enumerateDevices()
-                .then(devices => {
-                    const filtered = devices.filter(device => device.kind === type);
-                    callback(filtered);
-                });
-        }
-        getConnectedDevices('videoinput', cameras => setCameras(cameras));
-        getConnectedDevices('audioinput', mics => setMics(mics));
     }, []);
 
     return (
@@ -82,7 +68,6 @@ export default function Home() {
                 <select name="mode_options">
                     <option>Screen + Cam</option>
                     <option>Screen Only</option>
-                    <option>Cam Only</option>
                 </select><br /><br />
                 <label>Microphone Audio</label><br />
                 <select name="isAudioEnabled">
@@ -90,31 +75,14 @@ export default function Home() {
                     <option>No</option>
                 </select>
                 <br /><br />
-                <label>Camera Source</label><br />
-                <select name="video_options">
-                    {
-                        cameras.length > 0 ?
-                            cameras.map((camera, idx) => <option key={idx}>{camera.label}</option>) :
-                            <option>No Cameras Found!</option>
-                    }
-                </select><br /><br />
-                <label>Microphone Source</label><br />
-                <select name="mic_options">
-                    {
-                        mics.length > 0 ?
-                            mics.map((mic, idx) => <option key={idx}>{mic.label}</option>) :
-                            <option>No Microphones Found!</option>
-                    }
-                </select><br />
 
-                <br />
-                <button onClick={() => { getConfig(); history.push("/recorder"); }}>Start Recording</button>
+                <button onClick={() => { getConfig(); }}>Start Recording</button>
                 <button onClick={clearConfig}>Cancel</button>
 
                 <Draggable bounds="body">
                     <div className="dragCircle" style={{
                         position: 'absolute',
-                        top: 400, left: 10,
+                        top: 400, left: 0,
                         width: '300px',
                         backgroundColor: '#000',
                         overflow: 'hidden',
