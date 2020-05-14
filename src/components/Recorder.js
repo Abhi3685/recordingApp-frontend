@@ -53,6 +53,7 @@ function keepStreamActive(stream) {
 
 var stopCallback = () => {
     recorder.stopRecording(function () {
+        console.log('End time: ' + Date.now());
         var blob = recorder.getBlob();
         document.querySelector('video').srcObject = null;
         document.querySelector('video').src = URL.createObjectURL(blob);
@@ -83,12 +84,12 @@ function start() {
 
             camera.width = 310;
             camera.height = 300;
-            camera.top = screen.height - camera.height - 100;
+            camera.top = screen.height - camera.height - 50;
             camera.left = screen.width - camera.width - 50;
 
             recorder = RecordRTC([screen, camera], {
                 type: 'video',
-                mimeType: 'video/webm',
+                mimeType: 'video/mp4',
                 timeSlice: 5000,
                 ondataavailable: function (blob) {
                     var reader = new FileReader();
@@ -103,6 +104,7 @@ function start() {
             });
 
             recorder.startRecording();
+            console.log('Start time: ' + Date.now());
         });
     });
 }
@@ -147,7 +149,7 @@ export default function Recorder() {
             </div>
 
             <br /><br />
-            <video controls></video>
+            <video controls width="500" height="350"></video>
         </div>
     )
 }

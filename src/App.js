@@ -9,11 +9,15 @@ import {
 
 import Home from './components/Home';
 import Recorder from './components/Recorder';
+import Player from './components/Player';
 
 function App() {
   return (
     <Router>
       <Switch>
+        <Route path="/player">
+          <Player />
+        </Route>
         <Route path="/recorder">
           <Recorder />
         </Route>
