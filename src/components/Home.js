@@ -91,7 +91,7 @@ export default function Home() {
                         cursor: 'move',
                         margin: 10
                     }}>
-                        <video autoPlay playsInline style={{ width: '100%', height: '100%', transform: `scale(1.35) rotateY(180deg)` }}></video>
+                        <video style={{ width: '100%', height: '100%', transform: `scale(1.35) rotateY(180deg)` }}></video>
                     </div>
                 </Draggable>
 

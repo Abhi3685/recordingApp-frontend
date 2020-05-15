@@ -11,12 +11,6 @@ function invokeGetDisplayMedia(success, error) {
         }
     };
 
-    // above constraints are NOT supported YET
-    // that's why overridnig them
-    displaymediastreamconstraints = {
-        video: true
-    };
-
     if (navigator.mediaDevices.getDisplayMedia) {
         navigator.mediaDevices.getDisplayMedia(displaymediastreamconstraints).then(success).catch(error);
     }
@@ -61,7 +55,6 @@ var stopCallback = () => {
         document.querySelector('video').srcObject = null;
         document.querySelector('video').src = URL.createObjectURL(blob);
         document.querySelector('video').muted = false;
-        document.querySelector('video').style.display = 'block';
 
         [myScreen, myCamera].forEach(function (stream) {
             stream.getTracks().forEach(function (track) {
@@ -71,7 +64,7 @@ var stopCallback = () => {
     });
 };
 
-var recorder, myScreen, myCamera, startTime;
+var recorder, myScreen, myCamera, startTime, thumbnailCaptured = false;
 
 function start(pos) {
     captureScreen(function (screen) {
@@ -95,11 +88,52 @@ function start(pos) {
                 mimeType: 'video/webm',
                 timeSlice: 5000,
                 ondataavailable: function (blob) {
+                    if (!thumbnailCaptured) {
+                        var url = URL.createObjectURL(blob);
+                        var video = document.createElement('video');
+                        var timeupdate = function () {
+                            if (snapImage()) {
+                                video.removeEventListener('timeupdate', timeupdate);
+                                video.pause();
+                                thumbnailCaptured = true;
+                            }
+                        };
+                        video.addEventListener('loadeddata', function () {
+                            if (snapImage()) {
+                                video.removeEventListener('timeupdate', timeupdate);
+                                thumbnailCaptured = true;
+                            }
+                        });
+                        var snapImage = function () {
+                            var canvas = document.createElement('canvas');
+                            canvas.width = video.videoWidth;
+                            canvas.height = video.videoHeight;
+                            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+                            var image = canvas.toDataURL();
+
+                            axios.post("http://localhost:8000/upload", { data: image, name: '1-' + startTime + '.png' }).then(res => {
+                                console.log(res);
+                            });
+
+                            var success = image.length > 100000;
+                            if (success) {
+                                URL.revokeObjectURL(url);
+                            }
+                            return success;
+                        };
+                        video.addEventListener('timeupdate', timeupdate);
+                        video.preload = 'metadata';
+                        video.src = url;
+                        video.muted = true;
+                        video.playsInline = true;
+                        video.play();
+                    }
+
                     var reader = new FileReader();
                     reader.readAsDataURL(blob);
                     reader.onloadend = function () {
                         var base64data = reader.result;
-                        axios.post("http://localhost:8000/upload", { data: base64data }).then(res => {
+                        axios.post("http://localhost:8000/upload", { data: base64data, name: '1-' + startTime + '.mp4' }).then(res => {
                             console.log(res);
                         });
                     }
@@ -137,12 +171,12 @@ export default function Recorder() {
     useEffect(() => {
         if (!navigator.getDisplayMedia && !navigator.mediaDevices.getDisplayMedia) {
             var error = 'Your browser does NOT supports getDisplayMedia API.';
-            document.querySelector('h1').innerHTML = error;
+            alert(error);
             document.querySelector('video').style.display = 'none';
         }
     }, []);
 
-    const [pos, setPos] = useState({ top: 10, left: 10 });
+    const [pos, setPos] = useState({ top: 10, left: 1226 });
 
     return (
         <div>
@@ -153,8 +187,11 @@ export default function Recorder() {
                 <button onClick={stopCallback}>Stop Recording</button>
             </div>
 
-            <br /><br />
+            <br />
             <video controls width="500" height="350"></video>
+
+            <br />
+            <div id="thumbWrapper"></div>
         </div>
     )
 }
