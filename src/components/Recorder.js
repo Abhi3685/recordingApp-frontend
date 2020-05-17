@@ -51,7 +51,7 @@ function keepStreamActive(stream) {
 var stopCallback = () => {
     recorder.stopRecording(function () {
         console.log('Time Duration: ' + (Date.now() - startTime) / 1000);
-        var blob = recorder.getBlob();
+        blob = recorder.getBlob();
         document.querySelector('video').srcObject = null;
         document.querySelector('video').src = URL.createObjectURL(blob);
         document.querySelector('video').muted = false;
@@ -64,7 +64,7 @@ var stopCallback = () => {
     });
 };
 
-var recorder, myScreen, myCamera, startTime, thumbnailCaptured = false;
+var recorder, myScreen, myCamera, startTime, blob, thumbnailCaptured = false;
 
 function start(pos) {
     captureScreen(function (screen) {
@@ -87,57 +87,57 @@ function start(pos) {
                 type: 'video',
                 mimeType: 'video/webm',
                 timeSlice: 5000,
-                ondataavailable: function (blob) {
-                    if (!thumbnailCaptured) {
-                        var url = URL.createObjectURL(blob);
-                        var video = document.createElement('video');
-                        var timeupdate = function () {
-                            if (snapImage()) {
-                                video.removeEventListener('timeupdate', timeupdate);
-                                video.pause();
-                                thumbnailCaptured = true;
-                            }
-                        };
-                        video.addEventListener('loadeddata', function () {
-                            if (snapImage()) {
-                                video.removeEventListener('timeupdate', timeupdate);
-                                thumbnailCaptured = true;
-                            }
-                        });
-                        var snapImage = function () {
-                            var canvas = document.createElement('canvas');
-                            canvas.width = video.videoWidth;
-                            canvas.height = video.videoHeight;
-                            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-                            var image = canvas.toDataURL();
+                // ondataavailable: function (blob) {
+                //     if (!thumbnailCaptured) {
+                //         var url = URL.createObjectURL(blob);
+                //         var video = document.createElement('video');
+                //         var timeupdate = function () {
+                //             if (snapImage()) {
+                //                 video.removeEventListener('timeupdate', timeupdate);
+                //                 video.pause();
+                //                 thumbnailCaptured = true;
+                //             }
+                //         };
+                //         video.addEventListener('loadeddata', function () {
+                //             if (snapImage()) {
+                //                 video.removeEventListener('timeupdate', timeupdate);
+                //                 thumbnailCaptured = true;
+                //             }
+                //         });
+                //         var snapImage = function () {
+                //             var canvas = document.createElement('canvas');
+                //             canvas.width = video.videoWidth;
+                //             canvas.height = video.videoHeight;
+                //             canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+                //             var image = canvas.toDataURL();
 
-                            axios.post("http://localhost:8000/upload", { data: image, name: '1-' + startTime + '.png' }).then(res => {
-                                console.log(res);
-                            });
+                //             axios.post("http://localhost:8000/upload", { data: image, name: '1-' + startTime + '.png' }).then(res => {
+                //                 console.log(res);
+                //             });
 
-                            var success = image.length > 100000;
-                            if (success) {
-                                URL.revokeObjectURL(url);
-                            }
-                            return success;
-                        };
-                        video.addEventListener('timeupdate', timeupdate);
-                        video.preload = 'metadata';
-                        video.src = url;
-                        video.muted = true;
-                        video.playsInline = true;
-                        video.play();
-                    }
+                //             var success = image.length > 100000;
+                //             if (success) {
+                //                 URL.revokeObjectURL(url);
+                //             }
+                //             return success;
+                //         };
+                //         video.addEventListener('timeupdate', timeupdate);
+                //         video.preload = 'metadata';
+                //         video.src = url;
+                //         video.muted = true;
+                //         video.playsInline = true;
+                //         video.play();
+                //     }
 
-                    var reader = new FileReader();
-                    reader.readAsDataURL(blob);
-                    reader.onloadend = function () {
-                        var base64data = reader.result;
-                        axios.post("http://localhost:8000/upload", { data: base64data, name: '1-' + startTime + '.mp4' }).then(res => {
-                            console.log(res);
-                        });
-                    }
-                }
+                //     var reader = new FileReader();
+                //     reader.readAsDataURL(blob);
+                //     reader.onloadend = function () {
+                //         var base64data = reader.result;
+                //         axios.post("http://localhost:8000/upload", { data: base64data, name: '1-' + startTime + '.mp4' }).then(res => {
+                //             console.log(res);
+                //         });
+                //     }
+                // }
             });
 
             recorder.startRecording();
@@ -167,6 +167,16 @@ function addStreamStopListener(stream, callback) {
     });
 }
 
+function uploadToCloudinary() {
+    var file = new File([blob], "demo.mp4");
+    var formData = new FormData();
+    formData.append("upload_preset", "fjssudg9");
+    formData.append("file", file);
+    axios.post('https://api.cloudinary.com/v1_1/dhhtvk50h/upload', formData)
+        .then(data => console.log(data))
+        .catch(err => console.log(err));
+}
+
 export default function Recorder() {
     useEffect(() => {
         if (!navigator.getDisplayMedia && !navigator.mediaDevices.getDisplayMedia) {
@@ -192,6 +202,9 @@ export default function Recorder() {
 
             <br />
             <div id="thumbWrapper"></div>
+
+            <br />
+            <button onClick={uploadToCloudinary}>Upload</button>
         </div>
     )
 }

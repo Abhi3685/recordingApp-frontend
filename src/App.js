@@ -10,11 +10,19 @@ import {
 import Home from './components/Home';
 import Recorder from './components/Recorder';
 import Player from './components/Player';
+import SignUp from './components/Signup';
+import Signin from './components/Signin';
 
 function App() {
   return (
     <Router>
       <Switch>
+        <Route path="/signup">
+          <SignUp />
+        </Route>
+        <Route path="/signin">
+          <Signin />
+        </Route>
         <Route path="/player">
           <Player />
         </Route>
