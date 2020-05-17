@@ -10,7 +10,7 @@ import {
 import Home from './components/Home';
 import Recorder from './components/Recorder';
 import Player from './components/Player';
-import SignUp from './components/Signup';
+import Signup from './components/Signup';
 import Signin from './components/Signin';
 
 function App() {
@@ -18,7 +18,7 @@ function App() {
     <Router>
       <Switch>
         <Route path="/signup">
-          <SignUp />
+          <Signup />
         </Route>
         <Route path="/signin">
           <Signin />

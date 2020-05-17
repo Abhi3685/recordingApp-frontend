@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import firebase from '../firebase';
+import { auth, db } from '../firebase';
 
-class SignUp extends Component {
+class Signup extends Component {
     state = {
         email: '',
         password: ''
@@ -14,12 +14,16 @@ class SignUp extends Component {
     handleSubmit = (event) => {
         event.preventDefault();
         const { email, password } = this.state;
-        firebase
-            .auth()
+        auth
             .createUserWithEmailAndPassword(email, password)
-            .then((user) => {
+            .then((res) => {
                 // this.props.history.push('/');
                 console.log('Success!');
+                console.log(res);
+                return db.collection('users').doc(res.user.uid).set({ name: 'myname here' });
+            })
+            .then(user => {
+                console.log('DB ENTRY: ');
                 console.log(user);
             })
             .catch((error) => {
@@ -47,4 +51,4 @@ class SignUp extends Component {
         );
     }
 }
-export default SignUp;
+export default Signup;
