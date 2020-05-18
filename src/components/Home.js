@@ -62,6 +62,10 @@ export default function Home() {
     return (
         <div>
             <button className="new_vid_btn" onClick={start}>New Video</button>
+            <br />
+            <br />
+            <button onClick={() => history.push('signin')} className="bg-indigo-600 text-white px-8 py-2 rounded ml-5">Sign In</button>
+            <button onClick={() => history.push('signup')} className="bg-indigo-600 text-white px-8 py-2 rounded mx-10">Sign Up</button>
 
             <div className="config_wrapper" style={{ display: 'none' }}>
                 <label>Recording Mode</label><br />
