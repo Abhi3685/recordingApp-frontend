@@ -42,6 +42,7 @@ class Signup extends Component {
                 console.log(error);
             });
     };
+
     render() {
         const { email, password, fullname, confirmpassword } = this.state;
         return (
