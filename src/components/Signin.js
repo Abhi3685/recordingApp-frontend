@@ -31,15 +31,19 @@ function Signin() {
             .signInWithEmailAndPassword(email, password)
             .then((res) => {
                 localStorage.setItem("UUID", res.user.uid);
-                let userRef = db.collection('users').doc(res.user.uid);
-                return userRef.get();
+                return db.collection('users').doc(res.user.uid).get();
             })
             .then(doc => {
-                if (!doc.exists) console.log('No such document!');
-                else history.push('/');
+                if (!doc.exists) { alert('Error: No such document!'); return; }
+                history.push('/');
             })
             .catch((error) => {
-                alert(error);
+                if (error.code == 'auth/invalid-email' || error.code == 'auth/user-not-found')
+                    alert('Error: No User Account Found.');
+                else if (error.code == 'auth/wrong-password')
+                    alert('Error: Wrong Password.');
+                else
+                    alert(error);
             });
     }
 

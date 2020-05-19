@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import RecordRTC from 'recordrtc';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
 function invokeGetDisplayMedia(success, error) {
     var displaymediastreamconstraints = {
@@ -33,11 +34,10 @@ function captureScreen(callback) {
     });
 }
 
-function captureCamera(cb) {
-    navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: true
-    }).then(cb);
+function captureCamera(config, cb) {
+    var myConfig = { video: true };
+    if (config.isAudioEnabled !== "Yes") myConfig.audio = false;
+    navigator.mediaDevices.getUserMedia(myConfig).then(cb);
 }
 
 function keepStreamActive(stream) {
@@ -55,8 +55,9 @@ var stopCallback = () => {
         document.querySelector('video').srcObject = null;
         document.querySelector('video').src = URL.createObjectURL(blob);
         document.querySelector('video').muted = false;
+        document.querySelector('.previewWrapper').style.display = 'block';
 
-        [myScreen, myCamera].forEach(function (stream) {
+        streams.forEach(function (stream) {
             stream.getTracks().forEach(function (track) {
                 track.stop();
             });
@@ -64,85 +65,48 @@ var stopCallback = () => {
     });
 };
 
-var recorder, myScreen, myCamera, startTime, blob, thumbnailCaptured = false;
+var recorder, streams, startTime, blob;
 
-function start(pos) {
+function start(pos, config) {
     captureScreen(function (screen) {
-        myScreen = screen;
         keepStreamActive(screen);
-        captureCamera(function (camera) {
-            myCamera = camera;
-            keepStreamActive(camera);
+        streams = [screen];
+        if (config.mode == "Screen + Cam") {
+            captureCamera(config, function (camera) {
+                keepStreamActive(camera);
 
+                screen.width = window.screen.width;
+                screen.height = window.screen.height;
+                screen.fullcanvas = true;
+
+                camera.width = 310;
+                camera.height = 300;
+                camera.top = pos.top + 100;
+                camera.left = pos.left > 20 ? pos.left - 10 : pos.left;
+
+                streams.push(camera);
+
+                recorder = RecordRTC(streams, {
+                    type: 'video',
+                    mimeType: 'video/webm'
+                });
+
+                setTimeout(() => { recorder.startRecording(); }, 1000);
+                startTime = Date.now();
+            });
+        } else {
             screen.width = window.screen.width;
             screen.height = window.screen.height;
             screen.fullcanvas = true;
 
-            camera.width = 310;
-            camera.height = 300;
-            camera.top = pos.top + 100;
-            camera.left = pos.left > 20 ? pos.left - 10 : pos.left;
-
-            recorder = RecordRTC([screen, camera], {
+            recorder = RecordRTC(streams, {
                 type: 'video',
-                mimeType: 'video/webm',
-                timeSlice: 5000,
-                // ondataavailable: function (blob) {
-                //     if (!thumbnailCaptured) {
-                //         var url = URL.createObjectURL(blob);
-                //         var video = document.createElement('video');
-                //         var timeupdate = function () {
-                //             if (snapImage()) {
-                //                 video.removeEventListener('timeupdate', timeupdate);
-                //                 video.pause();
-                //                 thumbnailCaptured = true;
-                //             }
-                //         };
-                //         video.addEventListener('loadeddata', function () {
-                //             if (snapImage()) {
-                //                 video.removeEventListener('timeupdate', timeupdate);
-                //                 thumbnailCaptured = true;
-                //             }
-                //         });
-                //         var snapImage = function () {
-                //             var canvas = document.createElement('canvas');
-                //             canvas.width = video.videoWidth;
-                //             canvas.height = video.videoHeight;
-                //             canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-                //             var image = canvas.toDataURL();
-
-                //             axios.post("http://localhost:8000/upload", { data: image, name: '1-' + startTime + '.png' }).then(res => {
-                //                 console.log(res);
-                //             });
-
-                //             var success = image.length > 100000;
-                //             if (success) {
-                //                 URL.revokeObjectURL(url);
-                //             }
-                //             return success;
-                //         };
-                //         video.addEventListener('timeupdate', timeupdate);
-                //         video.preload = 'metadata';
-                //         video.src = url;
-                //         video.muted = true;
-                //         video.playsInline = true;
-                //         video.play();
-                //     }
-
-                //     var reader = new FileReader();
-                //     reader.readAsDataURL(blob);
-                //     reader.onloadend = function () {
-                //         var base64data = reader.result;
-                //         axios.post("http://localhost:8000/upload", { data: base64data, name: '1-' + startTime + '.mp4' }).then(res => {
-                //             console.log(res);
-                //         });
-                //     }
-                // }
+                mimeType: 'video/webm'
             });
 
-            recorder.startRecording();
+            setTimeout(() => { recorder.startRecording(); }, 1000);
             startTime = Date.now();
-        });
+        }
     });
 }
 
@@ -168,43 +132,43 @@ function addStreamStopListener(stream, callback) {
 }
 
 function uploadToCloudinary() {
+    var msg_element = document.querySelector(".upload_msg");
+    msg_element.style.display = 'block';
     var file = new File([blob], "demo.mp4");
     var formData = new FormData();
     formData.append("upload_preset", "fjssudg9");
     formData.append("file", file);
     axios.post('https://api.cloudinary.com/v1_1/dhhtvk50h/upload', formData)
-        .then(data => console.log(data))
-        .catch(err => console.log(err));
+        .then(data => msg_element.innerHTML = "Video URL: " + data.data.secure_url)
+        .catch(err => msg_element.innerHTML = JSON.stringify(err));
 }
 
-export default function Recorder() {
+function Recorder() {
+    let location = useLocation();
+    const [pos, setPos] = useState({ top: location.state.top, left: location.state.left });
+    const [config, setConfig] = useState({ mode: location.state.mode, audio: location.state.isAudioEnabled });
+
     useEffect(() => {
         if (!navigator.getDisplayMedia && !navigator.mediaDevices.getDisplayMedia) {
             var error = 'Your browser does NOT supports getDisplayMedia API.';
             alert(error);
             document.querySelector('video').style.display = 'none';
+            return;
         }
+        start(pos, config);
     }, []);
 
-    const [pos, setPos] = useState({ top: 10, left: 1226 });
-
     return (
-        <div>
-            <h1>Video & Screen Recording Demo</h1>
+        <>
+            <button style={{ position: "absolute", top: 10, right: 10 }} className="bg-indigo-600 text-white px-8 py-2 rounded" onClick={stopCallback}>Stop Recording</button>
 
-            <div>
-                <button onClick={() => start(pos)}>Start Recording</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <button onClick={stopCallback}>Stop Recording</button>
+            <div style={{ display: 'none', width: '50%' }} className="previewWrapper mx-auto mt-20">
+                <video className="w-full shadow-lg" controls></video>
+                <button className="bg-indigo-600 text-white px-8 py-2 rounded mt-3" onClick={uploadToCloudinary}>Upload</button>
+                <p style={{ display: 'none' }} className="upload_msg">Uploading ... Please Wait ....</p>
             </div>
-
-            <br />
-            <video controls width="500" height="350"></video>
-
-            <br />
-            <div id="thumbWrapper"></div>
-
-            <br />
-            <button onClick={uploadToCloudinary}>Upload</button>
-        </div>
+        </>
     )
 }
+
+export default Recorder;
