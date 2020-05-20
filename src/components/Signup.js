@@ -51,7 +51,7 @@ function Signup() {
             .then((res) => {
                 if (!res.user) { console.log(res); alert('Unknown Error Occured!'); return; }
                 localStorage.setItem("UUID", res.user.uid);
-                return db.collection('users').doc(res.user.uid).set({ fullname });
+                return db.collection('users').doc(res.user.uid).set({ fullname, videos: [] });
             })
             .then(user => {
                 history.push('/');

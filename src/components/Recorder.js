@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import RecordRTC from 'recordrtc';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
+import { db } from '../firebase';
+import firebase from "firebase/app";
 
 function invokeGetDisplayMedia(success, error) {
     var displaymediastreamconstraints = {
@@ -49,8 +51,8 @@ function keepStreamActive(stream) {
 }
 
 var stopCallback = () => {
+    console.log('Time Duration: ' + (Date.now() - startTime) / 1000);
     recorder.stopRecording(function () {
-        console.log('Time Duration: ' + (Date.now() - startTime) / 1000);
         blob = recorder.getBlob();
         document.querySelector('video').srcObject = null;
         document.querySelector('video').src = URL.createObjectURL(blob);
@@ -91,8 +93,7 @@ function start(pos, config) {
                     mimeType: 'video/webm'
                 });
 
-                setTimeout(() => { recorder.startRecording(); }, 1000);
-                startTime = Date.now();
+                setTimeout(() => { recorder.startRecording(); startTime = Date.now(); }, 1000);
             });
         } else {
             screen.width = window.screen.width;
@@ -131,7 +132,7 @@ function addStreamStopListener(stream, callback) {
     });
 }
 
-function uploadToCloudinary() {
+function uploadToCloudinary(history) {
     var msg_element = document.querySelector(".upload_msg");
     msg_element.style.display = 'block';
     var file = new File([blob], "demo.mp4");
@@ -139,12 +140,27 @@ function uploadToCloudinary() {
     formData.append("upload_preset", "fjssudg9");
     formData.append("file", file);
     axios.post('https://api.cloudinary.com/v1_1/dhhtvk50h/upload', formData)
-        .then(data => msg_element.innerHTML = "Video URL: " + data.data.secure_url)
+        .then(res => {
+            msg_element.innerHTML = "Video Uploaded. Redirecting to Dashboard.";
+            var video_Obj = {
+                name: 'Recording-' + Date.now(),
+                duration: res.data.duration,
+                createdAt: res.data.created_at,
+                url: res.data.secure_url,
+                thumb: res.data.secure_url.substr(0, res.data.secure_url.length - 3) + 'jpg',
+                views: 0
+            };
+            db.collection('users').doc(localStorage.getItem("UUID")).update({
+                videos: firebase.firestore.FieldValue.arrayUnion(video_Obj)
+            });
+            setTimeout(() => { history.push('/'); }, 2500);
+        })
         .catch(err => msg_element.innerHTML = JSON.stringify(err));
 }
 
 function Recorder() {
     let location = useLocation();
+    let history = useHistory();
     const [pos, setPos] = useState({ top: location.state.top, left: location.state.left });
     const [config, setConfig] = useState({ mode: location.state.mode, audio: location.state.isAudioEnabled });
 
@@ -164,7 +180,7 @@ function Recorder() {
 
             <div style={{ display: 'none', width: '50%' }} className="previewWrapper mx-auto mt-20">
                 <video className="w-full shadow-lg" controls></video>
-                <button className="bg-indigo-600 text-white px-8 py-2 rounded mt-3" onClick={uploadToCloudinary}>Upload</button>
+                <button className="bg-indigo-600 text-white px-8 py-2 rounded mt-3" onClick={() => uploadToCloudinary(history)}>Upload</button>
                 <p style={{ display: 'none' }} className="upload_msg">Uploading ... Please Wait ....</p>
             </div>
         </>
