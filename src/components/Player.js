@@ -1,6 +1,5 @@
-import React from 'react'
-import ReactPlayer from 'react-player'
-import { Video } from 'cloudinary-react';
+import React, { useState } from 'react'
+import { useLocation, useHistory } from 'react-router-dom'
 
 function formatTime(secs) {
     var sec_num = parseInt(secs, 10)
@@ -14,41 +13,14 @@ function formatTime(secs) {
         .join(":")
 }
 
-export default class Player extends React.Component {
-    constructor(props) {
-        super(props);
+export default function Player() {
+    let location = useLocation();
+    // const [state, setState] = useState({ current: 0, duration: location.state.duration });
 
-        this.state = {
-            current: 0,
-            duration: 5
-        };
-
-        this.startInterval = this.startInterval.bind(this);
-    }
-
-    startInterval() {
-        var interval = setInterval(() => {
-            this.setState({
-                current: this.state.current + 1,
-                duration: this.state.duration
-            });
-            if (this.state.current === this.state.duration) clearInterval(interval);
-        }, 1000);
-    }
-
-    render() {
-        return (
-            <>
-                {/* <div onContextMenu={(e) => e.preventDefault()}>
-                    <ReactPlayer url='http://localhost:8000/video'
-                        playing={true}
-                        onEnded={() => alert('Video Ended!')}
-                        onStart={this.startInterval} />
-                </div> */}
-                <video poster="http://res.cloudinary.com/dhhtvk50h/video/upload/demo_rz9hbj.jpg" src="http://res.cloudinary.com/dhhtvk50h/video/upload/demo_rz9hbj.mkv" controls="controls" height="360" width="480">
-                </video>
-                <span>{formatTime(this.state.current)} / {formatTime(this.state.duration)}</span>
-            </>
-        )
-    }
+    return (
+        <div className="flex bg-gray-500 h-screen items-center">
+            <video className="rounded shadow-lg mx-auto" width="75%" poster={location.state.thumb} src={location.state.url} controls></video>
+            {/* <span>{formatTime(state.current)} / {formatTime(state.duration)}</span> */}
+        </div>
+    )
 }
