@@ -75,10 +75,12 @@ function Home() {
     useEffect(() => {
         video = document.querySelector('video');
         dragCircle = document.querySelector('.dragCircle');
-        db.collection('users').doc(localStorage.getItem("UUID")).get().then(doc => {
-            if (!doc.exists) { alert('Error: No such document!'); return; }
-            setVideos(doc.data().videos);
-        });
+        if (localStorage.getItem("UUID")) {
+            db.collection('users').doc(localStorage.getItem("UUID")).get().then(doc => {
+                if (!doc.exists) { alert('Error: No such document!'); return; }
+                setVideos(doc.data().videos);
+            });
+        }
     }, []);
 
     return (
