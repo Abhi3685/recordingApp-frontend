@@ -51,9 +51,13 @@ function keepStreamActive(stream) {
 }
 
 var stopCallback = () => {
-    console.log('Time Duration: ' + (Date.now() - startTime) / 1000);
     recorder.stopRecording(function () {
+        // console.log(arrayOfBlobs);
+        // blob = new Blob(arrayOfBlobs, {
+        //     type: 'video/webm'
+        // });
         blob = recorder.getBlob();
+
         document.querySelector('video').srcObject = null;
         document.querySelector('video').src = URL.createObjectURL(blob);
         document.querySelector('video').muted = false;
@@ -67,7 +71,8 @@ var stopCallback = () => {
     });
 };
 
-var recorder, streams, startTime, blob;
+var recorder, streams, blob;
+// var arrayOfBlobs = [];
 
 function start(pos, config) {
     captureScreen(function (screen) {
@@ -90,10 +95,14 @@ function start(pos, config) {
 
                 recorder = RecordRTC(streams, {
                     type: 'video',
-                    mimeType: 'video/webm'
+                    mimeType: 'video/webm',
+                    // timeSlice: 500,
+                    // ondataavailable: function (blob) {
+                    //     arrayOfBlobs.push(blob);
+                    // }
                 });
 
-                setTimeout(() => { recorder.startRecording(); startTime = Date.now(); }, 1000);
+                setTimeout(() => recorder.startRecording(), 1000);
             });
         } else {
             screen.width = window.screen.width;
@@ -102,11 +111,14 @@ function start(pos, config) {
 
             recorder = RecordRTC(streams, {
                 type: 'video',
-                mimeType: 'video/webm'
+                mimeType: 'video/webm',
+                // timeSlice: 500,
+                // ondataavailable: function (blob) {
+                //     arrayOfBlobs.push(blob);
+                // }
             });
 
             setTimeout(() => { recorder.startRecording(); }, 1000);
-            startTime = Date.now();
         }
     });
 }

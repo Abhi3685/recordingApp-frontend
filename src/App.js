@@ -12,6 +12,7 @@ import Recorder from './components/Recorder';
 import Player from './components/Player';
 import Signup from './components/Signup';
 import Signin from './components/Signin';
+import Trim from './components/Trim';
 
 function App() {
   return (
@@ -28,6 +29,9 @@ function App() {
         </Route>
         <Route path="/recorder">
           <Recorder />
+        </Route>
+        <Route path="/trim">
+          <Trim />
         </Route>
         <Route path="/">
           <Home />
