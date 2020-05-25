@@ -37,8 +37,8 @@ function captureScreen(callback) {
 }
 
 function captureCamera(config, cb) {
-    var myConfig = { video: true };
-    if (config.isAudioEnabled !== "Yes") myConfig.audio = false;
+    var myConfig = { video: true, audio: true };
+    if (config.audio === 0) myConfig.audio = false;
     navigator.mediaDevices.getUserMedia(myConfig).then(cb);
 }
 
@@ -52,10 +52,6 @@ function keepStreamActive(stream) {
 
 var stopCallback = () => {
     recorder.stopRecording(function () {
-        // console.log(arrayOfBlobs);
-        // blob = new Blob(arrayOfBlobs, {
-        //     type: 'video/webm'
-        // });
         blob = recorder.getBlob();
 
         document.querySelector('video').srcObject = null;
@@ -72,7 +68,6 @@ var stopCallback = () => {
 };
 
 var recorder, streams, blob;
-// var arrayOfBlobs = [];
 
 function start(pos, config) {
     captureScreen(function (screen) {
@@ -96,13 +91,14 @@ function start(pos, config) {
                 recorder = RecordRTC(streams, {
                     type: 'video',
                     mimeType: 'video/webm',
-                    // timeSlice: 500,
-                    // ondataavailable: function (blob) {
-                    //     arrayOfBlobs.push(blob);
-                    // }
+                    disableLogs: true,
+                    canvas: {
+                        width: 640,
+                        height: 480
+                    }
                 });
 
-                setTimeout(() => recorder.startRecording(), 1000);
+                setTimeout(() => recorder.startRecording(), 500);
             });
         } else {
             screen.width = window.screen.width;
@@ -112,13 +108,14 @@ function start(pos, config) {
             recorder = RecordRTC(streams, {
                 type: 'video',
                 mimeType: 'video/webm',
-                // timeSlice: 500,
-                // ondataavailable: function (blob) {
-                //     arrayOfBlobs.push(blob);
-                // }
+                disableLogs: true,
+                canvas: {
+                    width: 640,
+                    height: 480
+                }
             });
 
-            setTimeout(() => { recorder.startRecording(); }, 1000);
+            setTimeout(() => { recorder.startRecording(); }, 500);
         }
     });
 }
@@ -158,8 +155,9 @@ function uploadToCloudinary(history) {
                 name: 'Recording-' + Date.now(),
                 duration: res.data.duration,
                 createdAt: res.data.created_at,
-                url: res.data.secure_url,
+                url: res.data.secure_url.substr(0, res.data.secure_url.length - 3) + 'mp4',
                 thumb: res.data.secure_url.substr(0, res.data.secure_url.length - 3) + 'jpg',
+                publicId: res.data.public_id,
                 views: 0
             };
             db.collection('users').doc(localStorage.getItem("UUID")).update({

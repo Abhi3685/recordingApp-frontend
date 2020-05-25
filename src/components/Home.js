@@ -36,7 +36,7 @@ var start = () => {
 
 function getConfig(history) {
     var mode = document.getElementsByName("mode_options")[0].value;
-    var isAudioEnabled = document.getElementsByName("isAudioEnabled")[0].value;
+    var isAudioEnabled = document.getElementsByName("isAudioEnabled")[0].value === "Yes" ? 1 : 0;
     var camPosition = dragCircle.getBoundingClientRect();
     var top = camPosition.top;
     var left = camPosition.left;
@@ -100,10 +100,11 @@ function Home() {
 
                             <div className="grid grid-flow-row grid-cols-3 gap-10 ml-5 mr-10">
                                 {videos.map((video, index) =>
-                                    <div onClick={() => history.push('/player', { url: video.url, thumb: video.thumb, duration: video.duration })} className="px-5 cursor-pointer" key={index}>
+                                    <div className="px-5 cursor-pointer" key={index}>
                                         <img width="100%" className="rounded shadow-md" src={video.thumb} />
-                                        <h2 className="font-bold text-lg mt-3">{video.name}</h2>
+                                        <h2 onClick={() => history.push('/player', { url: video.url, thumb: video.thumb, duration: video.duration })} className="transition duration-500 ease-in-out font-bold text-lg mt-3 hover:text-blue-200">{video.name}</h2>
                                         <p className="text-gray-600">{formatTime(video.duration)} • {video.views} Views • <Moment fromNow>{video.createdAt}</Moment></p>
+                                        <button className="bg-indigo-600 text-white px-8 py-2 rounded mt-2" onClick={() => { history.push('/trim', { ...video, index }); }}>Trim</button>
                                     </div>
                                 )}
                             </div>

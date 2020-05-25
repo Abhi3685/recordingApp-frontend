@@ -15,10 +15,11 @@
     "react-draggable": "^4.4.1",
     "react-input-range": "^1.3.0",
     "react-moment": "^0.9.7",
+    "react-player": "^2.1.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
-    "react-video-js-player": "^1.1.1",
-    "recordrtc": "git+https://github.com/Abhi3685/RecordRTC.git"
+    "recordrtc": "git+https://github.com/Abhi3685/RecordRTC.git",
+    "video-react": "^0.14.1"
   },
   "scripts": {
     "start": "npm run watch:css && react-scripts start",
