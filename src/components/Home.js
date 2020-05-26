@@ -105,6 +105,7 @@ function Home() {
                                         <h2 onClick={() => history.push('/player', { url: video.url, thumb: video.thumb, duration: video.duration })} className="transition duration-500 ease-in-out font-bold text-lg mt-3 hover:text-blue-200">{video.name}</h2>
                                         <p className="text-gray-600">{formatTime(video.duration)} • {video.views} Views • <Moment fromNow>{video.createdAt}</Moment></p>
                                         <button className="bg-indigo-600 text-white px-8 py-2 rounded mt-2" onClick={() => { history.push('/trim', { ...video, index }); }}>Trim</button>
+                                        <button className="bg-indigo-600 text-white px-8 py-2 rounded mt-2 ml-5" onClick={() => { history.push('/addText', { ...video, index }); }}>Add Text</button>
                                     </div>
                                 )}
                             </div>

@@ -13,6 +13,7 @@ import Player from './components/Player';
 import Signup from './components/Signup';
 import Signin from './components/Signin';
 import Trim from './components/Trim';
+import AddText from './components/AddText';
 
 function App() {
   return (
@@ -32,6 +33,9 @@ function App() {
         </Route>
         <Route path="/trim">
           <Trim />
+        </Route>
+        <Route path="/addText">
+          <AddText />
         </Route>
         <Route path="/">
           <Home />
