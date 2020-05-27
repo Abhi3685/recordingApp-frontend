@@ -22,7 +22,6 @@ function readFile(url) {
                 <div class="flex w-full border-b-2 border-gray-500">
                     <div class="flex items-center">
                         <div class="flex flex-col p-4">
-                            <span class="text-md">`+ parts[0] + `</span>
                             <span class="text-md">`+ parts[1] + `</span>
                             <span class="text-md">`+ parts[2] + `</span>
                         </div>
@@ -51,7 +50,7 @@ function addText() {
 
 export default function AddText() {
     const location = useLocation();
-    const history = useHistory();
+    // const history = useHistory();
     const min = (0 + location.state.duration * 0.3);
     const max = (location.state.duration - location.state.duration * 0.3);
     const [value, setValue] = useState({ min: round(min, 1), max: round(max, 1) });

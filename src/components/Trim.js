@@ -37,7 +37,6 @@ export default function Trim() {
     }
 
     function apply(url, duration, index) {
-        console.log('Started At: ' + new Date().getSeconds());
         var min = document.getElementById("startTime").value;
         var max = document.getElementById("endTime").value;
         var statusRef = document.getElementById("status_msg");
@@ -63,7 +62,6 @@ export default function Trim() {
                         videos: userVids
                     }).then(() => {
                         setTimeout(() => { history.push('/'); }, 2500);
-                        console.log('Ended At: ' + new Date().getSeconds());
                         statusRef.innerHTML = 'Processing Status: Trimmed Successfully! Redirecting to dashboard!';
                     });
                 });

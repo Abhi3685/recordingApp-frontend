@@ -14,6 +14,7 @@ import Signup from './components/Signup';
 import Signin from './components/Signin';
 import Trim from './components/Trim';
 import AddText from './components/AddText';
+import Watermark from './components/Watermark';
 
 function App() {
   return (
@@ -36,6 +37,9 @@ function App() {
         </Route>
         <Route path="/addText">
           <AddText />
+        </Route>
+        <Route path="/watermark">
+          <Watermark />
         </Route>
         <Route path="/">
           <Home />
