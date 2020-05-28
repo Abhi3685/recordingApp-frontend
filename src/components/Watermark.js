@@ -106,7 +106,7 @@ export default function Watermark() {
                     height="400px"
                     url={vidUrl}
                 />
-                <button onClick={() => saveChanges(location.state.url, location.state.index, history)} className="bg-indigo-600 text-white px-8 py-2 rounded mt-5">Save Changes</button>
+                <button onClick={() => saveChanges(vidUrl, location.state.index, history)} className="bg-indigo-600 text-white px-8 py-2 rounded mt-5">Save Changes</button>
             </Modal>
 
 

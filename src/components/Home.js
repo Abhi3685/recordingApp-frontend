@@ -101,7 +101,7 @@ function Home() {
                             <div className="grid grid-flow-row grid-cols-3 gap-10 ml-5 mr-10">
                                 {videos.map((video, index) =>
                                     <div className="px-5 cursor-pointer" key={index}>
-                                        <img width="100%" className="rounded shadow-md" src={video.thumb} />
+                                        <img alt="Video Thumbnail" width="100%" className="rounded shadow-md" src={video.thumb} />
                                         <h2 onClick={() => history.push('/player', { url: video.url, thumb: video.thumb, duration: video.duration })} className="transition duration-500 ease-in-out font-bold text-lg mt-3 hover:text-blue-200">{video.name}</h2>
                                         <p className="text-gray-600">{formatTime(video.duration)} • {video.views} Views • <Moment fromNow>{video.createdAt}</Moment></p>
                                         <div className="text-center">

@@ -5,9 +5,6 @@ import 'react-input-range/lib/css/index.css';
 import { useLocation, useHistory } from 'react-router-dom';
 import Axios from 'axios';
 import { db } from '../firebase';
-import moment from 'moment'
-
-var textsArr = [];
 
 function round(value, precision) {
     var multiplier = Math.pow(10, precision || 0);
@@ -18,7 +15,7 @@ function readFile(url, setTextsArr) {
     var tmpArr = [];
     Axios.get(url).then(res => {
         var data = res.data.substring(res.data.indexOf("\n\n") + 2);
-        data.split("\n\n").map(function (item) {
+        data.split("\n\n").forEach(function (item) {
             var parts = item.split("\n");
             tmpArr.push({
                 duration: parts[0],
@@ -41,7 +38,7 @@ function hhmmss(secs) {
 }
 
 function removeBlock(idxToDelete, textsArr, setTextsArr) {
-    var newArr = textsArr.filter((text, idx) => idxToDelete != idx);
+    var newArr = textsArr.filter((text, idx) => idxToDelete !== idx);
     setTextsArr(newArr);
 }
 
