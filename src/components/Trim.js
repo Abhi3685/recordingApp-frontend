@@ -49,7 +49,7 @@ export default function Trim() {
             url,
             pid: location.state.publicId
         }).then(res => {
-            if (res.data.code && res.data.code == 'Success') {
+            if (res.data.code && res.data.code === "Success") {
                 db.collection('users').doc(localStorage.getItem("UUID")).get().then(doc => {
                     var userVids = doc.data().videos;
                     var name = doc.data().name;
