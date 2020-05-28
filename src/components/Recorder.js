@@ -39,6 +39,7 @@ function captureScreen(callback) {
 function captureCamera(config, cb) {
     var myConfig = { video: true, audio: true };
     if (config.audio === 0) myConfig.audio = false;
+    if (config.mode !== "Screen + Cam") myConfig.video = false;
     navigator.mediaDevices.getUserMedia(myConfig).then(cb);
 }
 
@@ -72,38 +73,19 @@ var recorder, streams, blob;
 function start(pos, config) {
     captureScreen(function (screen) {
         keepStreamActive(screen);
-        streams = [screen];
-        if (config.mode == "Screen + Cam") {
-            captureCamera(config, function (camera) {
-                keepStreamActive(camera);
+        captureCamera(config, function (camera) {
+            keepStreamActive(camera);
 
-                screen.width = window.screen.width;
-                screen.height = window.screen.height;
-                screen.fullcanvas = true;
-
-                camera.width = 310;
-                camera.height = 300;
-                camera.top = pos.top + 100;
-                camera.left = pos.left > 20 ? pos.left - 10 : pos.left;
-
-                streams.push(camera);
-
-                recorder = RecordRTC(streams, {
-                    type: 'video',
-                    mimeType: 'video/webm',
-                    disableLogs: true,
-                    canvas: {
-                        width: 640,
-                        height: 480
-                    }
-                });
-
-                setTimeout(() => recorder.startRecording(), 500);
-            });
-        } else {
             screen.width = window.screen.width;
             screen.height = window.screen.height;
             screen.fullcanvas = true;
+
+            camera.width = 310;
+            camera.height = 300;
+            camera.top = pos.top + 100;
+            camera.left = pos.left > 20 ? pos.left - 10 : pos.left;
+
+            streams = [screen, camera];
 
             recorder = RecordRTC(streams, {
                 type: 'video',
@@ -115,8 +97,8 @@ function start(pos, config) {
                 }
             });
 
-            setTimeout(() => { recorder.startRecording(); }, 500);
-        }
+            setTimeout(() => recorder.startRecording(), 500);
+        });
     });
 }
 
