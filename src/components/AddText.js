@@ -14,6 +14,7 @@ function round(value, precision) {
 function readFile(url, setTextsArr) {
     var tmpArr = [];
     Axios.get(url).then(res => {
+        if (res.data.indexOf('\n') < 0) return;
         var data = res.data.substring(res.data.indexOf("\n\n") + 2);
         data.split("\n\n").forEach(function (item) {
             var parts = item.split("\n");
@@ -37,20 +38,38 @@ function hhmmss(secs) {
     return `${pad(hours)}:${pad(minutes)}:${pad(secs)}`;
 }
 
-function removeBlock(idxToDelete, textsArr, setTextsArr) {
+function removeBlock(idxToDelete, textsArr, setTextsArr, filename, setPlayerKey) {
     var newArr = textsArr.filter((text, idx) => idxToDelete !== idx);
+    saveChanges(newArr, filename);
     setTextsArr(newArr);
+    setPlayerKey(new Date().getSeconds());
 }
 
-function addText(textsArr, setTextsArr) {
+function saveChanges(arr, filename) {
+    var fileTxt = "WEBVTT";
+    arr.forEach(block => {
+        fileTxt += "\n\n" + block.duration + "\n" + block.subtitle;
+    });
+    Axios.post("http://localhost:8000/subtitle", {
+        text: fileTxt,
+        file: filename
+    }).then(res => {
+        console.log(res);
+    }).catch(err => {
+        alert("Error: Unhandled Exception Occured!");
+        console.log(err);
+    });
+}
+
+function addText(textsArr, setTextsArr, filename, setPlayerKey) {
     var text = document.getElementById("textToAdd").value;
     var startTime = document.getElementById("startTime").value;
     var endTime = document.getElementById("endTime").value;
 
     var startSec = (startTime + "").split(".")[0];
-    var startMilliSec = (startTime + "").split(".")[1] + "00";
+    var startMilliSec = (startTime + "").split(".")[1] ? (startTime + "").split(".")[1] + "00" : "000";
     var endSec = (endTime + "").split(".")[0];
-    var endMilliSec = (endTime + "").split(".")[1] + "00";
+    var endMilliSec = (endTime + "").split(".")[1] ? (endTime + "").split(".")[1] + "00" : "000";
     var subtitleDuration = hhmmss(startSec) + "." + startMilliSec + " --> " + hhmmss(endSec) + "." + endMilliSec;
 
     var newArr = [...textsArr];
@@ -58,7 +77,10 @@ function addText(textsArr, setTextsArr) {
         duration: subtitleDuration,
         subtitle: text
     });
+
+    saveChanges(newArr, filename);
     setTextsArr(newArr);
+    setPlayerKey(new Date().getSeconds());
     document.getElementById("textToAdd").value = '';
 }
 
@@ -69,9 +91,13 @@ export default function AddText() {
     const max = (location.state.duration - location.state.duration * 0.3);
     const [value, setValue] = useState({ min: round(min, 1), max: round(max, 1) });
     const [textsArr, setTextsArr] = useState([]);
+    const [playerKey, setPlayerKey] = useState(new Date().getTime());
+    location.state.subtitle = "sub-123456789.vtt";
 
     useEffect(() => {
-        readFile("https://res.cloudinary.com/dhhtvk50h/raw/upload/v1590589732/test_ai1gvs.vtt", setTextsArr);
+        if (location.state.subtitle) {
+            readFile("http://localhost:8000/" + location.state.subtitle, setTextsArr);
+        }
     }, []);
 
     return (
@@ -81,6 +107,7 @@ export default function AddText() {
                 className="mt-5 ml-10"
                 width="720px"
                 height="400px"
+                key={playerKey}
                 url={location.state.url}
                 config={{
                     attributes: {
@@ -88,7 +115,7 @@ export default function AddText() {
                     },
                     file: {
                         tracks: [
-                            { kind: 'subtitles', src: 'https://gist.githubusercontent.com/Abhi3685/55d553af64f30f6507823d016109d2b9/raw/137f89b5a0a041b0f9986986adcd7f60f45dcdbc/test.vtt', srcLang: 'en', default: true }
+                            { kind: 'subtitles', src: 'http://localhost:8000/' + location.state.subtitle, srcLang: 'en', default: true }
                         ]
                     }
                 }}
@@ -109,7 +136,7 @@ export default function AddText() {
                                     </div>
                                     <div className="flex flex-1 flex-grow w-full items-center justify-end">
                                         <div className="flex items-center mr-2">
-                                            <button onClick={() => removeBlock(idx, textsArr, setTextsArr)} className="text-lg uppercase font-semibold text-red-400 hover:text-red-600 cursor-pointer focus:outline-none"><i className="fa fa-trash ml-1"></i></button>
+                                            <button onClick={() => removeBlock(idx, textsArr, setTextsArr, location.state.subtitle, setPlayerKey)} className="text-lg uppercase font-semibold text-red-400 hover:text-red-600 cursor-pointer focus:outline-none"><i className="fa fa-trash ml-1"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -141,7 +168,7 @@ export default function AddText() {
                 <input id="startTime" className="rounded bg-gray-300 w-32 px-5 py-2" value={value.min} readOnly />
                 <span className="ml-4 mr-4">to</span>
                 <input id="endTime" className="rounded bg-gray-300 w-32 px-5 py-2" value={value.max} readOnly />
-                <button onClick={() => addText(textsArr, setTextsArr)} className="bg-indigo-600 text-white px-8 py-2 rounded w-64 ml-40">Add Text</button>
+                <button onClick={() => addText(textsArr, setTextsArr, location.state.subtitle, setPlayerKey)} className="bg-indigo-600 text-white px-8 py-2 rounded w-64 ml-40">Add Text</button>
             </div>
         </>
     )
