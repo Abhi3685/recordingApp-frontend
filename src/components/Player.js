@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useLocation, useHistory } from 'react-router-dom'
+import React from 'react'
+import { useLocation } from 'react-router-dom'
 
 function formatTime(secs) {
     var sec_num = parseInt(secs, 10)
@@ -15,12 +15,11 @@ function formatTime(secs) {
 
 export default function Player() {
     let location = useLocation();
-    // const [state, setState] = useState({ current: 0, duration: location.state.duration });
+    console.log(formatTime(location.state.duration));
 
     return (
         <div className="flex bg-gray-500 h-screen items-center">
             <video className="rounded shadow-lg mx-auto" width="75%" poster={location.state.thumb} src={location.state.url} controls></video>
-            {/* <span>{formatTime(state.current)} / {formatTime(state.duration)}</span> */}
         </div>
     )
 }

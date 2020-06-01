@@ -37,7 +37,7 @@ export default function Trim() {
             curr += increment;
             if (curr <= duration) video.currentTime = curr;
         }
-    }, []);
+    }, [location.state.duration]);
 
     function onProgress() {
         var vid = document.querySelector("video");

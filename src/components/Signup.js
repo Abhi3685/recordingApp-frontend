@@ -41,10 +41,10 @@ function Signup() {
         // Pass should be greater than 6 characters
         if (password.length <= 6) myErrors.password = 'Password must be greater than 6 characters';
         // Pass & Confirm Pass Should Match
-        if (password != confirmpassword) myErrors.confirmpassword = 'Password and confirm password must be equal';
+        if (password !== confirmpassword) myErrors.confirmpassword = 'Password and confirm password must be equal';
 
         setError(myErrors);
-        if (Object.keys(myErrors).length != 0) return;
+        if (Object.keys(myErrors).length !== 0) return;
 
         auth
             .createUserWithEmailAndPassword(email, password)

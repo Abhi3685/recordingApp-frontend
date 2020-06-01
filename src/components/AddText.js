@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import InputRange from 'react-input-range';
 import ReactPlayer from 'react-player'
 import 'react-input-range/lib/css/index.css';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import Axios from 'axios';
 import { db } from '../firebase';
 
@@ -98,7 +98,7 @@ export default function AddText() {
         if (location.state.subtitle) {
             readFile("http://localhost:8000/" + location.state.subtitle, setTextsArr);
         }
-    }, []);
+    }, [location.state.subtitle]);
 
     return (
         <>

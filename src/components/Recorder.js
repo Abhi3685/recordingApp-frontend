@@ -156,8 +156,8 @@ function uploadToCloudinary(history) {
 function Recorder() {
     let location = useLocation();
     let history = useHistory();
-    const [pos, setPos] = useState({ top: location.state.top, left: location.state.left });
-    const [config, setConfig] = useState({ mode: location.state.mode, audio: location.state.isAudioEnabled });
+    const [pos] = useState({ top: location.state.top, left: location.state.left });
+    const [config] = useState({ mode: location.state.mode, audio: location.state.isAudioEnabled });
 
     useEffect(() => {
         if (!navigator.getDisplayMedia && !navigator.mediaDevices.getDisplayMedia) {
@@ -167,7 +167,7 @@ function Recorder() {
             return;
         }
         start(pos, config);
-    }, []);
+    }, [pos, config]);
 
     return (
         <>

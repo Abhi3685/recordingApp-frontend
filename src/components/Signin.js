@@ -38,9 +38,9 @@ function Signin() {
                 history.push('/');
             })
             .catch((error) => {
-                if (error.code == 'auth/invalid-email' || error.code == 'auth/user-not-found')
+                if (error.code === 'auth/invalid-email' || error.code === 'auth/user-not-found')
                     alert('Error: No User Account Found.');
-                else if (error.code == 'auth/wrong-password')
+                else if (error.code === 'auth/wrong-password')
                     alert('Error: Wrong Password.');
                 else
                     alert(error);
