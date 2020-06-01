@@ -80,15 +80,15 @@ function start(pos, config) {
             screen.width = window.screen.width;
             screen.height = window.screen.height;
             screen.fullcanvas = true;
+            streams = [screen];
 
             if (camera) {
                 camera.width = 310;
                 camera.height = 300;
                 camera.top = pos.top + 100;
                 camera.left = pos.left > 20 ? pos.left - 10 : pos.left;
+                streams.push(camera);
             }
-
-            streams = [screen, camera];
 
             recorder = RecordRTC(streams, {
                 type: 'video',
