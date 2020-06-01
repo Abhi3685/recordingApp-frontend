@@ -23,21 +23,20 @@ export default function Trim() {
         const canvas = document.querySelector("canvas");
         const video = document.getElementById("hiddenPlayer");
         var thumbCount = 0;
+
+        var duration = Math.round(location.state.duration);
+        var increment = duration / 10;
+        var curr = increment;
+        video.currentTime = curr;
+
         video.onseeked = () => {
             console.log(video.currentTime);
             canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
             var img = document.querySelector(".thumb-" + (++thumbCount));
             img.src = canvas.toDataURL();
-        }
-
-        var duration = Math.round(location.state.duration);
-        var increment = duration / 10;
-        var curr = increment;
-        var myInterval = setInterval(() => {
-            video.currentTime = curr;
             curr += increment;
-            if (curr > duration) clearInterval(myInterval);
-        }, 300);
+            if (curr <= duration) video.currentTime = curr;
+        }
     }, []);
 
     function onProgress() {
