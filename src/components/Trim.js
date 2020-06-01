@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import InputRange from 'react-input-range';
 import ReactPlayer from 'react-player'
 import 'react-input-range/lib/css/index.css';
+import './slider.css';
 import { useLocation, useHistory } from 'react-router-dom';
 import Axios from 'axios';
 import { db } from '../firebase';
@@ -16,7 +17,28 @@ export default function Trim() {
     const history = useHistory();
     const min = (0 + location.state.duration * 0.3);
     const max = (location.state.duration - location.state.duration * 0.3);
-    const [value, setValue] = useState({ min: round(min, 2), max: round(max, 2) });
+    const [value, setValue] = useState({ min: Math.round(min, 2), max: Math.round(max, 2) });
+
+    useEffect(() => {
+        const canvas = document.querySelector("canvas");
+        const video = document.getElementById("hiddenPlayer");
+        var thumbCount = 0;
+        video.onseeked = () => {
+            console.log(video.currentTime);
+            canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+            var img = document.querySelector(".thumb-" + (++thumbCount));
+            img.src = canvas.toDataURL();
+        }
+
+        var duration = Math.round(location.state.duration);
+        var increment = duration / 10;
+        var curr = increment;
+        var myInterval = setInterval(() => {
+            video.currentTime = curr;
+            curr += increment;
+            if (curr > duration) clearInterval(myInterval);
+        }, 300);
+    }, []);
 
     function onProgress() {
         var vid = document.querySelector("video");
@@ -85,21 +107,41 @@ export default function Trim() {
                 url={location.state.url}
             />
 
-            <div style={{ width: '720px' }} className="mt-10 mx-10">
+            <video crossOrigin="anonymous" id="hiddenPlayer" hidden src={location.state.url}></video>
+            <canvas hidden width="720" height="480"></canvas>
+
+            <div className="mt-10 mx-10">
                 <h2 className="mb-2 text-lg">Select the duration to trim (remove) from recorded clip</h2>
-                <InputRange
-                    maxValue={round(location.state.duration, 2)}
-                    minValue={0}
-                    formatLabel={value => ``}
-                    step={.01}
-                    value={value}
-                    onChange={value => {
-                        if (value.min < 0) value.min = 0;
-                        if (value.max > location.state.duration) value.max = location.state.duration;
-                        var min = round(value.min, 2);
-                        var max = round(value.max, 2);
-                        setValue({ min, max });
-                    }} />
+
+                <div className="timeline_wrapper relative">
+                    <div className="timeline_thumb_Wrapper">
+                        <img alt="Thumbnail" className="inline-block thumb-1" style={{ width: '100px', height: '75px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                        <img alt="Thumbnail" className="inline-block thumb-2" style={{ width: '100px', height: '75px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                        <img alt="Thumbnail" className="inline-block thumb-3" style={{ width: '100px', height: '75px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                        <img alt="Thumbnail" className="inline-block thumb-4" style={{ width: '100px', height: '75px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                        <img alt="Thumbnail" className="inline-block thumb-5" style={{ width: '100px', height: '75px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                        <img alt="Thumbnail" className="inline-block thumb-6" style={{ width: '100px', height: '75px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                        <img alt="Thumbnail" className="inline-block thumb-7" style={{ width: '100px', height: '75px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                        <img alt="Thumbnail" className="inline-block thumb-8" style={{ width: '100px', height: '75px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                        <img alt="Thumbnail" className="inline-block thumb-9" style={{ width: '100px', height: '75px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                        <img alt="Thumbnail" className="inline-block thumb-10" style={{ width: '100px', height: '75px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                    </div>
+                    <div className="timeline_range_wrapper" style={{ width: '1000px', position: 'absolute', top: 32 }}>
+                        <InputRange
+                            maxValue={round(location.state.duration, 2)}
+                            minValue={0}
+                            formatLabel={value => ``}
+                            step={.01}
+                            value={value}
+                            onChange={value => {
+                                if (value.min < 0) value.min = 0;
+                                if (value.max > location.state.duration) value.max = location.state.duration;
+                                var min = round(value.min, 2);
+                                var max = round(value.max, 2);
+                                setValue({ min, max });
+                            }} />
+                    </div>
+                </div>
 
                 <div className="mt-3">
                     <p className="mb-2">Cut duration: </p>

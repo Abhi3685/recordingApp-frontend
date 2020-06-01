@@ -40,7 +40,8 @@ function captureCamera(config, cb) {
     var myConfig = { video: true, audio: true };
     if (config.audio === 0) myConfig.audio = false;
     if (config.mode !== "Screen + Cam") myConfig.video = false;
-    navigator.mediaDevices.getUserMedia(myConfig).then(cb);
+    if (myConfig.audio === false && myConfig.video === false) cb();
+    else navigator.mediaDevices.getUserMedia(myConfig).then(cb);
 }
 
 function keepStreamActive(stream) {
@@ -80,10 +81,12 @@ function start(pos, config) {
             screen.height = window.screen.height;
             screen.fullcanvas = true;
 
-            camera.width = 310;
-            camera.height = 300;
-            camera.top = pos.top + 100;
-            camera.left = pos.left > 20 ? pos.left - 10 : pos.left;
+            if (camera) {
+                camera.width = 310;
+                camera.height = 300;
+                camera.top = pos.top + 100;
+                camera.left = pos.left > 20 ? pos.left - 10 : pos.left;
+            }
 
             streams = [screen, camera];
 

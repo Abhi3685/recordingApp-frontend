@@ -1,0 +1,18 @@
+.input-range__track--background {
+	top: -30px;
+}
+.input-range__track--active {
+	background: rgba(255, 255, 255, 0.6) !important;
+	height: 75px;
+	border-radius: 0;
+}
+.input-range__track {
+	background: none;
+}
+.input-range__slider {
+	border-radius: 0;
+	height: 85px;
+	width: 5px;
+	margin-top: -79px;
+	margin-left: 0;
+}

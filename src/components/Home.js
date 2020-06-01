@@ -106,7 +106,7 @@ function Home() {
                                         <p className="text-gray-600">{formatTime(video.duration)} • {video.views} Views • <Moment fromNow>{video.createdAt}</Moment></p>
                                         <div className="text-center">
                                             <button className="bg-indigo-600 text-white px-8 py-2 rounded mt-2" onClick={() => { history.push('/trim', { ...video, index }); }}>Trim</button>
-                                            <button className="bg-indigo-600 text-white px-8 py-2 rounded mt-2 ml-5" onClick={() => { history.push('/addText', { ...video, index }); }}>Add Text</button>
+                                            {/* <button className="bg-indigo-600 text-white px-8 py-2 rounded mt-2 ml-5" onClick={() => { history.push('/addText', { ...video, index }); }}>Add Text</button> */}
                                             <button className="bg-indigo-600 text-white px-8 py-2 rounded mt-2 ml-5" onClick={() => { history.push('/watermark', { ...video, index }); }}>Watermark</button>
                                         </div>
                                     </div>
