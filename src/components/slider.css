@@ -1,15 +1,15 @@
-.input-range__track--background {
+.timeline_range_wrapper .input-range__track--background {
 	top: -30px;
 }
-.input-range__track--active {
+.timeline_range_wrapper .input-range__track--active {
 	background: rgba(255, 255, 255, 0.6) !important;
 	height: 75px;
 	border-radius: 0;
 }
-.input-range__track {
+.timeline_range_wrapper .input-range__track {
 	background: none;
 }
-.input-range__slider {
+.timeline_range_wrapper .input-range__slider {
 	border-radius: 0;
 	height: 85px;
 	width: 6px;

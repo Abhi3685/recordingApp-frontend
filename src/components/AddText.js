@@ -92,12 +92,9 @@ export default function AddText() {
     const [value, setValue] = useState({ min: round(min, 1), max: round(max, 1) });
     const [textsArr, setTextsArr] = useState([]);
     const [playerKey, setPlayerKey] = useState(new Date().getTime());
-    location.state.subtitle = "sub-123456789.vtt";
 
     useEffect(() => {
-        if (location.state.subtitle) {
-            readFile("http://localhost:8000/" + location.state.subtitle, setTextsArr);
-        }
+        readFile("http://localhost:8000/" + location.state.publicId + ".vtt", setTextsArr);
     }, [location.state.subtitle]);
 
     return (
@@ -115,7 +112,7 @@ export default function AddText() {
                     },
                     file: {
                         tracks: [
-                            { kind: 'subtitles', src: 'http://localhost:8000/' + location.state.subtitle, srcLang: 'en', default: true }
+                            { kind: 'subtitles', src: "http://localhost:8000/" + location.state.publicId + ".vtt", srcLang: 'en', default: true }
                         ]
                     }
                 }}
@@ -136,7 +133,7 @@ export default function AddText() {
                                     </div>
                                     <div className="flex flex-1 flex-grow w-full items-center justify-end">
                                         <div className="flex items-center mr-2">
-                                            <button onClick={() => removeBlock(idx, textsArr, setTextsArr, location.state.subtitle, setPlayerKey)} className="text-lg uppercase font-semibold text-red-400 hover:text-red-600 cursor-pointer focus:outline-none"><i className="fa fa-trash ml-1"></i></button>
+                                            <button onClick={() => removeBlock(idx, textsArr, setTextsArr, location.state.publicId + ".vtt", setPlayerKey)} className="text-lg uppercase font-semibold text-red-400 hover:text-red-600 cursor-pointer focus:outline-none"><i className="fa fa-trash ml-1"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -168,7 +165,7 @@ export default function AddText() {
                 <input id="startTime" className="rounded bg-gray-300 w-32 px-5 py-2" value={value.min} readOnly />
                 <span className="ml-4 mr-4">to</span>
                 <input id="endTime" className="rounded bg-gray-300 w-32 px-5 py-2" value={value.max} readOnly />
-                <button onClick={() => addText(textsArr, setTextsArr, location.state.subtitle, setPlayerKey)} className="bg-indigo-600 text-white px-8 py-2 rounded w-64 ml-40">Add Text</button>
+                <button onClick={() => addText(textsArr, setTextsArr, location.state.publicId + ".vtt", setPlayerKey)} className="bg-indigo-600 text-white px-8 py-2 rounded w-64 ml-40">Add Text</button>
             </div>
         </>
     )
