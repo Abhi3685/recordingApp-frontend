@@ -4,6 +4,8 @@ import Draggable from 'react-draggable';
 import { useHistory } from 'react-router-dom';
 import { db } from '../firebase';
 import Moment from 'react-moment';
+import Modal from 'react-modal';
+import firebase from "firebase/app";
 
 var recorder, video, dragCircle, myCamera;
 
@@ -52,7 +54,7 @@ function clearConfig() {
             track.stop();
         });
     });
-    document.querySelector(".new_vid_btn").style.display = 'block';
+    document.querySelector(".new_vid_btn").style.display = 'inline-block';
     document.querySelector(".config_wrapper").style.display = 'none';
 }
 
@@ -71,6 +73,8 @@ function formatTime(secs) {
 function Home() {
     let history = useHistory();
     const [videos, setVideos] = useState([]);
+    const [pages, setPages] = useState([]);
+    const [modalIsOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
         video = document.querySelector('video');
@@ -79,9 +83,27 @@ function Home() {
             db.collection('users').doc(localStorage.getItem("UUID")).get().then(doc => {
                 if (!doc.exists) { alert('Error: No such document!'); return; }
                 setVideos(doc.data().videos);
+                setPages(doc.data().pages);
             });
         }
     }, []);
+
+    function handleCreatePage() {
+        var page_name = document.getElementById("page_name").value;
+
+        db.collection('pages').add({ name: page_name, posts: [] }).then(docRef => {
+            var pageObj = {
+                id: docRef.id,
+                name: page_name
+            };
+            db.collection('users').doc(localStorage.getItem("UUID")).update({
+                pages: firebase.firestore.FieldValue.arrayUnion(pageObj)
+            }).then(() => {
+                setIsOpen(false);
+                setPages([...pages, pageObj]);
+            });
+        });
+    }
 
     return (
         <div className="parent">
@@ -93,6 +115,7 @@ function Home() {
                     </> :
                     <>
                         <button className="new_vid_btn bg-indigo-600 text-white px-8 py-2 rounded mt-2 ml-8" onClick={start}>New Video</button>
+                        <button className="new_vid_btn bg-indigo-600 text-white px-8 py-2 rounded mt-2 ml-8" onClick={() => setIsOpen(true)}>Create Product Page</button>
 
                         <div className="myVideosWrapper ml-3 my-10">
                             <h1 className="text-2xl ml-6 font-bold">My Videos</h1>
@@ -113,6 +136,51 @@ function Home() {
                                 )}
                             </div>
                         </div>
+
+                        <div className="myPagesWrapper ml-3 my-10">
+                            <h1 className="text-2xl ml-6 font-bold">My Product Pages</h1>
+                            <hr className="w-64 mt-2 mb-6 ml-6 border-gray-500" />
+
+                            <div className="grid grid-flow-row grid-cols-6 gap-10 ml-5 mr-10">
+                                {pages.map((page, index) =>
+                                    <div className="cursor-pointer bg-gray-200 rounded p-3 border-2 border-gray-500" key={index}>
+                                        <h2 onClick={() => history.push('/page/' + page.id)} className="transition duration-500 ease-in-out text-lg">{page.name}</h2>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <Modal
+                            isOpen={modalIsOpen}
+                            onRequestClose={() => setIsOpen(false)}
+                            style={{
+                                content: {
+                                    top: '50%',
+                                    left: '50%',
+                                    right: 'auto',
+                                    bottom: 'auto',
+                                    marginRight: '-50%',
+                                    transform: 'translate(-50%, -50%)'
+                                }
+                            }}
+                            ariaHideApp={false}
+                            contentLabel="Create Product Page"
+                        >
+                            <form className="px-8 pt-6">
+                                <div className="mb-4 text-left">
+                                    <label className="block text-gray-800 tracking-wide mb-2" htmlFor="page_name">
+                                        Product Page Name
+                                    </label>
+                                    <input className="appearance-none border-2 border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-indigo-600 transition duration-300 ease-in-out" id="page_name" name="page_name" type="text" />
+                                </div>
+                                <button onClick={handleCreatePage} className="transition duration-500 ease-in-out bg-indigo-600 mb-2 w-full hover:bg-indigo-700 text-white py-2 px-4 rounded focus:outline-none" type="button">
+                                    Create Page
+                                </button>
+                                <button onClick={() => setIsOpen(false)} className="transition duration-500 ease-in-out bg-red-600 mb-5 w-full hover:bg-red-700 text-white py-2 px-4 rounded focus:outline-none" type="button">
+                                    Cancel
+                                </button>
+                            </form>
+                        </Modal>
 
                         <button style={{ position: 'absolute', top: 10, right: 40 }} onClick={() => { localStorage.removeItem("UUID"); window.location.reload(); }} className="bg-indigo-600 text-white px-8 py-2 rounded">Logout</button>
                     </>
@@ -162,7 +230,7 @@ function Home() {
                 </div>
             </div>
 
-        </div>
+        </div >
     )
 }
 
