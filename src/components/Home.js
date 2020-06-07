@@ -115,7 +115,7 @@ function Home() {
                     </> :
                     <>
                         <button className="new_vid_btn bg-indigo-600 text-white px-8 py-2 rounded mt-2 ml-8" onClick={start}>New Video</button>
-                        <button className="new_vid_btn bg-indigo-600 text-white px-8 py-2 rounded mt-2 ml-8" onClick={() => setIsOpen(true)}>Create Product Page</button>
+                        <button className="bg-indigo-600 text-white px-8 py-2 rounded mt-2 ml-8" onClick={() => setIsOpen(true)}>Create Product Page</button>
 
                         <div className="myVideosWrapper ml-3 my-10">
                             <h1 className="text-2xl ml-6 font-bold">My Videos</h1>

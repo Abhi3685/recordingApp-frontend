@@ -4,7 +4,6 @@ import ReactPlayer from 'react-player'
 import 'react-input-range/lib/css/index.css';
 import { useLocation } from 'react-router-dom';
 import Axios from 'axios';
-import { db } from '../firebase';
 
 function round(value, precision) {
     var multiplier = Math.pow(10, precision || 0);
@@ -95,7 +94,7 @@ export default function AddText() {
 
     useEffect(() => {
         readFile("http://localhost:8000/" + location.state.publicId + ".vtt", setTextsArr);
-    }, [location.state.subtitle]);
+    }, [location.state.publicId]);
 
     return (
         <>
