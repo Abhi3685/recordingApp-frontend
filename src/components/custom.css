@@ -2,18 +2,18 @@
 	top: -30px;
 }
 .timeline_range_wrapper .input-range__track--active {
-	background: rgba(255, 255, 255, 0.6) !important;
-	height: 75px;
+	background: rgba(0, 0, 0, 0.5) !important;
+	height: 101px;
 	border-radius: 0;
 }
 .timeline_range_wrapper .input-range__track {
 	background: none;
 }
 .timeline_range_wrapper .input-range__slider {
-	border-radius: 0;
-	height: 85px;
+	border-radius: 5px;
+	height: 110px;
 	width: 6px;
-	margin-top: -79px;
+	margin-top: -104px;
 	margin-left: 0;
 }
 
@@ -25,11 +25,6 @@
 	margin: 5px;
 	border: 1px solid #eee;
 	border-radius: 10px;
-}
-
-#attachmentPreviewWrapper {
-	overflow: auto;
-	height: 160px;
 }
 
 #attachmentPreviewWrapper video {

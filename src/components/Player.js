@@ -1,5 +1,5 @@
 import React from 'react'
-import { useLocation } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 function formatTime(secs) {
     var sec_num = parseInt(secs, 10)
@@ -14,12 +14,12 @@ function formatTime(secs) {
 }
 
 export default function Player() {
-    let location = useLocation();
-    console.log(formatTime(location.state.duration));
+    let { videoId } = useParams();
+    console.log(formatTime(874));
 
     return (
         <div className="flex bg-gray-500 h-screen items-center">
-            <video className="rounded shadow-lg mx-auto" width="75%" poster={location.state.thumb} src={location.state.url} controls></video>
+            <video className="rounded shadow-lg mx-auto" width="75%" poster={"https://res.cloudinary.com/dhhtvk50h/video/upload/" + videoId + ".jpg"} src={"https://res.cloudinary.com/dhhtvk50h/video/upload/" + videoId + ".mp4"} controls></video>
         </div>
     )
 }

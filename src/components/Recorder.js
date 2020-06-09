@@ -136,11 +136,15 @@ function uploadToCloudinary(history) {
     axios.post('https://api.cloudinary.com/v1_1/dhhtvk50h/upload', formData)
         .then(res => {
             msg_element.innerHTML = "Video Uploaded. Redirecting to Dashboard.";
+            var videoUrl = res.data.secure_url;
+            var parts = videoUrl.split("/");
+            parts.splice(-2, 1);
+            videoUrl = parts.join("/");
             var video_Obj = {
                 name: 'Recording-' + Date.now(),
                 duration: res.data.duration,
                 createdAt: res.data.created_at,
-                url: res.data.secure_url.substr(0, res.data.secure_url.length - 3) + 'mp4',
+                url: videoUrl.substr(0, videoUrl.length - 3) + 'mp4',
                 thumb: res.data.secure_url.substr(0, res.data.secure_url.length - 3) + 'jpg',
                 publicId: res.data.public_id,
                 views: 0

@@ -15,22 +15,25 @@ function round(value, precision) {
 export default function Trim() {
     const location = useLocation();
     const history = useHistory();
-    const min = (0 + location.state.duration * 0.3);
-    const max = (location.state.duration - location.state.duration * 0.3);
-    const [value, setValue] = useState({ min: Math.round(min, 2), max: Math.round(max, 2) });
+    const [value, setValue] = useState({ min: 0, max: 0 });
 
     useEffect(() => {
         const canvas = document.querySelector("canvas");
         const video = document.getElementById("hiddenPlayer");
         var thumbCount = 0;
 
+        setValue({
+            min: Math.round(location.state.duration * 0.3, 2),
+            max: Math.round(location.state.duration - (location.state.duration * 0.3), 2)
+        });
+
         var duration = Math.round(location.state.duration);
         var increment = duration / 10;
-        var curr = increment;
+        var curr = 0.1;
         video.currentTime = curr;
 
         video.onseeked = () => {
-            console.log(video.currentTime);
+            // console.log(video.currentTime);
             canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
             var img = document.querySelector(".thumb-" + (++thumbCount));
             img.src = canvas.toDataURL();
@@ -60,8 +63,6 @@ export default function Trim() {
     function apply(url, duration, index) {
         var min = document.getElementById("startTime").value;
         var max = document.getElementById("endTime").value;
-        var statusRef = document.getElementById("status_msg");
-        statusRef.style.display = 'block';
         Axios.post('http://localhost:8000/trim', {
             userId: localStorage.getItem("UUID"),
             lowerLimit: min,
@@ -75,6 +76,7 @@ export default function Trim() {
                     var userVids = doc.data().videos;
                     var name = doc.data().name;
                     userVids[index].duration = res.data.duration;
+                    userVids[index].publicId = res.data.public_id;
                     userVids[index].url = res.data.secure_url.substr(0, res.data.secure_url.length - 3) + 'mp4';
                     userVids[index].thumb = res.data.secure_url.substr(0, res.data.secure_url.length - 3) + 'jpg';
 
@@ -83,7 +85,7 @@ export default function Trim() {
                         videos: userVids
                     }).then(() => {
                         setTimeout(() => { history.push('/'); }, 2500);
-                        statusRef.innerHTML = 'Processing Status: Trimmed Successfully! Redirecting to dashboard!';
+                        console.log('Trimmed Successfully! Redirecting to dashboard!');
                     });
                 });
             } else {
@@ -95,61 +97,69 @@ export default function Trim() {
 
     return (
         <>
-            <ReactPlayer
-                controls
-                className="mt-5 ml-10"
-                progressInterval={0.01}
-                onProgress={onProgress}
-                onSeek={onSeek}
-                width="720px"
-                height="400px"
-                url={location.state.url}
-            />
-
-            <video crossOrigin="anonymous" id="hiddenPlayer" hidden src={location.state.url}></video>
-            <canvas hidden width="720" height="480"></canvas>
-
-            <div className="mt-10 mx-10">
-                <h2 className="mb-2 text-lg">Select the duration to trim (remove) from recorded clip</h2>
-
-                <div className="timeline_wrapper relative">
-                    <div className="timeline_thumb_Wrapper">
-                        <img alt="Thumbnail" className="inline-block thumb-1" style={{ width: '100px', height: '75px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                        <img alt="Thumbnail" className="inline-block thumb-2" style={{ width: '100px', height: '75px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                        <img alt="Thumbnail" className="inline-block thumb-3" style={{ width: '100px', height: '75px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                        <img alt="Thumbnail" className="inline-block thumb-4" style={{ width: '100px', height: '75px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                        <img alt="Thumbnail" className="inline-block thumb-5" style={{ width: '100px', height: '75px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                        <img alt="Thumbnail" className="inline-block thumb-6" style={{ width: '100px', height: '75px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                        <img alt="Thumbnail" className="inline-block thumb-7" style={{ width: '100px', height: '75px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                        <img alt="Thumbnail" className="inline-block thumb-8" style={{ width: '100px', height: '75px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                        <img alt="Thumbnail" className="inline-block thumb-9" style={{ width: '100px', height: '75px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                        <img alt="Thumbnail" className="inline-block thumb-10" style={{ width: '100px', height: '75px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+            <div className="flex flex-col h-screen justify-end">
+                <div className="upperWrapper flex-1 bg-gray-300">
+                    <div className="playerWrapper flex items-center h-full" style={{ width: '70%', float: 'left' }}>
+                        <ReactPlayer
+                            controls
+                            className="mx-auto"
+                            progressInterval={0.01}
+                            onProgress={onProgress}
+                            onSeek={onSeek}
+                            width="720px"
+                            height="400px"
+                            url={location.state.url}
+                        />
                     </div>
-                    <div className="timeline_range_wrapper" style={{ width: '1000px', position: 'absolute', top: 32 }}>
-                        <InputRange
-                            maxValue={round(location.state.duration, 2)}
-                            minValue={0}
-                            formatLabel={value => ``}
-                            step={.01}
-                            value={value}
-                            onChange={value => {
-                                if (value.min < 0) value.min = 0;
-                                if (value.max > location.state.duration) value.max = location.state.duration;
-                                var min = round(value.min, 2);
-                                var max = round(value.max, 2);
-                                setValue({ min, max });
-                            }} />
+                    <div className="bg-gray-800 h-full flex items-center" style={{ width: '30%', float: 'left' }}>
+                        <div className="text-gray-400 text-center">
+                            <p className="mb-5 text-lg">Cut from, sec: </p>
+                            <input id="startTime" className="bg-transparent rounded border border-gray-200 w-32 px-4 py-2" value={value.min} readOnly />
+                            <span className="text-lg mx-5">to</span>
+                            <input id="endTime" className="bg-transparent rounded border border-gray-200 w-32 px-4 py-2" value={value.max} readOnly />
+
+                            <button onClick={() => apply(location.state.url, location.state.duration, location.state.index)} className="my-10 bg-indigo-600 text-white py-2 rounded w-48">Apply Changes</button>
+                        </div>
                     </div>
                 </div>
-
-                <div className="mt-3">
-                    <p className="mb-2">Cut duration: </p>
-                    <input id="startTime" className="rounded bg-gray-300 w-32 px-5 py-2" value={value.min} readOnly />
-                    <span className="ml-2 mr-2">to</span>
-                    <input id="endTime" className="rounded bg-gray-300 w-32 px-5 py-2" value={value.max} readOnly />
-                    <button onClick={() => apply(location.state.url, location.state.duration, location.state.index)} className="bg-indigo-600 text-white px-8 py-2 rounded w-64 ml-40">Apply Changes</button>
-
-                    <p id="status_msg" style={{ display: 'none' }} className="mt-10 text-xl text-yellow-700 ml-20">Processing Status: Please wait ... We are processing your video.</p>
+                <div className="lowerWrapper flex items-center h-40 bg-gray-500">
+                    <div className="timeline_wrapper relative">
+                        <div style={{ width: '1400px', minWidth: '1400px', marginLeft: 65 }} className="timeline_thumb_Wrapper">
+                            <img alt="Thumbnail" className="inline-block thumb-1" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="Thumbnail" className="inline-block thumb-2" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="Thumbnail" className="inline-block thumb-3" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="Thumbnail" className="inline-block thumb-4" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="Thumbnail" className="inline-block thumb-5" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="Thumbnail" className="inline-block thumb-6" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="Thumbnail" className="inline-block thumb-7" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="Thumbnail" className="inline-block thumb-8" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="Thumbnail" className="inline-block thumb-9" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="Thumbnail" className="inline-block thumb-10" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                        </div>
+                        <div style={{ position: 'absolute', top: 32, left: 65, width: '1400px', minWidth: '1400px' }} className="timeline_range_wrapper">
+                            <InputRange
+                                maxValue={round(location.state.duration, 2)}
+                                minValue={0}
+                                formatLabel={value => ``}
+                                step={.01}
+                                value={value}
+                                onChange={value => {
+                                    if (value.min < 0) value.min = 0;
+                                    if (value.max > location.state.duration) value.max = location.state.duration;
+                                    var min = round(value.min, 2);
+                                    var max = round(value.max, 2);
+                                    setValue({ min, max });
+                                }} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <video crossOrigin="anonymous" id="hiddenPlayer" hidden src={location.state.url}></video>
+            <canvas hidden width="720" height="480"></canvas>
+            <div className="loader absolute inset-0 bg-red-100 z-50">
+                <div className="flex flex-col text-3xl h-screen items-center justify-center text-center">
+                    <p className="tracking-widest">Processing ...</p>
+                    <p className="tracking-widest">Please Wait :)</p>
                 </div>
             </div>
         </>

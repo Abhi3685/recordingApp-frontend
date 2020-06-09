@@ -27,7 +27,7 @@ function App() {
         <Route path="/signin">
           <Signin />
         </Route>
-        <Route path="/player">
+        <Route path="/player/:videoId">
           <Player />
         </Route>
         <Route path="/recorder">

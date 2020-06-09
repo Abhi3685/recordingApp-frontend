@@ -29,7 +29,11 @@ export default function Page() {
         db.collection('pages').doc(pageId).update({
             posts: firebase.firestore.FieldValue.arrayUnion(postObj)
         }).then(() => {
+            document.getElementById("attachmentPreviewWrapper").innerHTML = '';
+            document.getElementById("postText").value = '';
             setPosts([...posts, postObj]);
+            setUploadImages([]);
+            setUploadVideos([]);
         }).catch(err => {
             alert(err);
             console.log(err);
@@ -118,7 +122,7 @@ export default function Page() {
                         <span>Add Image/Video</span>
                         <input onChange={handleAttachment} type='file' id="postAttachment" className="hidden" />
                     </label><br />
-                    <div style={{ width: '800px' }} id="attachmentPreviewWrapper" className="mt-5 mx-auto"></div>
+                    <div style={{ width: '800px', whiteSpace: 'nowrap', overflowX: 'auto' }} id="attachmentPreviewWrapper" className="mt-5 mx-auto"></div>
                 </div>
             </div>
             <br />
@@ -132,35 +136,37 @@ export default function Page() {
                             <pre className="mt-2">
                                 <h2>{post.text}</h2>
                             </pre>
-                            {
-                                post.attachments.map((attachment, index) => {
-                                    var ext = attachment.split('.').pop();
-                                    if (ext === 'jpg' || ext === 'png') {
-                                        return (
-                                            <img key={index} style={{
-                                                objectFit: 'cover',
-                                                width: '180px',
-                                                height: '150px',
-                                                display: 'inline-block',
-                                                margin: '5px',
-                                                borderRadius: '10px'
-                                            }} src={attachment} />
-                                        );
-                                    } else {
-                                        return (
-                                            <video key={index} src={attachment}
-                                                style={{
+                            <div style={{ whiteSpace: 'nowrap', overflowX: 'auto' }} className="attachmentsWrapper">
+                                {
+                                    post.attachments.map((attachment, index) => {
+                                        var ext = attachment.split('.').pop();
+                                        if (ext === 'jpg' || ext === 'png') {
+                                            return (
+                                                <img key={index} style={{
                                                     objectFit: 'cover',
                                                     width: '180px',
                                                     height: '150px',
                                                     display: 'inline-block',
                                                     margin: '5px',
                                                     borderRadius: '10px'
-                                                }}></video>
-                                        );
-                                    }
-                                })
-                            }
+                                                }} src={attachment} />
+                                            );
+                                        } else {
+                                            return (
+                                                <video key={index} src={attachment}
+                                                    style={{
+                                                        objectFit: 'cover',
+                                                        width: '180px',
+                                                        height: '150px',
+                                                        display: 'inline-block',
+                                                        margin: '5px',
+                                                        borderRadius: '10px'
+                                                    }}></video>
+                                            );
+                                        }
+                                    })
+                                }
+                            </div>
                         </div>
                     )
                 }
