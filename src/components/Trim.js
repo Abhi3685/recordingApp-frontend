@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import InputRange from 'react-input-range';
 import ReactPlayer from 'react-player'
 import 'react-input-range/lib/css/index.css';
@@ -16,6 +16,13 @@ export default function Trim() {
     const location = useLocation();
     const history = useHistory();
     const [value, setValue] = useState({ min: 0, max: 0 });
+
+    const willMount = useRef(true);
+
+    if (willMount.current) {
+        if (!location.state) history.goBack();
+        willMount.current = false;
+    }
 
     useEffect(() => {
         const canvas = document.querySelector("canvas");
@@ -39,6 +46,7 @@ export default function Trim() {
             img.src = canvas.toDataURL();
             curr += increment;
             if (curr <= duration) video.currentTime = curr;
+            else document.querySelector(".loader").style.display = 'none';
         }
     }, [location.state.duration]);
 
@@ -63,6 +71,13 @@ export default function Trim() {
     function apply(url, duration, index) {
         var min = document.getElementById("startTime").value;
         var max = document.getElementById("endTime").value;
+
+        if (min == 0 && max == duration) {
+            alert("Warning: Can't Trim Full Video.");
+            return;
+        }
+
+        document.querySelector(".loader").style.display = 'block';
         Axios.post('http://localhost:8000/trim', {
             userId: localStorage.getItem("UUID"),
             lowerLimit: min,
@@ -74,31 +89,34 @@ export default function Trim() {
             if (res.data.code && res.data.code === "Success") {
                 db.collection('users').doc(localStorage.getItem("UUID")).get().then(doc => {
                     var userVids = doc.data().videos;
-                    var name = doc.data().name;
                     userVids[index].duration = res.data.duration;
                     userVids[index].publicId = res.data.public_id;
                     userVids[index].url = res.data.secure_url.substr(0, res.data.secure_url.length - 3) + 'mp4';
                     userVids[index].thumb = res.data.secure_url.substr(0, res.data.secure_url.length - 3) + 'jpg';
 
                     db.collection('users').doc(localStorage.getItem("UUID")).set({
-                        name,
-                        videos: userVids
+                        fullname: doc.data().fullname,
+                        videos: userVids,
+                        pages: doc.data().pages
                     }).then(() => {
-                        setTimeout(() => { history.push('/'); }, 2500);
-                        console.log('Trimmed Successfully! Redirecting to dashboard!');
+                        history.push('/');
                     });
                 });
             } else {
                 alert('Error: Unhandled Exception Occured!');
                 console.log(res);
             }
+        }).catch(err => {
+            document.querySelector(".loader").style.display = 'none';
+            alert("Unknown Error Occured! Check log for details.");
+            console.log(err);
         });
     }
 
     return (
         <>
             <div className="flex flex-col h-screen justify-end">
-                <div className="upperWrapper flex-1 bg-gray-300">
+                <div style={{ width: '1530px', minWidth: '1530px' }} className="upperWrapper flex-1 bg-gray-300">
                     <div className="playerWrapper flex items-center h-full" style={{ width: '70%', float: 'left' }}>
                         <ReactPlayer
                             controls
@@ -118,11 +136,11 @@ export default function Trim() {
                             <span className="text-lg mx-5">to</span>
                             <input id="endTime" className="bg-transparent rounded border border-gray-200 w-32 px-4 py-2" value={value.max} readOnly />
 
-                            <button onClick={() => apply(location.state.url, location.state.duration, location.state.index)} className="my-10 bg-indigo-600 text-white py-2 rounded w-48">Apply Changes</button>
+                            <button onClick={() => apply(location.state.url, round(location.state.duration, 2), location.state.index)} className="my-10 bg-indigo-600 text-white py-2 rounded w-48">Apply Changes</button>
                         </div>
                     </div>
                 </div>
-                <div className="lowerWrapper flex items-center h-40 bg-gray-500">
+                <div style={{ width: '1530px', minWidth: '1530px' }} className="lowerWrapper flex items-center h-40 bg-gray-500">
                     <div className="timeline_wrapper relative">
                         <div style={{ width: '1400px', minWidth: '1400px', marginLeft: 65 }} className="timeline_thumb_Wrapper">
                             <img alt="Thumbnail" className="inline-block thumb-1" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
@@ -136,7 +154,7 @@ export default function Trim() {
                             <img alt="Thumbnail" className="inline-block thumb-9" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
                             <img alt="Thumbnail" className="inline-block thumb-10" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
                         </div>
-                        <div style={{ position: 'absolute', top: 32, left: 65, width: '1400px', minWidth: '1400px' }} className="timeline_range_wrapper">
+                        <div style={{ position: 'absolute', top: 32, left: 65, right: 0 }} className="timeline_range_wrapper">
                             <InputRange
                                 maxValue={round(location.state.duration, 2)}
                                 minValue={0}
