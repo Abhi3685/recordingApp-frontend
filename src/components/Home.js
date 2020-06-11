@@ -104,7 +104,12 @@ function Home() {
     function handleCreatePage() {
         var page_name = document.getElementById("page_name").value;
 
-        db.collection('pages').add({ name: page_name, posts: [] }).then(docRef => {
+        db.collection('pages').add({
+            name: page_name,
+            ownerId: localStorage.getItem("UUID"),
+            ownerName: user,
+            posts: []
+        }).then(docRef => {
             var pageObj = {
                 id: docRef.id,
                 name: page_name
@@ -142,6 +147,20 @@ function Home() {
         });
     }
 
+    function handlePageDelete(page_Obj, index) {
+        db.collection('users').doc(localStorage.getItem("UUID")).update({
+            pages: firebase.firestore.FieldValue.arrayRemove(page_Obj)
+        }).then(() => {
+            var newPages = [...pages];
+            newPages.splice(index, 1);
+            setPages(newPages);
+            db.collection("pages").doc(page_Obj.id).delete();
+        }).catch(err => {
+            alert("Error: Unhandled Exception Occured!");
+            console.log(err);
+        });
+    }
+
     return (
         <div className="parent">
             {
@@ -166,7 +185,7 @@ function Home() {
                                 <button onClick={() => { localStorage.removeItem("UUID"); window.location.reload(); }} className="shadow-md block mx-auto w-56 mb-3 bg-indigo-600 text-white px-8 py-2 rounded">Logout</button>
                             </div>
                         </div>
-                        <div className="mainWrapper ml-64 pl-5 pt-2" style={{ minWidth: '1100px' }}>
+                        <div className="mainWrapper ml-64 pl-5 pt-2" style={{ minWidth: '1250px' }}>
                             <div className="myVideosWrapper mb-10">
                                 <h1 className="text-2xl font-bold">My Videos</h1>
                                 <hr className="w-40 mt-2 mb-6 border-gray-500" />
@@ -205,8 +224,9 @@ function Home() {
                                                 <div className="cursor-pointer bg-gray-200 rounded p-3 border-2 border-gray-500" key={index}>
                                                     <h2 className="mb-3 transition duration-500 ease-in-out text-lg">{page.name}</h2>
                                                     <div className="pageActions mb-2">
-                                                        <a className="mr-2 bg-indigo-600 text-white rounded px-5 py-2" onClick={() => { setCurrPage(page.id); setAddPost(true) }}>Add Post</a>
-                                                        <a className="bg-indigo-600 text-white rounded px-5 py-2" onClick={() => history.push('/page/' + page.id)}>View Page</a>
+                                                        <a className="bg-indigo-600 text-white rounded px-5 py-2" onClick={() => { setCurrPage(page.id); setAddPost(true) }}>Add Post</a>
+                                                        <a className="mx-2 bg-indigo-600 text-white rounded px-5 py-2" onClick={() => history.push('/page/' + page.id)}>View Page</a>
+                                                        <a className="bg-red-600 text-white rounded px-5 py-2" onClick={() => handlePageDelete(page, index)}>Delete</a>
                                                     </div>
                                                 </div>
                                             )}

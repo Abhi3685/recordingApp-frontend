@@ -37,6 +37,11 @@ export default function AddPost({ pageId, setAddPost }) {
         var attachmentURLs = [];
         console.log("Uploading Attachments");
 
+        if (attachmentURLs.length === total) {
+            console.log("Updating Page Timeline");
+            addPost(attachmentURLs);
+        }
+
         uploadImages.forEach(image => {
             var formData = new FormData();
             formData.append("upload_preset", "fjssudg9");
