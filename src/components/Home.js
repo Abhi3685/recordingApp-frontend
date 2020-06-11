@@ -6,6 +6,8 @@ import { db } from '../firebase';
 import Moment from 'react-moment';
 import Modal from 'react-modal';
 import firebase from "firebase/app";
+import AddPost from './AddPost';
+import Axios from 'axios';
 
 var recorder, video, dragCircle, myCamera;
 
@@ -83,6 +85,8 @@ function Home() {
     const [pages, setPages] = useState([]);
     const [user, setUser] = useState("");
     const [modalIsOpen, setIsOpen] = useState(false);
+    const [isAddPostActive, setAddPost] = useState(false);
+    const [currPage, setCurrPage] = useState("");
 
     useEffect(() => {
         video = document.querySelector('video');
@@ -124,6 +128,20 @@ function Home() {
         }
     }
 
+    function handleDelete(video_Obj, index) {
+        db.collection('users').doc(localStorage.getItem("UUID")).update({
+            videos: firebase.firestore.FieldValue.arrayRemove(video_Obj)
+        }).then(() => {
+            var newVideos = [...videos];
+            newVideos.splice(index, 1);
+            setVideos(newVideos);
+            Axios.delete("http://localhost:8000/video/" + video_Obj.publicId);
+        }).catch(err => {
+            alert("Error: Unhandled Exception Occured!");
+            console.log(err);
+        });
+    }
+
     return (
         <div className="parent">
             {
@@ -148,7 +166,7 @@ function Home() {
                                 <button onClick={() => { localStorage.removeItem("UUID"); window.location.reload(); }} className="shadow-md block mx-auto w-56 mb-3 bg-indigo-600 text-white px-8 py-2 rounded">Logout</button>
                             </div>
                         </div>
-                        <div className="mainWrapper ml-64 pl-5 pt-2" style={{ minWidth: '900px' }}>
+                        <div className="mainWrapper ml-64 pl-5 pt-2" style={{ minWidth: '1100px' }}>
                             <div className="myVideosWrapper mb-10">
                                 <h1 className="text-2xl font-bold">My Videos</h1>
                                 <hr className="w-40 mt-2 mb-6 border-gray-500" />
@@ -165,6 +183,7 @@ function Home() {
                                                         <button className="block w-full hover:bg-gray-400 rounded px-5 mb-1" onClick={() => { history.push('/trim', { ...video, index }); }}>Trim</button>
                                                         <button className="block w-full hover:bg-gray-400 rounded px-5 mb-1" onClick={() => { history.push('/addText', { ...video, index }); }}>Add Text</button>
                                                         <button className="block w-full hover:bg-gray-400 rounded px-5 mb-1" onClick={() => { history.push('/watermark', { ...video, index }); }}>Watermark</button>
+                                                        <button className="block text-red-400 w-full hover:bg-red-400 hover:text-white rounded px-5 mb-1" onClick={() => handleDelete(video, index)}>Delete</button>
                                                     </div>
                                                 </div>
                                             )}
@@ -184,10 +203,10 @@ function Home() {
                                         <div className="grid grid-flow-row grid-cols-3 gap-5 mr-10">
                                             {pages.map((page, index) =>
                                                 <div className="cursor-pointer bg-gray-200 rounded p-3 border-2 border-gray-500" key={index}>
-                                                    <h2 onClick={() => history.push('/page/' + page.id)} className="mb-3 transition duration-500 ease-in-out text-lg">{page.name}</h2>
+                                                    <h2 className="mb-3 transition duration-500 ease-in-out text-lg">{page.name}</h2>
                                                     <div className="pageActions mb-2">
-                                                        <a className="mr-2 bg-indigo-600 text-white rounded px-5 py-2">Add Post</a>
-                                                        <a className="bg-indigo-600 text-white rounded px-5 py-2">View Page</a>
+                                                        <a className="mr-2 bg-indigo-600 text-white rounded px-5 py-2" onClick={() => { setCurrPage(page.id); setAddPost(true) }}>Add Post</a>
+                                                        <a className="bg-indigo-600 text-white rounded px-5 py-2" onClick={() => history.push('/page/' + page.id)}>View Page</a>
                                                     </div>
                                                 </div>
                                             )}
@@ -231,6 +250,25 @@ function Home() {
                                     Cancel
                                 </button>
                             </form>
+                        </Modal>
+
+                        <Modal
+                            isOpen={isAddPostActive}
+                            onRequestClose={() => setAddPost(false)}
+                            style={{
+                                content: {
+                                    top: '50%',
+                                    left: '50%',
+                                    right: 'auto',
+                                    bottom: 'auto',
+                                    marginRight: '-50%',
+                                    transform: 'translate(-50%, -50%)'
+                                }
+                            }}
+                            ariaHideApp={false}
+                            contentLabel="Add New Post"
+                        >
+                            <AddPost pageId={currPage} setAddPost={setAddPost} />
                         </Modal>
 
                         <div className="config_wrapper bg-gray-300 w-screen h-screen" style={{ position: 'absolute', top: 0, left: 0, display: 'none' }}>

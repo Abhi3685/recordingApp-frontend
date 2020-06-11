@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import InputRange from 'react-input-range';
 import ReactPlayer from 'react-player'
 import 'react-input-range/lib/css/index.css';
-import './custom.css';
 import { useLocation, useHistory } from 'react-router-dom';
 import Axios from 'axios';
 import { db } from '../firebase';
