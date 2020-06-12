@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { db } from '../firebase';
 import Avatar from 'react-avatar';
 import firebase from 'firebase/app';
@@ -8,9 +8,11 @@ import ReactImageVideoLightbox from 'react-image-video-lightbox';
 
 export default function Page() {
     let { pageId } = useParams();
+    let history = useHistory();
     const [pageName, setPageName] = useState("");
     const [owner, setOwner] = useState("");
     const [posts, setPosts] = useState([]);
+    const [pagePostIds, setPagePostIds] = useState([]);
     const [isLightBoxOpen, setLightBoxOpen] = useState(false);
     const [lightBoxData, setLightBoxData] = useState([]);
     const [lightBoxStartIdx, setLightBoxStartIdx] = useState(0);
@@ -24,8 +26,16 @@ export default function Page() {
                 name: page.data().ownerName,
                 id: page.data().ownerId
             });
-            setPosts(page.data().posts);
-        });
+            var myposts = [];
+            var postIds = page.data().posts.reverse();
+            setPagePostIds(postIds);
+            postIds.forEach(postId => {
+                db.collection('posts').doc(postId).get().then(post => {
+                    myposts.push(post.data());
+                    if (postIds.length === myposts.length) setPosts(myposts);
+                });
+            })
+        }).catch(err => window.location.reload());
     }, [pageId]);
 
     function handleSetData(attachments) {
@@ -49,17 +59,50 @@ export default function Page() {
 
     function handleDeletePost(post, index) {
         var attachments = post.attachments;
+        var postId = pagePostIds[index];
+        pagePostIds.splice(index, 1);
         db.collection('pages').doc(pageId).update({
-            posts: firebase.firestore.FieldValue.arrayRemove(post)
+            posts: firebase.firestore.FieldValue.arrayRemove(postId)
         }).then(() => {
             var newPosts = [...posts];
             newPosts.splice(index, 1);
             setPosts(newPosts);
+            db.collection('posts').doc(postId).delete();
             Axios.post("http://localhost:8000/deletepost", { attachments });
         }).catch(err => {
             alert("Error: Unhandled Exception Occured!");
             console.log(err);
         });
+    }
+
+    function handleLikeDislike(post, index, e) {
+        if (!localStorage.getItem("UUID")) {
+            alert('You need to be logged in to like posts.');
+            history.push("/");
+            return;
+        }
+
+        if (e.target.classList.contains("fa-heart-o")) {
+            // Like Post
+            e.target.classList.remove("fa-heart-o");
+            e.target.classList.add("fa-heart");
+            db.collection("posts").doc(pagePostIds[index]).update({
+                likedBy: firebase.firestore.FieldValue.arrayUnion({
+                    uid: localStorage.getItem("UUID"),
+                    name: localStorage.getItem("username")
+                })
+            });
+        } else {
+            // Unlike Post
+            e.target.classList.remove("fa-heart");
+            e.target.classList.add("fa-heart-o");
+            db.collection("posts").doc(pagePostIds[index]).update({
+                likedBy: firebase.firestore.FieldValue.arrayRemove({
+                    uid: localStorage.getItem("UUID"),
+                    name: localStorage.getItem("username")
+                })
+            });
+        }
     }
 
     return (
@@ -88,7 +131,7 @@ export default function Page() {
                                 </div>
                                 <div className="absolute" style={{ fontSize: 20, top: 30, right: 30 }}>
                                     <button onClick={() => handleDeletePost(post, index)} className={localStorage.getItem("UUID") === owner.id ? "deletePostBtn mr-3 text-red-600" : "hidden"}><i className="fa fa-trash-o"></i></button>
-                                    <button className="likePostBtn"><i className="fa fa-heart-o"></i></button>
+                                    <i onClick={(e) => handleLikeDislike(post, index, e)} className={post.likedBy.find(function (el) { return el.uid === localStorage.getItem("UUID") }) === undefined ? "fa fa-heart-o text-red-600 cursor-pointer focus:outline-none" : "fa fa-heart text-red-600 cursor-pointer focus:outline-none"}></i>
                                 </div>
                                 <pre className="mt-2 px-3">
                                     <p>{post.text}</p>
@@ -119,16 +162,18 @@ export default function Page() {
                                                 );
                                             } else {
                                                 return (
-                                                    <div onClick={() => {
-                                                        handleSetData(post.attachments);
-                                                        setLightBoxStartIdx(index);
-                                                        setLightBoxOpen(true);
-                                                        setScrollPos(document.documentElement.scrollTop);
-                                                        document.documentElement.scrollTop = 0;
-                                                        document.body.style.overflow = 'hidden';
-                                                    }}
+                                                    <div
+                                                        key={index}
+                                                        onClick={() => {
+                                                            handleSetData(post.attachments);
+                                                            setLightBoxStartIdx(index);
+                                                            setLightBoxOpen(true);
+                                                            setScrollPos(document.documentElement.scrollTop);
+                                                            document.documentElement.scrollTop = 0;
+                                                            document.body.style.overflow = 'hidden';
+                                                        }}
                                                         className="inline-block relative">
-                                                        <video key={index}
+                                                        <video
                                                             src={attachment}
                                                             style={{
                                                                 objectFit: 'cover',

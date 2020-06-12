@@ -97,7 +97,7 @@ function Home() {
                 setUser(doc.data().fullname);
                 setVideos(doc.data().videos);
                 setPages(doc.data().pages);
-            });
+            }).catch(err => console.log(err));
         }
     }, []);
 

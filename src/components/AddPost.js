@@ -18,10 +18,13 @@ export default function AddPost({ pageId, setAddPost }) {
         var postObj = {
             text: document.getElementById("postText").value,
             attachments: attachmentURLs,
-            createdAt: moment().format("DD/MM/YYYY HH:mm")
+            createdAt: moment().format("DD/MM/YYYY HH:mm"),
+            likedBy: []
         };
-        db.collection('pages').doc(pageId).update({
-            posts: firebase.firestore.FieldValue.arrayUnion(postObj)
+        db.collection('posts').add(postObj).then(doc => {
+            return db.collection('pages').doc(pageId).update({
+                posts: firebase.firestore.FieldValue.arrayUnion(doc.id)
+            })
         }).then(() => {
             document.getElementById("attachmentPreviewWrapper").innerHTML = '';
             document.getElementById("postText").value = '';

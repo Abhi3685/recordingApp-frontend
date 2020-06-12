@@ -37,6 +37,7 @@ function Signin() {
             })
             .then(doc => {
                 if (!doc.exists) { alert('Error: No such document!'); return; }
+                localStorage.setItem("username", doc.data().fullname);
                 history.push('/');
             })
             .catch((error) => {
