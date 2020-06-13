@@ -100,7 +100,7 @@ function start(pos, config) {
                 }
             });
 
-            setTimeout(() => recorder.startRecording(), 500);
+            recorder.startRecording();
         });
     });
 }

@@ -8,6 +8,7 @@ import Modal from 'react-modal';
 import firebase from "firebase/app";
 import AddPost from './AddPost';
 import Axios from 'axios';
+import logo from '../assets/loader.gif';
 
 var recorder, video, dragCircle, myCamera;
 
@@ -97,6 +98,7 @@ function Home() {
                 setUser(doc.data().fullname);
                 setVideos(doc.data().videos);
                 setPages(doc.data().pages);
+                document.querySelector(".loader").style.display = 'none';
             }).catch(err => console.log(err));
         }
     }, []);
@@ -184,6 +186,9 @@ function Home() {
                                 <p className="text-center mb-2">Logged in as <span className="font-bold">{user}</span></p>
                                 <button onClick={() => { localStorage.removeItem("UUID"); window.location.reload(); }} className="shadow-md block mx-auto w-56 mb-3 bg-indigo-600 text-white px-8 py-2 rounded">Logout</button>
                             </div>
+                        </div>
+                        <div className="flex items-center justify-center loader bg-gray-200 absolute inset-0 z-50">
+                            <img src={logo}></img>
                         </div>
                         <div className="mainWrapper ml-64 pl-5 pt-2" style={{ minWidth: '1250px' }}>
                             <div className="myVideosWrapper mb-10">

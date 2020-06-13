@@ -5,6 +5,7 @@ import Avatar from 'react-avatar';
 import firebase from 'firebase/app';
 import Axios from 'axios';
 import ReactImageVideoLightbox from 'react-image-video-lightbox';
+import logo from '../assets/loader.gif';
 
 export default function Page() {
     let { pageId } = useParams();
@@ -35,6 +36,7 @@ export default function Page() {
                     if (postIds.length === myposts.length) setPosts(myposts);
                 });
             })
+            document.querySelector(".loader").style.display = 'none';
         }).catch(err => window.location.reload());
     }, [pageId]);
 
@@ -107,6 +109,10 @@ export default function Page() {
 
     return (
         <div style={{ width: '800px' }} className="mx-auto">
+            <div className="flex items-center justify-center loader bg-gray-200 absolute inset-0 z-50">
+                <img src={logo}></img>
+            </div>
+
             <div className="pageHeader flex items-center pl-10 bg-gray-400 rounded-lg shadow-md h-48 mt-5">
                 <Avatar maxInitials={2} color={"#999"} round={true} name={pageName} />
                 <div className="ml-5">
