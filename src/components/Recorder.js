@@ -6,19 +6,10 @@ import { db } from '../firebase';
 import firebase from "firebase/app";
 
 function invokeGetDisplayMedia(success, error) {
-    var displaymediastreamconstraints = {
-        video: {
-            displaySurface: 'monitor', // monitor, window, application, browser
-            logicalSurface: true,
-            cursor: 'always' // never, always, motion
-        }
-    };
-
     if (navigator.mediaDevices.getDisplayMedia) {
-        navigator.mediaDevices.getDisplayMedia(displaymediastreamconstraints).then(success).catch(error);
-    }
-    else {
-        navigator.getDisplayMedia(displaymediastreamconstraints).then(success).catch(error);
+        navigator.mediaDevices.getDisplayMedia({ video: true }).then(success).catch(error);
+    } else {
+        navigator.getDisplayMedia({ video: true }).then(success).catch(error);
     }
 }
 
@@ -40,8 +31,9 @@ function captureCamera(config, cb) {
     var myConfig = { video: true, audio: true };
     if (config.audio === 0) myConfig.audio = false;
     if (config.mode !== "Screen + Cam") myConfig.video = false;
-    if (myConfig.audio === false && myConfig.video === false) cb();
-    else navigator.mediaDevices.getUserMedia(myConfig).then(cb);
+    if (myConfig.audio === false && myConfig.video === false) cb(null);
+    else if (myConfig.audio === false) navigator.mediaDevices.getUserMedia({ video: true }).then(cb);
+    else navigator.mediaDevices.getUserMedia({ audio: true }).then(cb);
 }
 
 function keepStreamActive(stream) {
@@ -52,57 +44,142 @@ function keepStreamActive(stream) {
     (document.body || document.documentElement).appendChild(video);
 }
 
-var stopCallback = () => {
+function stopCallback() {
     recorder.stopRecording(function () {
-        blob = recorder.getBlob();
+        if (mainConfig.mode === "Screen + Cam" && mainConfig.audio === 1) {
+            streams.forEach(function (stream) {
+                stream.getTracks().forEach(function (track) {
+                    track.stop();
+                });
+            });
+        } else if (mainConfig.mode === "Screen Only" && mainConfig.audio === 1) {
 
+        } else if (mainConfig.mode === "Screen + Cam" && mainConfig.audio === 0) {
+            streams.forEach(function (stream) {
+                stream.getTracks().forEach(function (track) {
+                    track.stop();
+                });
+            });
+        } else {
+            myScreen.getTracks().forEach(function (track) {
+                track.stop();
+            });
+        }
+
+        blob = recorder.getBlob();
         document.querySelector('video').srcObject = null;
         document.querySelector('video').src = URL.createObjectURL(blob);
         document.querySelector('video').muted = false;
         document.querySelector('.previewWrapper').style.display = 'block';
-
-        streams.forEach(function (stream) {
-            stream.getTracks().forEach(function (track) {
-                track.stop();
-            });
-        });
     });
 };
 
-var recorder, streams, blob;
+var recorder, streams, blob, myScreen, mainConfig;
 
 function start(pos, config) {
-    captureScreen(function (screen) {
-        keepStreamActive(screen);
-        captureCamera(config, function (camera) {
-            keepStreamActive(camera);
+    if (config.mode === "Screen + Cam" && config.audio === 1) {
+        captureScreen(function (screen) {
+            keepStreamActive(screen);
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(camera => {
+                keepStreamActive(camera);
 
-            screen.width = window.screen.width;
-            screen.height = window.screen.height;
-            screen.fullcanvas = true;
-            streams = [screen];
+                screen.width = window.screen.width;
+                screen.height = window.screen.height;
+                screen.fullcanvas = true;
+                streams = [screen, camera];
 
-            if (camera) {
                 camera.width = 310;
                 camera.height = 300;
                 camera.top = pos.top + 100;
                 camera.left = pos.left > 20 ? pos.left - 10 : pos.left;
-                streams.push(camera);
-            }
 
-            recorder = RecordRTC(streams, {
+                recorder = RecordRTC(streams, {
+                    type: 'video',
+                    mimeType: 'video/webm',
+                    disableLogs: true,
+                    canvas: {
+                        width: 320,
+                        height: 240
+                    }
+                });
+
+                recorder.startRecording();
+            });
+        });
+    } else if (config.mode === "Screen + Cam" && config.audio === 0) {
+        captureScreen(function (screen) {
+            keepStreamActive(screen);
+            navigator.mediaDevices.getUserMedia({ video: true }).then(camera => {
+                keepStreamActive(camera);
+
+                screen.width = window.screen.width;
+                screen.height = window.screen.height;
+                screen.fullcanvas = true;
+                streams = [screen, camera];
+
+                camera.width = 310;
+                camera.height = 300;
+                camera.top = pos.top + 100;
+                camera.left = pos.left > 20 ? pos.left - 10 : pos.left;
+
+                recorder = RecordRTC(streams, {
+                    mimeType: 'video/webm',
+                    disableLogs: true,
+                    canvas: {
+                        width: 320,
+                        height: 240
+                    }
+                });
+
+                recorder.startRecording();
+            });
+        });
+    } else if (config.mode === "Screen Only" && config.audio === 1) {
+        captureScreen(function (screen) {
+            keepStreamActive(screen);
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(camera => {
+                keepStreamActive(camera);
+
+                screen.width = window.screen.width;
+                screen.height = window.screen.height;
+                screen.fullcanvas = true;
+                streams = [screen, camera];
+
+                recorder = RecordRTC(streams, {
+                    type: 'video',
+                    mimeType: 'video/webm',
+                    disableLogs: true,
+                    canvas: {
+                        width: 320,
+                        height: 240
+                    }
+                });
+
+                recorder.startRecording();
+            });
+        });
+    } else { // Screen Only with No Audio
+        captureScreen(function (screen) {
+            myScreen = screen;
+            keepStreamActive(screen);
+
+            screen.width = window.screen.width;
+            screen.height = window.screen.height;
+            screen.fullcanvas = true;
+
+            recorder = RecordRTC(screen, {
                 type: 'video',
                 mimeType: 'video/webm',
                 disableLogs: true,
                 canvas: {
-                    width: 640,
-                    height: 480
+                    width: 320,
+                    height: 240
                 }
             });
 
             recorder.startRecording();
         });
-    });
+    }
 }
 
 function addStreamStopListener(stream, callback) {
@@ -171,11 +248,12 @@ function Recorder() {
             return;
         }
         start(pos, config);
+        mainConfig = config;
     }, [pos, config]);
 
     return (
         <>
-            <button style={{ position: "absolute", top: 10, right: 10 }} className="bg-indigo-600 text-white px-8 py-2 rounded" onClick={stopCallback}>Stop Recording</button>
+            <button style={{ position: "absolute", top: 10, right: 10 }} className="bg-indigo-600 text-white px-8 py-2 rounded" onClick={() => stopCallback(config)}>Stop Recording</button>
 
             <div style={{ display: 'none', width: '50%' }} className="previewWrapper mx-auto mt-20">
                 <video className="w-full shadow-lg" controls></video>
