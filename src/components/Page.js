@@ -36,7 +36,7 @@ export default function Page() {
                     if (postIds.length === myposts.length) setPosts(myposts);
                 });
             })
-            document.querySelector(".loader").style.display = 'none';
+            setTimeout(() => document.querySelector(".loader").style.display = 'none', 500);
         }).catch(err => window.location.reload());
     }, [pageId]);
 
