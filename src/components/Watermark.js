@@ -27,9 +27,7 @@ function apply(url, setIsOpen, setVidUrl) {
         .then(res => {
             var pid = res.data.public_id;
             var idx = url.lastIndexOf("/");
-            var part1 = url.substr(0, idx);
-            var idx2 = part1.lastIndexOf("/");
-            part1 = part1.substr(0, idx2 + 1);
+            var part1 = url.substr(0, idx + 1);
             var part2 = url.substr(idx);
             var newURL = part1 + "l_" + pid + ",w_120,o_80,g_south_east,x_10,y_50" + part2;
             console.log(newURL);

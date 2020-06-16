@@ -27,15 +27,6 @@ function captureScreen(callback) {
     });
 }
 
-function captureCamera(config, cb) {
-    var myConfig = { video: true, audio: true };
-    if (config.audio === 0) myConfig.audio = false;
-    if (config.mode !== "Screen + Cam") myConfig.video = false;
-    if (myConfig.audio === false && myConfig.video === false) cb(null);
-    else if (myConfig.audio === false) navigator.mediaDevices.getUserMedia({ video: true }).then(cb);
-    else navigator.mediaDevices.getUserMedia({ audio: true }).then(cb);
-}
-
 function keepStreamActive(stream) {
     var video = document.createElement('video');
     video.muted = true;
@@ -53,7 +44,11 @@ function stopCallback() {
                 });
             });
         } else if (mainConfig.mode === "Screen Only" && mainConfig.audio === 1) {
-
+            [myScreen, myAudio].forEach(function (stream) {
+                stream.getTracks().forEach(function (track) {
+                    track.stop();
+                });
+            });
         } else if (mainConfig.mode === "Screen + Cam" && mainConfig.audio === 0) {
             streams.forEach(function (stream) {
                 stream.getTracks().forEach(function (track) {
@@ -74,7 +69,7 @@ function stopCallback() {
     });
 };
 
-var recorder, streams, blob, myScreen, mainConfig;
+var recorder, streams, blob, myScreen, mainConfig, myAudio;
 
 function start(pos, config) {
     if (config.mode === "Screen + Cam" && config.audio === 1) {
@@ -137,15 +132,13 @@ function start(pos, config) {
     } else if (config.mode === "Screen Only" && config.audio === 1) {
         captureScreen(function (screen) {
             keepStreamActive(screen);
-            navigator.mediaDevices.getUserMedia({ audio: true }).then(camera => {
-                keepStreamActive(camera);
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(function (mic) {
+                screen.addTrack(mic.getTracks()[0]);
 
-                screen.width = window.screen.width;
-                screen.height = window.screen.height;
-                screen.fullcanvas = true;
-                streams = [screen, camera];
+                myScreen = screen;
+                myAudio = mic;
 
-                recorder = RecordRTC(streams, {
+                recorder = RecordRTC(screen, {
                     type: 'video',
                     mimeType: 'video/webm',
                     disableLogs: true,
@@ -154,7 +147,6 @@ function start(pos, config) {
                         height: 240
                     }
                 });
-
                 recorder.startRecording();
             });
         });
