@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 
 import Home from './components/Home';
+import Dashboard from './components/Dashboard';
 import Recorder from './components/Recorder';
 import Player from './components/Player';
 import Signup from './components/Signup';
@@ -44,6 +45,9 @@ function App() {
         </Route>
         <Route path="/page/:pageId">
           <Page />
+        </Route>
+        <Route path="/dashboard">
+          <Dashboard />
         </Route>
         <Route path="/">
           <Home />

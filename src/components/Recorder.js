@@ -104,7 +104,7 @@ function start(pos, config) {
     } else if (config.mode === "Screen + Cam" && config.audio === 0) {
         captureScreen(function (screen) {
             keepStreamActive(screen);
-            navigator.mediaDevices.getUserMedia({ video: true }).then(camera => {
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(camera => {
                 keepStreamActive(camera);
 
                 screen.width = window.screen.width;
@@ -118,6 +118,7 @@ function start(pos, config) {
                 camera.left = pos.left > 20 ? pos.left - 10 : pos.left;
 
                 recorder = RecordRTC(streams, {
+                    type: 'video',
                     mimeType: 'video/webm',
                     disableLogs: true,
                     canvas: {
