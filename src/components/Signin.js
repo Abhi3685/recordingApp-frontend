@@ -7,7 +7,6 @@ import { randomstr } from '../utils';
 import { auth, db } from '../firebase';
 import Navbar from './Navbar';
 import SigninBanner from '../assets/images/signin.png';
-import form from '../assets/images/form.png';
 
 function Signin() {
     const [state, setState] = useState({

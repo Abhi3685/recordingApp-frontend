@@ -8,41 +8,52 @@ import home4 from '../assets/images/home4.png';
 import home5 from '../assets/images/home5.png';
 import home6 from '../assets/images/home6.png';
 import Navbar from './Navbar';
+import { useHistory } from 'react-router-dom';
 
 export default function Home() {
+    const history = useHistory();
+
     return (
         <>
             <Navbar />
-            <img src={DesignElement1} style={{ position: 'absolute', right: 0, top: 150, width: 200 }} />
-            <img src={DesignElement2} style={{ position: 'absolute', bottom: 20, left: 500 }} />
-            <div className="mainWrapper mt-20 ml-24 mr-40 float-left" style={{ width: 400 }}>
-                <div className="brandWrapper mb-10">
-                    <h1 className="brandName font-montserratExtraBold" style={{ fontSize: 60 }}>POPPI</h1>
+            <img className="absolute right-0 hidden sm:block" src={DesignElement1} style={{ top: 150, width: 200 }} />
+            <img className="absolute hidden lg:block" src={DesignElement2} style={{ bottom: 20, left: '33%' }} />
+            <div className="mainWrapper flex flex-col lg:flex-row px-6 sm:px-16">
+                <div className="leftWrapper flex flex-col w-full sm:w-3/5 lg:w-1/3 pl-2 pr-16 mt-10 mr-32">
+                    <div className="brandWrapper mb-10">
+                        <h1 className="brandName font-montserratExtraBold" style={{ fontSize: 60 }}>POPPI</h1>
+                    </div>
+                    <div className="brandDescription mb-10 lg:mb-48">
+                        <p className="font-montserratMediumLight">
+                            The expressiveness of video with the convenience of messaging.
+                            Communicate more effectively wherever you work with Loom.
+                        </p>
+                    </div>
+                    <div className="actionBtnWrapper flex justify-between w-64 mx-auto">
+                        <button onClick={() => history.push('/signin')} className="bg-indigo-600 font-bold text-white px-8 py-2 rounded">Sign in</button>
+                        <button onClick={() => history.push('/signup')} className="border border-indigo-600 font-bold text-indigo-600 px-8 py-2 rounded">Sign up</button>
+                    </div>
                 </div>
-                <div className="brandDescription mb-48">
-                    <p className="font-montserratMediumLight text-justify">
-                        The expressiveness of video with the convenience of messaging.
-                        Communicate more effectively wherever you work with Loom.
-                    </p>
-                </div>
-                <div className="actionBtnWrapper flex justify-between w-64 mx-auto">
-                    <button className="transition duration-300 ease-in bg-indigo-600 font-bold text-white px-8 py-2 rounded">Sign in</button>
-                    <button className="transition duration-300 ease-in border border-indigo-600 font-bold text-indigo-600 px-8 py-2 rounded">Sign up</button>
+                <div className="rightWrapper mt-16 mb-12 lg:mt-24 xl:mt-16 flex flex-1">
+                    <div>
+                        <img src={home1} className="lg:h-32 xl:h-40" />
+                        <img src={home2} className="lg:h-32 xl:h-40" />
+                        <img src={home3} className="lg:h-32 xl:h-40" />
+                    </div>
+                    <div>
+                        <img src={home5} className="lg:invisible lg:h-32 xl:h-40" />
+                        <img src={home4} className="lg:h-32 xl:h-40" />
+                        <img src={home5} className="invisible lg:visible lg:h-32 xl:h-40" />
+                    </div>
+                    <div>
+                        <img src={home6} className="lg:invisible lg:h-32 xl:h-40" />
+                        <img src={home6} className="invisible lg:h-32 xl:h-40" />
+                        <img src={home6} className="invisible lg:visible lg:h-32 xl:h-40" />
+                    </div>
                 </div>
             </div>
-            <div className="galleryWrapper mt-24 mb-10">
-                <div className="float-left">
-                    <img src={home1} className="w-64 h-40" />
-                    <img src={home2} className="w-64 h-40" />
-                    <img src={home3} className="w-64 h-40" />
-                </div>
-                <div className="pt-40 float-left">
-                    <img src={home4} className="w-64 h-40" />
-                    <img src={home5} className="w-64 h-40" />
-                </div>
-                <div style={{ paddingTop: 320 }}>
-                    <img src={home6} className="w-64 h-40" />
-                </div>
+            <div className="footer lg:hidden border-t py-5">
+                <p className="text-center text-gray-700">&copy; Copyright {new Date().getFullYear()}. All Rights Reserved.</p>
             </div>
         </>
     )
