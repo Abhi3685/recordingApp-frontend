@@ -9,31 +9,31 @@ export default function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     return (
-        <div className="navbarWrapper flex items-center justify-between mx-10 sm:mx-20 mt-5 mb-5">
+        <div className="flex items-center justify-between mx-10 mt-5 mb-5 navbarWrapper sm:mx-20">
             <div className="logoWrapper font-montserratBlack">
-                <p className="font-bold text-xl">LOGO</p>
+                <p className="text-xl font-bold">LOGO</p>
             </div>
-            <div className="navMenuWrapper font-montserratBold hidden sm:block">
+            <div className="hidden navMenuWrapper font-montserratBold sm:block">
                 {
                     token ?
-                        <div className="navMenu flex items-center">
+                        <div className="flex items-center navMenu">
                             <img src={userAvatar} style={{ width: '30px' }} />
                             <p className="ml-5">{name}</p>
                         </div> :
                         <div className="navMenu">
-                            <span className="hover:underline cursor-pointer" onClick={() => history.push('/')}>Home</span>
-                            <span className="hover:underline mx-20 md:mx-40 cursor-pointer" onClick={() => history.push('/about')}>About</span>
-                            <span className="hover:underline cursor-pointer" onClick={() => history.push('/contact')}>Contact</span>
+                            <span className="cursor-pointer hover:underline" onClick={() => history.push('/')}>Home</span>
+                            <span className="mx-20 cursor-pointer hover:underline md:mx-40" onClick={() => history.push('/about')}>About</span>
+                            <span className="cursor-pointer hover:underline" onClick={() => history.push('/contact')}>Contact</span>
                         </div>
                 }
             </div>
-            <div className="mobileMenuWrapper font-montserratBold block sm:hidden">
+            <div className="z-50 block mobileMenuWrapper font-montserratBold sm:hidden">
                 <i className="fa fa-bars" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ fontSize: '20px' }}></i>
                 {
-                    isMobileMenuOpen && <div className="absolute shadow-md bg-gray-400 mx-5 rounded p-5" style={{ top: 60, left: 0, right: 0 }}>
+                    isMobileMenuOpen && <div className="absolute z-50 p-5 mx-5 bg-gray-400 rounded shadow-md" style={{ top: 60, left: 0, right: 0 }}>
                         {
                             token ?
-                                <div className="navMenu flex items-center">
+                                <div className="flex items-center navMenu">
                                     <img src={userAvatar} style={{ width: '30px' }} />
                                     <p className="ml-5">{name}</p>
                                 </div> :
