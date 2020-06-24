@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import Modal from 'react-modal';
 
 import DesignElement1 from '../assets/images/DesignElement1.png';
-import { randomstr } from '../utils';
+import DesignElement3 from '../assets/images/DesignElement3.png';
 import { auth, db } from '../firebase';
 import Navbar from './Navbar';
 import SigninBanner from '../assets/images/signin.png';
@@ -43,16 +43,30 @@ function Signin() {
 
     function handleForgotPass() {
         var email = document.getElementById("forgetemail").value;
+        var button = document.querySelector(".resetBtn");
+        var msg = document.querySelector(".resetMsg");
+        button.disabled = true;
+        button.classList.add("cursor-not-allowed", "opacity-50");
         auth.sendPasswordResetEmail(email)
-            .then(function (user) {
-                alert('Please check your email...')
-                setIsOpen(false);
+            .then(() => {
+                msg.innerHTML = 'Please Check Your Email';
+                msg.classList.add("bg-green-600");
+                msg.classList.remove("hidden");
             }).catch(function (e) {
                 if (e.code === 'auth/invalid-email') {
-                    alert("Error: Invalid email address!");
+                    button.disabled = false;
+                    button.classList.remove("cursor-not-allowed", "opacity-50");
+                    msg.innerHTML = 'Invalid email address!';
+                    msg.classList.add("bg-red-600");
+                    msg.classList.remove("hidden");
                 } else if (e.code === "auth/user-not-found") {
-                    alert("Error: No User Found!");
+                    msg.innerHTML = 'No User Found! Please Register.';
+                    msg.classList.add("bg-red-600");
+                    msg.classList.remove("hidden");
                 } else {
+                    button.disabled = false;
+                    button.classList.remove("cursor-not-allowed", "opacity-50");
+                    alert('Error: Unhandled Exception Occured!');
                     console.log(e);
                 }
             })
@@ -70,7 +84,7 @@ function Signin() {
                     <form>
                         <input className="block w-full px-3 py-2 mb-5 text-gray-700 border-2 border-gray-400 rounded focus:outline-none focus:border-indigo-600" id="email" name="email" type="text" placeholder="Email Address" />
                         <input className="block w-full px-3 py-2 text-gray-700 border-2 border-gray-400 rounded focus:outline-none focus:border-indigo-600" id="password" name="password" type="password" placeholder="Password" />
-                        <p className="mt-5 text-sm text-gray-500 font-montserratSemiBold"><span className="cursor-pointer">Forgot Password?</span></p>
+                        <p className="mt-5 text-sm text-gray-500 font-montserratSemiBold"><span className="cursor-pointer" onClick={() => setIsOpen(true)}>Forgot Password?</span></p>
                     </form>
                     <button onClick={handleSubmit} className="px-4 py-2 mb-5 text-lg font-bold text-white bg-green-700 rounded hover:bg-green-600 focus:outline-none" type="button">
                         Log In
@@ -88,33 +102,28 @@ function Signin() {
             <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={() => setIsOpen(false)}
-                style={{
-                    content: {
-                        top: '50%',
-                        left: '50%',
-                        right: 'auto',
-                        bottom: 'auto',
-                        marginRight: '-50%',
-                        transform: 'translate(-50%, -50%)'
-                    }
-                }}
                 ariaHideApp={false}
-                contentLabel="Reset Password"
+                className="Modal"
+                overlayClassName="Overlay"
             >
-                <form className="px-8 pt-6">
-                    <div className="mb-4 text-left">
-                        <label className="block mb-2 tracking-wide text-gray-800" htmlFor="forgetemail">
-                            Email Address
-                        </label>
-                        <input className="w-full px-3 py-2 leading-tight text-gray-700 transition duration-300 ease-in-out border-2 border-gray-400 rounded appearance-none focus:outline-none focus:border-indigo-600" id="forgetemail" name="forgetemail" type="text" />
-                    </div>
-                    <button onClick={handleForgotPass} className="w-full px-4 py-2 mb-2 text-white transition duration-500 ease-in-out bg-indigo-600 rounded hover:bg-indigo-700 focus:outline-none" type="button">
-                        Reset Password
-                    </button>
-                    <button onClick={() => setIsOpen(false)} className="w-full px-4 py-2 mb-5 text-white transition duration-500 ease-in-out bg-red-600 rounded hover:bg-red-700 focus:outline-none" type="button">
-                        Cancel
-                    </button>
-                </form>
+                <img src={DesignElement3} alt="" style={{ right: -5, top: 5 }} className="rounded-lg absolute transform rotate-90 w-24" />
+                <img src={DesignElement3} alt="" style={{ left: -5, bottom: 4 }} className="rounded-lg absolute transform -rotate-90 w-16" />
+                <div className="modal-content px-5 pt-3 pb-12">
+                    <i onClick={() => setIsOpen(false)} className="fa fa-arrow-left cursor-pointer"></i>
+                    <h1 className="font-bold text-xl text-center mb-3">Reset Your Password</h1>
+                    <form>
+                        <div className="text-left mb-5">
+                            <label className="block mb-2 tracking-wide text-gray-800" htmlFor="forgetemail">
+                                Your Email Address
+                            </label>
+                            <input className="w-full px-3 py-2 leading-tight text-gray-700 transition duration-300 ease-in-out border-2 border-gray-400 rounded appearance-none focus:outline-none focus:border-indigo-600" id="forgetemail" name="forgetemail" placeholder="Enter your email" type="text" />
+                        </div>
+                        <button onClick={handleForgotPass} className="resetBtn w-full px-4 py-2 mb-2 text-white transition duration-500 ease-in-out bg-indigo-600 rounded hover:bg-indigo-700 focus:outline-none" type="button">
+                            Reset Password
+                        </button>
+                        <p className="resetMsg hidden rounded-lg text-center text-white py-1"></p>
+                    </form>
+                </div>
             </Modal>
         </>
     );

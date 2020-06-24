@@ -17,7 +17,7 @@ export default function Navbar() {
                 {
                     token ?
                         <div className="flex items-center navMenu">
-                            <img src={userAvatar} style={{ width: '30px' }} />
+                            <img alt="" src={userAvatar} style={{ width: '30px' }} />
                             <p className="ml-5">{name}</p>
                         </div> :
                         <div className="navMenu">
@@ -34,7 +34,7 @@ export default function Navbar() {
                         {
                             token ?
                                 <div className="flex items-center navMenu">
-                                    <img src={userAvatar} style={{ width: '30px' }} />
+                                    <img alt="" src={userAvatar} style={{ width: '30px' }} />
                                     <p className="ml-5">{name}</p>
                                 </div> :
                                 <div className="navMenu">

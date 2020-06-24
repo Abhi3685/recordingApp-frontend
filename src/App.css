@@ -1,64 +1,115 @@
-#attachmentPreviewWrapper::-webkit-scrollbar, .attachmentsWrapper::-webkit-scrollbar {
-	height: 5px;
-	width: 10px;
+#attachmentPreviewWrapper::-webkit-scrollbar,
+.attachmentsWrapper::-webkit-scrollbar {
+  height: 5px;
+  width: 10px;
 }
 
-#attachmentPreviewWrapper::-webkit-scrollbar-track, .attachmentsWrapper::-webkit-scrollbar-track {
-	background-color: #999;
-	border-radius: 10px;
+#attachmentPreviewWrapper::-webkit-scrollbar-track,
+.attachmentsWrapper::-webkit-scrollbar-track {
+  background-color: #999;
+  border-radius: 10px;
 }
 
-#attachmentPreviewWrapper::-webkit-scrollbar-thumb, .attachmentsWrapper::-webkit-scrollbar-thumb {
-	background-color: #333;
-	border-radius: 10px;
+#attachmentPreviewWrapper::-webkit-scrollbar-thumb,
+.attachmentsWrapper::-webkit-scrollbar-thumb {
+  background-color: #333;
+  border-radius: 10px;
 }
 
 .timeline_range_wrapper .input-range__track--background {
-	top: -30px;
+  top: -30px;
 }
 .timeline_range_wrapper .input-range__track--active {
-	background: rgba(0, 0, 0, 0.5) !important;
-	height: 101px;
-	border-radius: 0;
+  background: rgba(0, 0, 0, 0.5) !important;
+  height: 101px;
+  border-radius: 0;
 }
 .timeline_range_wrapper .input-range__track {
-	background: none;
+  background: none;
 }
 .timeline_range_wrapper .input-range__slider {
-	border-radius: 5px;
-	height: 110px;
-	width: 6px;
-	margin-top: -104px;
-	margin-left: 0;
+  border-radius: 5px;
+  height: 110px;
+  width: 6px;
+  margin-top: -104px;
+  margin-left: 0;
 }
 
 #attachmentPreviewWrapper img {
-	object-fit: cover;
-	width: 180px;
-	height: 150px;
-	display: inline-block;
-	margin: 5px;
-	border: 1px solid #eee;
-	border-radius: 10px;
+  object-fit: cover;
+  width: 180px;
+  height: 150px;
+  display: inline-block;
+  margin: 5px;
+  border: 1px solid #eee;
+  border-radius: 10px;
 }
 
 #attachmentPreviewWrapper video {
-	object-fit: cover;
-	width: 270px;
-	display: inline-block;
-	margin: 5px;
-	border: 1px solid #eee;
-	border-radius: 10px;
+  object-fit: cover;
+  width: 270px;
+  display: inline-block;
+  margin: 5px;
+  border: 1px solid #eee;
+  border-radius: 10px;
 }
 
 #attachmentPreviewWrapper video:focus {
-	outline: none;
+  outline: none;
 }
 
 pre {
-	white-space: pre-wrap;       /* Since CSS 2.1 */
-    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-    white-space: -pre-wrap;      /* Opera 4-6 */
-    white-space: -o-pre-wrap;    /* Opera 7 */
-    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+  white-space: pre-wrap; /* Since CSS 2.1 */
+  white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+  white-space: -pre-wrap; /* Opera 4-6 */
+  white-space: -o-pre-wrap; /* Opera 7 */
+  word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
+.Modal {
+  position: absolute;
+  width: 40%;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 5px;
+  outline: none;
+}
+
+.Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 575.98px) {
+  .Modal {
+    width: 88%;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .Modal {
+    width: 70%;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .Modal {
+    width: 50%;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+}
+
+@media (min-width: 1200px) {
 }
