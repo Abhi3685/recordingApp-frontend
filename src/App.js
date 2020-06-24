@@ -46,7 +46,7 @@ function App() {
         <Route path="/page/:pageId">
           <Page />
         </Route>
-        <Route path="/dashboard">
+        <Route path="/videos">
           <Dashboard />
         </Route>
         <Route path="/">

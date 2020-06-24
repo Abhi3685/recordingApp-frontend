@@ -14,12 +14,16 @@ function Signin() {
 
     useEffect(() => {
         if (localStorage.getItem("UUID"))
-            history.replace('/dashboard');
+            history.replace('/videos');
     }, []);
 
     function handleSubmit() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
+        var msg = document.querySelector(".loginMsg");
+        var button = document.querySelector(".loginBtn");
+        button.disabled = true;
+        button.classList.add("cursor-not-allowed", "opacity-50");
         auth
             .signInWithEmailAndPassword(email, password)
             .then((res) => {
@@ -29,15 +33,17 @@ function Signin() {
             .then(doc => {
                 if (!doc.exists) { alert('Error: No such document!'); return; }
                 localStorage.setItem("username", doc.data().fullname);
-                history.push('/');
+                history.push('/videos');
             })
             .catch((error) => {
-                if (error.code === 'auth/invalid-email' || error.code === 'auth/user-not-found')
-                    alert('Error: No User Account Found.');
-                else if (error.code === 'auth/wrong-password')
-                    alert('Error: Wrong Password.');
-                else
-                    alert(error);
+                button.disabled = false;
+                button.classList.remove("cursor-not-allowed", "opacity-50");
+                if (error.code === 'auth/invalid-email' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password')
+                    msg.classList.remove("hidden");
+                else {
+                    alert('Error: Unhandled Exception Occured!');
+                    console.log(error);
+                }
             });
     }
 
@@ -81,12 +87,13 @@ function Signin() {
                     <p className="absolute text-gray-600 cursor-pointer" style={{ top: 20 }} onClick={() => history.goBack()}><i className="mr-2 fa fa-arrow-left"></i> Back</p>
                     <p className="mt-10 text-xl text-blue-600 uppercase font-montserratBold">Log in</p>
                     <hr />
+                    <p className="loginMsg hidden bg-red-500 text-white text-sm py-2 text-center rounded-md"><i className="fa fa-times-circle mr-2"></i> Invalid Email or Password</p>
                     <form>
                         <input className="block w-full px-3 py-2 mb-5 text-gray-700 border-2 border-gray-400 rounded focus:outline-none focus:border-indigo-600" id="email" name="email" type="text" placeholder="Email Address" />
                         <input className="block w-full px-3 py-2 text-gray-700 border-2 border-gray-400 rounded focus:outline-none focus:border-indigo-600" id="password" name="password" type="password" placeholder="Password" />
                         <p className="mt-5 text-sm text-gray-500 font-montserratSemiBold"><span className="cursor-pointer" onClick={() => setIsOpen(true)}>Forgot Password?</span></p>
                     </form>
-                    <button onClick={handleSubmit} className="px-4 py-2 mb-5 text-lg font-bold text-white bg-green-700 rounded hover:bg-green-600 focus:outline-none" type="button">
+                    <button onClick={handleSubmit} className="loginBtn px-4 py-2 mb-5 text-lg font-bold text-white bg-green-700 rounded hover:bg-green-600 focus:outline-none" type="button">
                         Log In
                     </button>
                     <p style={{ lineHeight: '0.1em' }} className="w-full mb-10 text-sm text-center border-b-2 border-gray-400 font-montserratRegular"><span className="px-5 bg-white">or <span className="font-bold text-blue-600 cursor-pointer" onClick={() => history.push('/signup')}>Sign Up</span></span></p>

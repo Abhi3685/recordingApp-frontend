@@ -92,6 +92,8 @@ function Dashboard() {
     useEffect(() => {
         video = document.querySelector('video');
         dragCircle = document.querySelector('.dragCircle');
+        if (!localStorage.getItem("UUID"))
+            history.replace('/');
         if (localStorage.getItem("UUID")) {
             db.collection('users').doc(localStorage.getItem("UUID")).get().then(doc => {
                 if (!doc.exists) { alert('Error: No such document!'); return; }
@@ -184,7 +186,7 @@ function Dashboard() {
                             </div>
                             <div>
                                 <p className="text-center mb-2">Logged in as <span className="font-bold">{user}</span></p>
-                                <button onClick={() => { localStorage.removeItem("UUID"); window.location.reload(); }} className="shadow-md block mx-auto w-56 mb-3 bg-indigo-600 text-white px-8 py-2 rounded">Logout</button>
+                                <button onClick={() => { localStorage.removeItem("UUID"); history.push("/"); }} className="shadow-md block mx-auto w-56 mb-3 bg-indigo-600 text-white px-8 py-2 rounded">Logout</button>
                             </div>
                         </div>
                         <div className="flex items-center justify-center loader bg-gray-200 absolute inset-0 z-50">
