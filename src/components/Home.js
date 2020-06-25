@@ -16,8 +16,8 @@ export default function Home() {
     return (
         <>
             <Navbar />
-            <img className="absolute right-0 hidden sm:block" src={DesignElement1} style={{ top: 150, width: 200 }} />
-            <img className="absolute hidden lg:block" src={DesignElement2} style={{ bottom: 20, left: '33%' }} />
+            <img alt="" className="absolute right-0 hidden sm:block" src={DesignElement1} style={{ top: 150, width: 200 }} />
+            <img alt="" className="absolute hidden lg:block" src={DesignElement2} style={{ bottom: 20, left: '33%' }} />
             <div className="mainWrapper flex flex-col lg:flex-row px-6 sm:px-16">
                 <div className="leftWrapper flex flex-col w-full sm:w-3/5 lg:w-1/3 pl-2 pr-16 mt-10 mr-32">
                     <div className="brandWrapper mb-10">
@@ -36,19 +36,19 @@ export default function Home() {
                 </div>
                 <div className="rightWrapper mt-16 mb-12 lg:mt-24 xl:mt-16 flex flex-1">
                     <div>
-                        <img src={home1} className="lg:h-32 xl:h-40" />
-                        <img src={home2} className="lg:h-32 xl:h-40" />
-                        <img src={home3} className="lg:h-32 xl:h-40" />
+                        <img alt="" src={home1} className="lg:h-32 xl:h-40" />
+                        <img alt="" src={home2} className="lg:h-32 xl:h-40" />
+                        <img alt="" src={home3} className="lg:h-32 xl:h-40" />
                     </div>
                     <div>
-                        <img src={home5} className="lg:invisible lg:h-32 xl:h-40" />
-                        <img src={home4} className="lg:h-32 xl:h-40" />
-                        <img src={home5} className="invisible lg:visible lg:h-32 xl:h-40" />
+                        <img alt="" src={home5} className="lg:invisible lg:h-32 xl:h-40" />
+                        <img alt="" src={home4} className="lg:h-32 xl:h-40" />
+                        <img alt="" src={home5} className="invisible lg:visible lg:h-32 xl:h-40" />
                     </div>
                     <div>
-                        <img src={home6} className="lg:invisible lg:h-32 xl:h-40" />
-                        <img src={home6} className="invisible lg:h-32 xl:h-40" />
-                        <img src={home6} className="invisible lg:visible lg:h-32 xl:h-40" />
+                        <img alt="" src={home6} className="lg:invisible lg:h-32 xl:h-40" />
+                        <img alt="" src={home6} className="invisible lg:h-32 xl:h-40" />
+                        <img alt="" src={home6} className="invisible lg:visible lg:h-32 xl:h-40" />
                     </div>
                 </div>
             </div>

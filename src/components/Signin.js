@@ -15,7 +15,7 @@ function Signin() {
     useEffect(() => {
         if (localStorage.getItem("UUID"))
             history.replace('/videos');
-    }, []);
+    }, [history]);
 
     function handleSubmit() {
         const email = document.getElementById('email').value;

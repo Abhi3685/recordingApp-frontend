@@ -80,7 +80,7 @@ function toggleMenu(e) {
     }
 }
 
-function Dashboard() {
+function Videos() {
     let history = useHistory();
     const [videos, setVideos] = useState([]);
     const [pages, setPages] = useState([]);
@@ -348,4 +348,4 @@ function Dashboard() {
     )
 }
 
-export default Dashboard;
+export default Videos;

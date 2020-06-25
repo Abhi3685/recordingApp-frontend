@@ -8,7 +8,8 @@ import {
 } from "react-router-dom";
 
 import Home from './components/Home';
-import Dashboard from './components/Dashboard';
+import About from './components/About';
+import Videos from './components/Videos';
 import Recorder from './components/Recorder';
 import Player from './components/Player';
 import Signup from './components/Signup';
@@ -17,17 +18,25 @@ import Trim from './components/Trim';
 import AddText from './components/AddText';
 import Watermark from './components/Watermark';
 import Page from './components/Page';
+import Contact from './components/Contact';
 
 function App() {
   return (
     <Router>
       <Switch>
-        <Route path="/signup">
+        <Route exact path="/signup">
           <Signup />
         </Route>
-        <Route path="/signin">
+        <Route exact path="/signin">
           <Signin />
         </Route>
+        <Route path="/about">
+          <About />
+        </Route>
+        <Route path="/contact">
+          <Contact />
+        </Route>
+
         <Route path="/player/:videoId">
           <Player />
         </Route>
@@ -47,8 +56,9 @@ function App() {
           <Page />
         </Route>
         <Route path="/videos">
-          <Dashboard />
+          <Videos />
         </Route>
+
         <Route path="/">
           <Home />
         </Route>

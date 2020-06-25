@@ -70,69 +70,27 @@ function Signup() {
                     <p className="absolute text-gray-600 cursor-pointer" style={{ top: 20 }} onClick={() => history.goBack()}><i className="mr-2 fa fa-arrow-left"></i> Back</p>
                     <p className="mt-10 text-xl text-blue-600 uppercase font-montserratBold">Sign up</p>
                     <hr />
-                    <p className="loginMsg hidden bg-red-500 text-white text-sm py-2 text-center rounded-md"><i className="fa fa-times-circle mr-2"></i> Invalid Email or Password</p>
+                    <p className="hidden py-2 text-sm text-center text-white bg-red-500 rounded-md loginMsg"><i className="mr-2 fa fa-times-circle"></i> Invalid Email or Password</p>
                     <form>
                         <input className="block w-full px-3 py-2 text-gray-700 border-2 border-gray-400 rounded focus:outline-none focus:border-indigo-600" id="fullname" name="fullname" type="text" placeholder="Full Name" />
-                        {error.fullname != null ? <p className="text-red-500 text-sm mb-3">{error.fullname}</p> : <p className="mb-5"></p>}
+                        {error.fullname != null ? <p className="mb-3 text-sm text-red-500">{error.fullname}</p> : <p className="mb-5"></p>}
                         <input className="block w-full px-3 py-2 text-gray-700 border-2 border-gray-400 rounded focus:outline-none focus:border-indigo-600" id="email" name="email" type="text" placeholder="Email Address" />
-                        {error.email != null ? <p className="text-red-500 text-sm mb-3">{error.email}</p> : <p className="mb-5"></p>}
+                        {error.email != null ? <p className="mb-3 text-sm text-red-500">{error.email}</p> : <p className="mb-5"></p>}
                         <input className="block w-full px-3 py-2 text-gray-700 border-2 border-gray-400 rounded focus:outline-none focus:border-indigo-600" id="password" name="password" type="password" placeholder="Password" />
-                        {error.password != null ? <p className="text-red-500 text-sm mb-3">{error.password}</p> : <p className="mb-5"></p>}
+                        {error.password != null ? <p className="mb-3 text-sm text-red-500">{error.password}</p> : <p className="mb-5"></p>}
                         <input className="block w-full px-3 py-2 text-gray-700 border-2 border-gray-400 rounded focus:outline-none focus:border-indigo-600" id="confirmpassword" name="confirmpassword" type="password" placeholder="Confirm Password" />
-                        {error.confirmpassword != null ? <p className="text-red-500 text-sm mb-3">{error.confirmpassword}</p> : <p className="mb-5"></p>}
+                        {error.confirmpassword != null ? <p className="mb-3 text-sm text-red-500">{error.confirmpassword}</p> : <p className="mb-5"></p>}
                     </form>
-                    <button onClick={handleSubmit} className="signupBtn px-4 py-2 text-lg font-bold text-white bg-green-700 rounded hover:bg-green-600 focus:outline-none" type="button">
+                    <button onClick={handleSubmit} className="px-4 py-2 text-lg font-bold text-white bg-green-700 rounded signupBtn hover:bg-green-600 focus:outline-none" type="button">
                         Sign Up
                     </button>
                     <p className="text-indigo-600 font-montserratBold">Come in. We're Awesome</p>
-                    <p style={{ lineHeight: '0.1em' }} className="w-full mb-10 mt-5 text-sm text-center border-b-2 border-gray-400 font-montserratRegular"><span className="px-5 bg-white">or <span className="font-bold text-blue-600 cursor-pointer" onClick={() => history.push('/signin')}>Log in</span></span></p>
+                    <p style={{ lineHeight: '0.1em' }} className="w-full mt-5 mb-10 text-sm text-center border-b-2 border-gray-400 font-montserratRegular"><span className="px-5 bg-white">or <span className="font-bold text-blue-600 cursor-pointer" onClick={() => history.push('/signin')}>Log in</span></span></p>
                 </div>
             </div>
             <div className="py-5 border-t footer lg:hidden">
                 <p className="text-center text-gray-700">&copy; Copyright {new Date().getFullYear()}. All Rights Reserved.</p>
             </div>
-
-            {/* <div className="flex flex-row text-center justify-center mt-10 pt-10 md:mt-20 md:pt-0">
-                <div className="w-screen max-w-sm">
-                    <p className="text-3xl font-bold text-gray-700">Sign up</p>
-                    <form className="px-8 pt-6">
-                        <div className="mb-4 text-left">
-                            <label className="block text-gray-800 tracking-wide mb-2" htmlFor="email">
-                                Email Address
-                            </label>
-                            <input className="appearance-none border-2 border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-indigo-600 transition duration-300 ease-in-out" id="email" name="email" type="text" placeholder="john.doe@gmail.com" value={email} onChange={handleInputChange} autoComplete={randomstr(10)} />
-                            {error.email != null ? <p className="text-red-500 text-sm">{error.email}</p> : ""}
-                        </div>
-                        <div className="mb-4 text-left">
-                            <label className="block text-gray-800 tracking-wide mb-2" htmlFor="fullname">
-                                Full Name
-                            </label>
-                            <input className="appearance-none border-2 border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-indigo-600 transition duration-300 ease-in-out" id="fullname" name="fullname" type="text" placeholder="John Doe" value={fullname} onChange={handleInputChange} autoComplete={randomstr(10)} />
-                            {error.fullname != null ? <p className="text-red-500 text-sm">{error.fullname}</p> : ""}
-                        </div>
-                        <div className="mb-4 text-left">
-                            <label className="block text-gray-800 tracking-wide mb-2" htmlFor="password">
-                                Password
-                            </label>
-                            <input className="appearance-none border-2 border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-indigo-600 transition duration-300 ease-in-out" id="password" name="password" type="password" placeholder="•••••••••••••••••••" value={password} onChange={handleInputChange} />
-                            {error.password != null ? <p className="text-red-500 text-sm">{error.password}</p> : ""}
-                        </div>
-                        <div className="mb-4 text-left">
-                            <label className="block text-gray-800 tracking-wide mb-2" htmlFor="confirmpassword">
-                                Confirm Password
-                            </label>
-                            <input className="appearance-none border-2 border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-indigo-600 transition duration-300 ease-in-out" id="confirmpassword" name="confirmpassword" type="password" placeholder="•••••••••••••••••••" value={confirmpassword} onChange={handleInputChange} />
-                            {error.confirmpassword != null ? <p className="text-red-500 text-sm">{error.confirmpassword}</p> : ""}
-                        </div>
-                        <button onClick={handleSubmit} className="transition duration-500 ease-in-out text-lg bg-indigo-600 mb-5 w-full hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none" type="button">
-                            Sign Up
-                        </button>
-                    </form>
-                    <p className="text-center border-t pt-3 mx-5 border-gray-400 text-gray-500 text-xs">
-                        Copyright &copy;{new Date().getFullYear()}. All rights reserved.
-                    </p>
-                </div>
-            </div> */}
         </>
     );
 }
