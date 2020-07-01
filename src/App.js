@@ -9,7 +9,7 @@ import {
 
 import Home from './components/Home';
 import About from './components/About';
-import Videos from './components/Videos';
+import Dashboard from './components/Dashboard';
 import Recorder from './components/Recorder';
 import Player from './components/Player';
 import Signup from './components/Signup';
@@ -55,8 +55,8 @@ function App() {
         <Route path="/page/:pageId">
           <Page />
         </Route>
-        <Route path="/videos">
-          <Videos />
+        <Route path="/dashboard">
+          <Dashboard />
         </Route>
 
         <Route path="/">

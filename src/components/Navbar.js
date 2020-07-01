@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import userAvatar from '../assets/images/userAvatar.png';
 import { useHistory } from 'react-router-dom';
+
+import userAvatar from '../assets/images/userAvatar.png';
 
 export default function Navbar() {
     const token = localStorage.getItem("UUID");
@@ -9,14 +10,14 @@ export default function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     return (
-        <div className="flex items-center justify-between mx-10 mt-5 mb-5 navbarWrapper sm:mx-20">
+        <div className="flex items-center justify-between px-10 py-5 border-b border-gray-300 navbarWrapper sm:px-20">
             <div className="logoWrapper font-montserratBlack">
                 <p className="text-xl font-bold">LOGO</p>
             </div>
             <div className="hidden navMenuWrapper font-montserratBold sm:block">
                 {
                     token ?
-                        <div className="flex items-center navMenu">
+                        <div onClick={() => history.push("/dashboard")} className="flex items-center cursor-pointer navMenu">
                             <img alt="" src={userAvatar} style={{ width: '30px' }} />
                             <p className="ml-5">{name}</p>
                         </div> :
@@ -30,12 +31,25 @@ export default function Navbar() {
             <div className="z-50 block mobileMenuWrapper font-montserratBold sm:hidden">
                 <i className="fa fa-bars" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ fontSize: '20px' }}></i>
                 {
-                    isMobileMenuOpen && <div className="absolute z-50 p-5 mx-5 bg-gray-400 rounded shadow-md" style={{ top: 60, left: 0, right: 0 }}>
+                    isMobileMenuOpen && <div className="absolute z-50 p-5 mx-5 bg-gray-200 rounded shadow-md" style={{ top: 60, left: 0, right: 0 }}>
                         {
                             token ?
-                                <div className="flex items-center navMenu">
-                                    <img alt="" src={userAvatar} style={{ width: '30px' }} />
-                                    <p className="ml-5">{name}</p>
+                                <div>
+                                    <div onClick={() => history.push("/dashboard")} className="flex items-center border-b pb-4 mb-4 border-gray-400 navMenu">
+                                        <img alt="" src={userAvatar} style={{ width: '30px' }} />
+                                        <p className="ml-5">{name}</p>
+                                    </div>
+                                    <div className="font-montserratRegular border-b pb-4 mb-4 border-gray-400">
+                                        <p className="mb-3 font-montserratBold">Dashboard</p>
+                                        <p className="px-5 py-1 mb-1 text-white transition duration-300 ease-in bg-blue-500 rounded cursor-pointer"><i className="mr-2 fa fa-angle-right"></i> My Videos</p>
+                                        <p className="px-5 py-1 transition duration-300 ease-in rounded cursor-pointer hover:bg-blue-500 hover:text-white"><i className="mr-2 fa fa-angle-right"></i> My Pages</p>
+                                    </div>
+                                    <div className="font-montserratRegular border-b pb-4 mb-5 border-gray-400">
+                                        <p className="mb-3 font-montserratBold">Create</p>
+                                        <p className="px-5 py-1 mb-1 transition duration-300 ease-in rounded cursor-pointer hover:bg-blue-500 hover:text-white"><i className="mr-2 fa fa-plus-circle"></i> New Video</p>
+                                        <p className="px-5 py-1 transition duration-300 ease-in rounded cursor-pointer hover:bg-blue-500 hover:text-white"><i className="mr-2 fa fa-plus-circle"></i> New Page</p>
+                                    </div>
+                                    <button onClick={() => { localStorage.removeItem("UUID"); localStorage.removeItem("username"); history.push("/"); }} className="py-2 w-full text-red-500 transition duration-300 ease-in border border-red-500 rounded hover:text-white hover:bg-red-500">Log out</button>
                                 </div> :
                                 <div className="navMenu">
                                     <p onClick={() => history.push('/')} className="mb-2">Home</p>

@@ -94,11 +94,23 @@ pre {
   .Modal {
     width: 88%;
   }
+  .sidebar {
+    left: -260px;
+  }
+  .parentWrapper {
+    left: -260px;
+  }
 }
 
 @media (min-width: 576px) and (max-width: 767.98px) {
   .Modal {
     width: 70%;
+  }
+  .sidebar {
+    left: -260px;
+  }
+  .parentWrapper {
+    left: -260px;
   }
 }
 
@@ -106,10 +118,19 @@ pre {
   .Modal {
     width: 50%;
   }
+  .sidebar {
+    left: -260px;
+  }
+  .parentWrapper {
+    left: -260px;
+  }
 }
 
 @media (min-width: 992px) and (max-width: 1199.98px) {
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1200px) and (max-width: 1400px) {
+}
+
+@media (min-width: 1300px) {
 }

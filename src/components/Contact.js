@@ -56,7 +56,7 @@ export default function Contact() {
         <>
             <Navbar />
             <img alt="" src={DesignElement1} className="absolute bottom-0 hidden lg:block" style={{ left: 60, width: 200 }} />
-            <div className="flex mx-8 mt-10 mb-10 md:mt-16 sm:mx-16 mainWrapper">
+            <div className="flex mx-8 mt-10 mb-10 md:mt-12 sm:mx-16 mainWrapper">
                 <div className="items-center justify-center flex-1 hidden doodleWrapper lg:flex">
                     <img src={Banner} className="px-24" alt="" />
                 </div>
