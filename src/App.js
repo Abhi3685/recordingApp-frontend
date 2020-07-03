@@ -1,17 +1,16 @@
 import React from 'react';
-import './App.css';
-
 import {
   BrowserRouter as Router,
   Switch,
   Route
 } from "react-router-dom";
 
+import './App.css';
 import Home from './components/Home';
 import About from './components/About';
 import Dashboard from './components/Dashboard';
 import Recorder from './components/Recorder';
-import Player from './components/Player';
+import CustomPlayer from './components/Player';
 import Signup from './components/Signup';
 import Signin from './components/Signin';
 import Trim from './components/Trim';
@@ -38,7 +37,7 @@ function App() {
         </Route>
 
         <Route path="/player/:videoId">
-          <Player />
+          <CustomPlayer />
         </Route>
         <Route path="/recorder">
           <Recorder />

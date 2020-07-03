@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 
 import userAvatar from '../assets/images/userAvatar_sidebar.png';
 
-export default function Sidebar({ user, active, setActive }) {
+export default function Sidebar({ user, active, setActive, newVideoHandler, newPageHandler }) {
     const history = useHistory();
 
     return (
@@ -20,8 +20,8 @@ export default function Sidebar({ user, active, setActive }) {
             <hr />
             <div className="font-montserratRegular">
                 <p className="px-5 mb-3 font-montserratBold">Create</p>
-                <p className="px-5 py-1 mx-4 mb-1 transition duration-300 ease-in rounded cursor-pointer hover:bg-blue-500 hover:text-white"><i className="mr-2 fa fa-plus-circle"></i> New Video</p>
-                <p className="px-5 py-1 mx-4 transition duration-300 ease-in rounded cursor-pointer hover:bg-blue-500 hover:text-white"><i className="mr-2 fa fa-plus-circle"></i> New Page</p>
+                <p onClick={newVideoHandler} className="px-5 py-1 mx-4 mb-1 transition duration-300 ease-in rounded cursor-pointer hover:bg-blue-500 hover:text-white"><i className="mr-2 fa fa-plus-circle"></i> New Video</p>
+                <p onClick={newPageHandler} className="px-5 py-1 mx-4 transition duration-300 ease-in rounded cursor-pointer hover:bg-blue-500 hover:text-white"><i className="mr-2 fa fa-plus-circle"></i> New Page</p>
             </div>
             <button onClick={() => { localStorage.removeItem("UUID"); localStorage.removeItem("username"); history.push("/"); }} className="py-2 mx-4 mt-10 mb-5 text-red-500 transition duration-300 ease-in border border-red-500 rounded hover:text-white hover:bg-red-500">Log out</button>
         </div>

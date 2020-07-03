@@ -1,68 +1,15 @@
-import React, { useEffect, useState } from 'react'
-import RecordRTC from 'recordrtc';
-import Draggable from 'react-draggable';
+import React from 'react'
 import { useHistory } from 'react-router-dom';
 import Axios from 'axios';
 import Moment from 'react-moment';
-import Modal from 'react-modal';
 
 import { db } from '../firebase';
 import firebase from "firebase/app";
-import AddPost from './AddPost';
 import logo from '../assets/loader.gif';
 import moreIcon from '../assets/images/moreIcon.png';
 import doodle from '../assets/images/videos_doodle.png';
 import { formatTime } from '../utils';
 import DesignElement from '../assets/images/DesignElement1.png';
-
-var recorder, video, dragCircle, myCamera;
-
-function captureCamera(callback) {
-    // navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(function (camera) {
-    //     callback(camera);
-    // }).catch(function (error) {
-    //     alert('Unable to capture your camera. Please check console logs.');
-    //     console.error(error);
-    // });
-}
-
-var start = () => {
-    // captureCamera(function (camera) {
-    //     myCamera = camera;
-    //     video.muted = true;
-    //     video.volume = 0;
-    //     video.srcObject = camera;
-
-    //     recorder = RecordRTC(camera, {
-    //         type: 'video',
-    //         disableLogs: true
-    //     });
-
-    //     recorder.startRecording();
-    // });
-}
-
-function getConfig(history) {
-    // var mode = document.getElementsByName("mode_options")[0].value;
-    // var isAudioEnabled = document.getElementsByName("isAudioEnabled")[0].value === "Yes" ? 1 : 0;
-    // var camPosition = dragCircle.getBoundingClientRect();
-    // var top = camPosition.top;
-    // var left = camPosition.left;
-    // history.push('/recorder', {
-    //     mode, isAudioEnabled, top, left
-    // });
-    // clearConfig();
-}
-
-function clearConfig() {
-    // if (recorder) {
-    //     recorder.stopRecording(function () {
-    //         myCamera.getTracks().forEach(function (track) {
-    //             track.stop();
-    //         });
-    //     });
-    // }
-}
 
 function toggleMenu(e) {
     var menuRef = e.target.parentElement.parentElement.querySelector(".menuWrapper");
@@ -77,41 +24,26 @@ function toggleMenu(e) {
     }
 }
 
-function Videos({ videos }) {
+function Videos({ videos, setVideos, recordVideo }) {
     let history = useHistory();
 
-    useEffect(() => {
-        video = document.querySelector('video');
-        dragCircle = document.querySelector('.dragCircle');
-    }, []);
-
-    function handleModeChange(e) {
-        //     if (e.target.value === 'Screen Only') {
-        //         document.querySelector(".dragCircle").style.display = 'none';
-        //         clearConfig();
-        //     } else {
-        //         start();
-        //         document.querySelector(".dragCircle").style.display = 'block';
-        //     }
-    }
-
     function handleDelete(video_Obj, index) {
-        //     db.collection('users').doc(localStorage.getItem("UUID")).update({
-        //         videos: firebase.firestore.FieldValue.arrayRemove(video_Obj)
-        //     }).then(() => {
-        //         var newVideos = [...videos];
-        //         newVideos.splice(index, 1);
-        //         setVideos(newVideos);
-        //         Axios.delete("http://localhost:8000/video/" + video_Obj.publicId);
-        //     }).catch(err => {
-        //         alert("Error: Unhandled Exception Occured!");
-        //         console.log(err);
-        //     });
+        db.collection('users').doc(localStorage.getItem("UUID")).update({
+            videos: firebase.firestore.FieldValue.arrayRemove(video_Obj)
+        }).then(() => {
+            var newVideos = [...videos];
+            newVideos.splice(index, 1);
+            setVideos(newVideos);
+            Axios.delete("http://localhost:8000/video/" + video_Obj.publicId);
+        }).catch(err => {
+            alert("Error: Unhandled Exception Occured!");
+            console.log(err);
+        });
     }
 
     return (
         <>
-            <img src={doodle} alt="" className="hidden xl:block absolute transform -rotate-90" style={{ zIndex: -10, width: '250px', bottom: 80, right: -10 }} />
+            <img src={doodle} alt="" className="hidden xl:block absolute" style={{ zIndex: -10, width: '250px', bottom: 30, right: 10 }} />
             <img src={DesignElement} alt="" className="hidden xl:block absolute transform rotate-90" style={{ zIndex: -10, width: '220px', top: 140, right: 5 }} />
             <div className="contentWrapper z-10">
                 <div className="contentHeader border-b border-gray-300 py-4 px-8 text-xl font-montserratBold">
@@ -144,41 +76,13 @@ function Videos({ videos }) {
                             :
                             <div className="flex flex-col items-center opacity-75 justify-center h-full">
                                 <p className="mb-5 text-xl font-bold">You don’t have any videos <span role="img" aria-label="">😭</span></p>
-                                <button className="transition duration-300 ease-in px-8 py-2 text-indigo-600 border rounded shadow-md mb-24 border-indigo-600 hover:text-white hover:bg-indigo-600" style={{ width: '180px' }} onClick={() => { start(); document.querySelector(".config_wrapper").style.display = 'block'; }}>Record a Video</button>
+                                <button className="transition duration-300 ease-in px-8 py-2 text-indigo-600 border rounded shadow-md mb-24 border-indigo-600 hover:text-white hover:bg-indigo-600" style={{ width: '180px' }} onClick={recordVideo}>Record a Video</button>
                             </div>
                     }
                 </div>
             </div>
 
-            {/* <div className="absolute flex flex-col justify-between w-64 h-screen border-r-2 border-gray-300 sidebar">
-                <div className="mt-3">
-                    <button className="block w-56 px-8 py-2 mx-auto mb-3 text-white bg-indigo-600 rounded shadow-md" onClick={() => { start(); document.querySelector(".config_wrapper").style.display = 'block'; }}>New Video</button>
-                    <button className="block w-56 px-8 py-2 mx-auto text-white bg-indigo-600 rounded shadow-md" onClick={() => setIsOpen(true)}>Create Product Page</button>
-                </div>
-            </div> */}
-            {/* <div className="absolute inset-0 z-50 flex items-center justify-center bg-gray-200 loader">
-                <img src={logo} alt=""></img>
-            </div> */}
-
-            {/* <Modal
-                isOpen={isAddPostActive}
-                onRequestClose={() => setAddPost(false)}
-                style={{
-                    content: {
-                        top: '50%',
-                        left: '50%',
-                        right: 'auto',
-                        bottom: 'auto',
-                        marginRight: '-50%',
-                        transform: 'translate(-50%, -50%)'
-                    }
-                }}
-                ariaHideApp={false}
-                contentLabel="Add New Post"
-            >
-                <AddPost pageId={currPage} setAddPost={setAddPost} />
-            </Modal>
-
+            {/* 
             <div className="w-screen h-screen bg-gray-300 config_wrapper" style={{ position: 'absolute', top: 0, left: 0, display: 'none' }}>
                 <div className="max-w-xs p-3 m-5 bg-gray-200 rounded shadow-md">
                     <label>Recording Mode</label><br />

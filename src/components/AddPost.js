@@ -113,7 +113,6 @@ export default function AddPost({ pageId, setAddPost }) {
     return (
         <div className="newPostWrapper">
             <h2 className="font-bold text-2xl mb-3 text-center">Create Post</h2>
-            <hr />
             <textarea id="postText" className="w-full mt-5 border-2 rounded-lg border-gray-400 p-3 focus:outline-none focus:border-indigo-600" rows="5" placeholder="Add an insight of what's new coming up ..."></textarea><br />
             <div className="text-center">
                 <button onClick={handleAddPost} className="bg-indigo-600 text-white px-8 py-2 rounded mt-2">Add Post</button>
@@ -123,8 +122,7 @@ export default function AddPost({ pageId, setAddPost }) {
                 </label>
                 <button onClick={handleDiscardPost} className="bg-red-600 text-white px-6 py-2 rounded mt-2 ml-5">Discard Post</button>
             </div>
-            <br />
-            <div style={{ width: '800px', whiteSpace: 'nowrap', overflowX: 'auto' }} id="attachmentPreviewWrapper" className="mt-5 mx-auto"></div>
+            <div style={{ width: '100%', whiteSpace: 'nowrap', overflowX: 'auto' }} id="attachmentPreviewWrapper" className="my-3 mx-auto"></div>
         </div>
     )
 }

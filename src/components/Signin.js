@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import Modal from 'react-modal';
 
 import DesignElement1 from '../assets/images/DesignElement1.png';
-import DesignElement3 from '../assets/images/DesignElement3.png';
 import { auth, db } from '../firebase';
 import Navbar from './Navbar';
+import CustomModal from './Modal';
 import SigninBanner from '../assets/images/signin.png';
 
 function Signin() {
@@ -14,7 +13,7 @@ function Signin() {
 
     useEffect(() => {
         if (localStorage.getItem("UUID"))
-            history.replace('/videos');
+            history.replace('/dashboard');
     }, [history]);
 
     function handleSubmit() {
@@ -106,32 +105,24 @@ function Signin() {
                 <p className="text-center text-gray-700">&copy; Copyright {new Date().getFullYear()}. All Rights Reserved.</p>
             </div>
 
-            <Modal
+            <CustomModal
                 isOpen={modalIsOpen}
-                onRequestClose={() => setIsOpen(false)}
-                ariaHideApp={false}
-                className="Modal"
-                overlayClassName="Overlay"
+                onClose={setIsOpen}
             >
-                <img src={DesignElement3} alt="" style={{ right: -5, top: 5 }} className="absolute w-24 transform rotate-90 rounded-lg" />
-                <img src={DesignElement3} alt="" style={{ left: -5, bottom: 4 }} className="absolute w-16 transform -rotate-90 rounded-lg" />
-                <div className="px-5 pt-3 pb-12 modal-content">
-                    <i onClick={() => setIsOpen(false)} className="cursor-pointer fa fa-arrow-left"></i>
-                    <h1 className="mb-3 text-xl font-bold text-center">Reset Your Password</h1>
-                    <form>
-                        <div className="mb-5 text-left">
-                            <label className="block mb-2 tracking-wide text-gray-800" htmlFor="forgetemail">
-                                Your Email Address
+                <h1 className="mb-3 text-xl font-bold text-center">Reset Your Password</h1>
+                <form>
+                    <div className="mb-5 text-left">
+                        <label className="block mb-2 tracking-wide text-gray-800" htmlFor="forgetemail">
+                            Your Email Address
                             </label>
-                            <input className="w-full px-3 py-2 leading-tight text-gray-700 transition duration-300 ease-in-out border-2 border-gray-400 rounded appearance-none focus:outline-none focus:border-indigo-600" id="forgetemail" name="forgetemail" placeholder="Enter your email" type="text" />
-                        </div>
-                        <button onClick={handleForgotPass} className="w-full px-4 py-2 mb-2 text-white transition duration-500 ease-in-out bg-indigo-600 rounded resetBtn hover:bg-indigo-700 focus:outline-none" type="button">
-                            Reset Password
+                        <input className="w-full px-3 py-2 leading-tight text-gray-700 transition duration-300 ease-in-out border-2 border-gray-400 rounded appearance-none focus:outline-none focus:border-indigo-600" id="forgetemail" name="forgetemail" placeholder="Enter your email" type="text" />
+                    </div>
+                    <button onClick={handleForgotPass} className="w-full px-4 py-2 mb-2 text-white transition duration-500 ease-in-out bg-indigo-600 rounded resetBtn hover:bg-indigo-700 focus:outline-none" type="button">
+                        Reset Password
                         </button>
-                        <p className="hidden py-1 text-center text-white rounded-lg resetMsg"></p>
-                    </form>
-                </div>
-            </Modal>
+                    <p className="hidden py-1 text-center text-white rounded-lg resetMsg"></p>
+                </form>
+            </CustomModal>
         </>
     );
 }

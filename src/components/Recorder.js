@@ -5,6 +5,8 @@ import { useLocation, useHistory } from 'react-router-dom';
 import { db } from '../firebase';
 import firebase from "firebase/app";
 
+let recorder, streams, blob, myScreen, mainConfig, myAudio;
+
 function invokeGetDisplayMedia(success, error) {
     if (navigator.mediaDevices.getDisplayMedia) {
         navigator.mediaDevices.getDisplayMedia({ video: true }).then(success).catch(error);
@@ -68,8 +70,6 @@ function stopCallback() {
         document.querySelector('.previewWrapper').style.display = 'block';
     });
 };
-
-var recorder, streams, blob, myScreen, mainConfig, myAudio;
 
 function start(pos, config) {
     if (config.mode === "Screen + Cam" && config.audio === 1) {

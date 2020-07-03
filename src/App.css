@@ -1,3 +1,5 @@
+@import "~video-react/dist/video-react.css";
+
 #attachmentPreviewWrapper::-webkit-scrollbar,
 .attachmentsWrapper::-webkit-scrollbar {
   height: 5px;
@@ -88,6 +90,10 @@ pre {
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
+}
+
+.video-react-volume-menu-button {
+  display: none;
 }
 
 @media (max-width: 575.98px) {

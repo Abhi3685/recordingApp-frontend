@@ -44,7 +44,7 @@ function Signup() {
             })
             .then(() => {
                 localStorage.setItem("username", fullname);
-                history.push('/videos');
+                history.push('/dashboard');
             })
             .catch((error) => {
                 button.disabled = false;

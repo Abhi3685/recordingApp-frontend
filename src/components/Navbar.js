@@ -3,14 +3,14 @@ import { useHistory } from 'react-router-dom';
 
 import userAvatar from '../assets/images/userAvatar.png';
 
-export default function Navbar() {
+export default function Navbar({ newVideoHandler }) {
     const token = localStorage.getItem("UUID");
     const name = localStorage.getItem("username");
     const history = useHistory();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     return (
-        <div className="flex items-center justify-between px-10 py-5 border-b border-gray-300 navbarWrapper sm:px-20">
+        <div className="flex items-center justify-between px-10 py-5 border-b bg-white border-gray-300 navbarWrapper sm:px-20">
             <div className="logoWrapper font-montserratBlack">
                 <p className="text-xl font-bold">LOGO</p>
             </div>
@@ -46,7 +46,7 @@ export default function Navbar() {
                                     </div>
                                     <div className="font-montserratRegular border-b pb-4 mb-5 border-gray-400">
                                         <p className="mb-3 font-montserratBold">Create</p>
-                                        <p className="px-5 py-1 mb-1 transition duration-300 ease-in rounded cursor-pointer hover:bg-blue-500 hover:text-white"><i className="mr-2 fa fa-plus-circle"></i> New Video</p>
+                                        <p onClick={newVideoHandler} className="px-5 py-1 mb-1 transition duration-300 ease-in rounded cursor-pointer hover:bg-blue-500 hover:text-white"><i className="mr-2 fa fa-plus-circle"></i> New Video</p>
                                         <p className="px-5 py-1 transition duration-300 ease-in rounded cursor-pointer hover:bg-blue-500 hover:text-white"><i className="mr-2 fa fa-plus-circle"></i> New Page</p>
                                     </div>
                                     <button onClick={() => { localStorage.removeItem("UUID"); localStorage.removeItem("username"); history.push("/"); }} className="py-2 w-full text-red-500 transition duration-300 ease-in border border-red-500 rounded hover:text-white hover:bg-red-500">Log out</button>
