@@ -16,7 +16,6 @@ import Signin from './components/Signin';
 import Trim from './components/Trim';
 import AddText from './components/AddText';
 import Watermark from './components/Watermark';
-import Page from './components/Page';
 import Contact from './components/Contact';
 
 function App() {
@@ -50,9 +49,6 @@ function App() {
         </Route>
         <Route path="/watermark">
           <Watermark />
-        </Route>
-        <Route path="/page/:pageId">
-          <Page />
         </Route>
         <Route path="/dashboard">
           <Dashboard />

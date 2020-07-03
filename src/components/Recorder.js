@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import RecordRTC from 'recordrtc';
+import RecordRTC, { getSeekableBlob } from 'recordrtc';
 import axios from 'axios';
 import { useLocation, useHistory } from 'react-router-dom';
 import { db } from '../firebase';
@@ -63,11 +63,13 @@ function stopCallback() {
             });
         }
 
-        blob = recorder.getBlob();
-        document.querySelector('video').srcObject = null;
-        document.querySelector('video').src = URL.createObjectURL(blob);
-        document.querySelector('video').muted = false;
-        document.querySelector('.previewWrapper').style.display = 'block';
+        getSeekableBlob(recorder.getBlob(), function (seekableBlob) {
+            blob = seekableBlob;
+            document.querySelector('video').srcObject = null;
+            document.querySelector('video').src = URL.createObjectURL(seekableBlob);
+            document.querySelector('video').muted = false;
+            document.querySelector('.previewWrapper').style.display = 'block';
+        });
     });
 };
 

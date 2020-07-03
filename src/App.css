@@ -1,71 +1,30 @@
 @import "~video-react/dist/video-react.css";
 
-#attachmentPreviewWrapper::-webkit-scrollbar,
-.attachmentsWrapper::-webkit-scrollbar {
-  height: 5px;
-  width: 10px;
-}
-
-#attachmentPreviewWrapper::-webkit-scrollbar-track,
-.attachmentsWrapper::-webkit-scrollbar-track {
-  background-color: #999;
-  border-radius: 10px;
-}
-
-#attachmentPreviewWrapper::-webkit-scrollbar-thumb,
-.attachmentsWrapper::-webkit-scrollbar-thumb {
-  background-color: #333;
-  border-radius: 10px;
-}
-
 .timeline_range_wrapper .input-range__track--background {
-  top: -30px;
+  top: -50px;
 }
 .timeline_range_wrapper .input-range__track--active {
   background: rgba(0, 0, 0, 0.5) !important;
-  height: 101px;
+  height: 140px;
   border-radius: 0;
+  border-top: 4px solid #ffd052;
+  border-bottom: 4px solid #ffd052;
 }
 .timeline_range_wrapper .input-range__track {
   background: none;
 }
 .timeline_range_wrapper .input-range__slider {
-  border-radius: 5px;
-  height: 110px;
-  width: 6px;
-  margin-top: -104px;
+  border-radius: 0px;
+  height: 140px;
+  width: 8px;
+  margin-top: -140px;
   margin-left: 0;
+  background: #ffd052;
+  border: 0;
 }
 
-#attachmentPreviewWrapper img {
-  object-fit: cover;
-  width: 180px;
-  height: 150px;
-  display: inline-block;
-  margin: 5px;
-  border: 1px solid #eee;
-  border-radius: 10px;
-}
-
-#attachmentPreviewWrapper video {
-  object-fit: cover;
-  width: 270px;
-  display: inline-block;
-  margin: 5px;
-  border: 1px solid #eee;
-  border-radius: 10px;
-}
-
-#attachmentPreviewWrapper video:focus {
-  outline: none;
-}
-
-pre {
-  white-space: pre-wrap; /* Since CSS 2.1 */
-  white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
-  white-space: -pre-wrap; /* Opera 4-6 */
-  white-space: -o-pre-wrap; /* Opera 7 */
-  word-wrap: break-word; /* Internet Explorer 5.5+ */
+.timeline_range_wrapper .input-range__slider:active {
+  transform: none;
 }
 
 .Modal {

@@ -100,10 +100,10 @@ export default function NewVideo({ visible, hide }) {
           <div className="dragCircle" style={{
             position: 'absolute',
             top: 400, left: 0,
-            width: '300px',
+            width: '280px',
             backgroundColor: '#000',
             overflow: 'hidden',
-            height: '300px',
+            height: '280px',
             borderRadius: '50%',
             cursor: 'move',
             margin: 10
