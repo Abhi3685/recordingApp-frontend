@@ -4,6 +4,12 @@ import ReactPlayer from 'react-player'
 import 'react-input-range/lib/css/index.css';
 import { useLocation, useHistory } from 'react-router-dom';
 import Axios from 'axios';
+import Navbar from './Navbar';
+
+import DesignElement4 from '../assets/images/DesignElement4.png';
+import alarmClock from '../assets/images/alarmClock.png';
+import { Player, BigPlayButton, LoadingSpinner, ControlBar } from 'video-react';
+import { formatTime } from '../utils';
 
 function round(value, precision) {
     var multiplier = Math.pow(10, precision || 0);
@@ -104,7 +110,79 @@ export default function AddText() {
 
     return (
         <>
-            <div style={{ width: '1530px', minWidth: '1530px' }} className="flex mainWrapper h-screen">
+            <div className="fixed left-0 right-0 bottom-0 top-0" style={{ backgroundColor: "#5A67D9" }}>
+                <Navbar />
+                <img src={DesignElement4} alt="" className="absolute bottom-0 left-0 p-3 w-32" />
+                <img src={DesignElement4} alt="" className="absolute right-0 p-3 w-32" style={{ top: 75 }} />
+
+                <div className="bg-white relative mt-5 mx-auto rounded px-5 py-5" style={{ width: '96%' }}>
+                    <div className="flex items-center mb-5 rounded-lg" style={{}}>
+                        <div className="flex-1">
+                            <div className="w-4/5 mx-auto">
+                                <Player src={location.state.url}>
+                                    <BigPlayButton position="center" />
+                                    <LoadingSpinner />
+                                    <ControlBar autoHide={false} />
+                                </Player>
+                            </div>
+                        </div>
+                        <div className="text-center font-montserratSemiBold mr-16 pr-10 flex flex-col items-center overflow-y-auto" style={{ width: '35%', height: 370 }}>
+                            <h1 className="text-xl mb-5">Video Subtitles</h1>
+                            {
+                                Array(8).fill(0).map(i =>
+                                    <div className="flex w-full mb-5">
+                                        <div className="mr-5 w-64">
+                                            <img src={alarmClock} alt="" className="inline-block mr-3" /> 00:00:02,000<br />
+                                            <img src={alarmClock} alt="" className="inline-block mr-3" /> 00:00:05,000
+                                        </div>
+                                        <div className="relative w-full px-3 py-1 rounded-lg" style={{ backgroundColor: "rgba(90, 103, 217, 0.2)" }}>
+                                            <p className="text-left text-sm font-montserratRegular" style={{ maxWidth: 220, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }}>Pretty Long Subtitle Coming here that you might want to not see and understand.</p>
+                                            <i className="fa fa-trash absolute text-red-600" style={{ top: 15, right: 10 }} />
+                                        </div>
+                                    </div>
+                                )
+                            }
+                        </div>
+                    </div>
+
+                    <div className="px-5 py-2 rounded-lg" style={{ backgroundColor: "rgba(90, 103, 217, 0.2)" }}>
+                        <div className="flex justify-between font-montserratBold mb-3">
+                            <p>Enter Text: </p>
+                            <div className="flex">
+                                <p className="mr-3">Text Duration: </p>
+                                <input type="text" className="w-40" />
+                                <span className="mx-3">to</span>
+                                <input type="text" className="w-40" />
+                            </div>
+                        </div>
+                        <input type="text" className="w-full mb-3" />
+                        <div className="flex items-center">
+                            <div className="flex-1 px-5 pt-10 pb-5 border-4 border-dashed" style={{ borderColor: "rgba(90, 103, 217, 0.2)" }}>
+                                <InputRange
+                                    maxValue={round(location.state.duration, 2)}
+                                    minValue={0}
+                                    formatLabel={value => formatTime(value)}
+                                    step={.1}
+                                    value={value}
+                                    onChange={value => {
+                                        if (value.min < 0) value.min = 0;
+                                        if (value.max > location.state.duration) value.max = location.state.duration;
+                                        var min = round(value.min, 2);
+                                        var max = round(value.max, 2);
+                                        setValue({ min, max });
+                                    }} />
+                            </div>
+                            <div className="flex flex-col ml-10 w-56">
+                                <button className="bg-indigo-600 text-white py-2 rounded w-full mb-2">Add Subtitle</button>
+                                <button className="bg-indigo-600 text-white py-2 rounded w-full">Return to Dashboard</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            {/* <div style={{ width: '1530px', minWidth: '1530px' }} className="flex mainWrapper h-screen">
                 <div className="leftPart flex flex-col flex-1 bg-gray-800">
                     <div className="playerWrapper flex flex-1 items-center justify-center">
                         <ReactPlayer
@@ -176,7 +254,7 @@ export default function AddText() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </>
     )
 }

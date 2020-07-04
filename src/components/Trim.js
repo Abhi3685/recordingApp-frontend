@@ -122,7 +122,7 @@ export default function Trim() {
                 <img src={DesignElement4} alt="" className="absolute bottom-0 left-0 p-3 w-32" />
                 <img src={DesignElement4} alt="" className="absolute right-0 p-3 w-32" style={{ top: 75 }} />
 
-                <div className="bg-white relative mt-8 mx-auto rounded p-5" style={{ width: '95%' }}>
+                <div className="bg-white relative mt-8 mx-auto rounded px-5 py-8" style={{ width: '96%' }}>
                     <div className="flex py-5 rounded-lg" style={{ backgroundColor: "rgba(90, 103, 217, 0.2)" }}>
                         <div className="flex-1">
                             <div className="w-2/3 mx-auto">
@@ -145,18 +145,18 @@ export default function Trim() {
                         </div>
                     </div>
 
-                    <div className="timeline_wrapper relative mt-5 py-5 rounded-lg" style={{ backgroundColor: "rgba(90, 103, 217, 0.2)" }}>
-                        <div style={{}} className="mx-10 timeline_thumb_Wrapper">
-                            <img alt="" className="inline-block thumb-1" style={{ width: '10%', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="" className="inline-block thumb-2" style={{ width: '10%', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="" className="inline-block thumb-3" style={{ width: '10%', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="" className="inline-block thumb-4" style={{ width: '10%', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="" className="inline-block thumb-5" style={{ width: '10%', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="" className="inline-block thumb-6" style={{ width: '10%', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="" className="inline-block thumb-7" style={{ width: '10%', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="" className="inline-block thumb-8" style={{ width: '10%', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="" className="inline-block thumb-9" style={{ width: '10%', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="" className="inline-block thumb-10" style={{ width: '10%', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                    <div className="timeline_wrapper relative mt-5" style={{}}>
+                        <div style={{}} className="timeline_thumb_Wrapper">
+                            <img alt="" className="inline-block thumb-1 rounded-l-lg" style={{ width: '10%', height: '120px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="" className="inline-block thumb-2" style={{ width: '10%', height: '120px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="" className="inline-block thumb-3" style={{ width: '10%', height: '120px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="" className="inline-block thumb-4" style={{ width: '10%', height: '120px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="" className="inline-block thumb-5" style={{ width: '10%', height: '120px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="" className="inline-block thumb-6" style={{ width: '10%', height: '120px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="" className="inline-block thumb-7" style={{ width: '10%', height: '120px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="" className="inline-block thumb-8" style={{ width: '10%', height: '120px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="" className="inline-block thumb-9" style={{ width: '10%', height: '120px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="" className="inline-block thumb-10 rounded-r-lg" style={{ width: '10%', height: '120px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
                         </div>
                         <div style={{ position: 'absolute', top: 52, left: 40, right: 40 }} className="timeline_range_wrapper">
                             <InputRange
@@ -177,65 +177,6 @@ export default function Trim() {
 
                 </div>
             </div>
-
-            <div className="hidden flex-col h-screen justify-end">
-                {/* <div style={{ width: '1530px', minWidth: '1530px' }} className="upperWrapper flex-1 bg-gray-300">
-                    <div className="playerWrapper flex items-center h-full" style={{ width: '70%', float: 'left' }}>
-                        <ReactPlayer
-                            controls
-                            className="mx-auto"
-                            progressInterval={0.01}
-                            onProgress={onProgress}
-                            onSeek={onSeek}
-                            width="720px"
-                            height="400px"
-                            url={location.state.url}
-                        />
-                    </div>
-                    <div className="bg-gray-800 h-full flex items-center" style={{ width: '30%', float: 'left' }}>
-                        <div className="text-gray-400 text-center">
-                            <p className="mb-5 text-lg">Cut from, sec: </p>
-                            <input id="startTime" className="bg-transparent rounded border border-gray-200 w-32 px-4 py-2" value={value.min} readOnly />
-                            <span className="text-lg mx-5">to</span>
-                            <input id="endTime" className="bg-transparent rounded border border-gray-200 w-32 px-4 py-2" value={value.max} readOnly />
-
-                            <button onClick={() => apply(location.state.url, round(location.state.duration, 2), location.state.index)} className="my-10 bg-indigo-600 text-white py-2 rounded w-48">Apply Changes</button>
-                        </div>
-                    </div>
-                </div> */}
-                {/* <div style={{ width: '1530px', minWidth: '1530px' }} className="lowerWrapper flex items-center h-40 bg-gray-500">
-                    <div className="timeline_wrapper relative">
-                        <div style={{ width: '1400px', minWidth: '1400px', marginLeft: 65 }} className="timeline_thumb_Wrapper">
-                            <img alt="Thumbnail" className="inline-block thumb-1" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="Thumbnail" className="inline-block thumb-2" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="Thumbnail" className="inline-block thumb-3" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="Thumbnail" className="inline-block thumb-4" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="Thumbnail" className="inline-block thumb-5" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="Thumbnail" className="inline-block thumb-6" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="Thumbnail" className="inline-block thumb-7" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="Thumbnail" className="inline-block thumb-8" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="Thumbnail" className="inline-block thumb-9" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="Thumbnail" className="inline-block thumb-10" style={{ width: '140px', height: '100px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                        </div>
-                        <div style={{ position: 'absolute', top: 32, left: 65, right: 0 }} className="timeline_range_wrapper">
-                            <InputRange
-                                maxValue={round(location.state.duration, 2)}
-                                minValue={0}
-                                formatLabel={value => ``}
-                                step={.01}
-                                value={value}
-                                onChange={value => {
-                                    if (value.min < 0) value.min = 0;
-                                    if (value.max > location.state.duration) value.max = location.state.duration;
-                                    var min = round(value.min, 2);
-                                    var max = round(value.max, 2);
-                                    setValue({ min, max });
-                                }} />
-                        </div>
-                    </div>
-                </div> */}
-            </div>
-
 
             <video crossOrigin="anonymous" id="hiddenPlayer" hidden src={location.state.url}></video>
             <canvas hidden width="720" height="480"></canvas>

@@ -66,7 +66,7 @@ function Videos({ videos, setVideos, recordVideo }) {
                                         </div>
                                         <div className="absolute hidden py-2 bg-gray-100 rounded shadow-lg menuWrapper" style={{ bottom: 30, right: 5 }}>
                                             <button className="block w-full px-5 mb-1 hover:bg-gray-400" onClick={() => { history.push('/trim', { ...video, index }); }}>Trim</button>
-                                            <button className="block w-full px-5 mb-1 hover:bg-gray-400" onClick={() => { history.push('/addText', { ...video, index }); }}>Add Text</button>
+                                            <button className="block w-full px-5 mb-1 hover:bg-gray-400" onClick={() => { history.push('/addText', { ...video, index }); }}>Add Subtitle</button>
                                             <button className="block w-full px-5 mb-1 hover:bg-gray-400" onClick={() => { history.push('/watermark', { ...video, index }); }}>Watermark</button>
                                             <button className="block w-full px-5 mb-1 text-red-400 hover:bg-red-400 hover:text-white" onClick={() => handleDelete(video, index)}>Delete</button>
                                         </div>
