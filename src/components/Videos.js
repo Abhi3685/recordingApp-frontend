@@ -46,7 +46,7 @@ function Videos({ videos, setVideos, recordVideo }) {
             <img src={doodle} alt="" className="hidden xl:block absolute" style={{ zIndex: -10, width: '250px', bottom: 30, right: 10 }} />
             <img src={DesignElement} alt="" className="hidden xl:block absolute transform rotate-90" style={{ zIndex: -10, width: '220px', top: 140, right: 5 }} />
             <div className="contentWrapper z-10">
-                <div className="contentHeader border-b border-gray-300 py-4 px-8 text-xl font-montserratBold">
+                <div className="contentHeader border-b mx-8 border-gray-300 py-4 text-xl font-montserratBold">
                     My <span className="text-purple-700">Videos</span>
                 </div>
                 <div className="absolute inset-0 content overflow-auto pl-8 pt-6 pb-10" style={{ marginTop: 70 }}>
@@ -62,7 +62,7 @@ function Videos({ videos, setVideos, recordVideo }) {
                                         <p className="text-lg mt-3 font-montserratBold">{video.name.length < 25 ? video.name : (video.name.substr(0, 25) + " . . .")}</p>
                                         <div className="flex mr-3 justify-between">
                                             <p className="text-gray-600">{formatTime(video.duration)} • <Moment fromNow>{video.createdAt}</Moment></p>
-                                            <img src={moreIcon} onClick={toggleMenu} className="cursor-pointer transform rotate-90" />
+                                            <img src={moreIcon} alt="" onClick={toggleMenu} className="cursor-pointer transform rotate-90" />
                                         </div>
                                         <div className="absolute hidden py-2 bg-gray-100 rounded shadow-lg menuWrapper" style={{ bottom: 30, right: 5 }}>
                                             <button className="block w-full px-5 mb-1 hover:bg-gray-400" onClick={() => { history.push('/trim', { ...video, index }); }}>Trim</button>
