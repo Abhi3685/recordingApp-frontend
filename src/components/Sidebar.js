@@ -13,7 +13,7 @@ export default function Sidebar({ user, newVideoHandler }) {
                 <p className="mt-3 uppercase font-montserratBold">{user}</p>
             </div>
             <div className="flex flex-col">
-                <button onClick={() => { }} className="py-2 mx-4 mb-5 transition duration-300 ease-in border border-indigo-600 rounded text-indigo-600 hover:text-white hover:bg-indigo-500">New Video</button>
+                <button onClick={newVideoHandler} className="py-2 mx-4 mb-5 transition duration-300 ease-in border border-indigo-600 rounded text-indigo-600 hover:text-white hover:bg-indigo-500">New Video</button>
                 <button onClick={() => { localStorage.removeItem("UUID"); localStorage.removeItem("username"); history.push("/"); }} className="py-2 mx-4 mb-5 text-red-500 transition duration-300 ease-in border border-red-500 rounded hover:text-white hover:bg-red-500">Log out</button>
             </div>
         </div>
