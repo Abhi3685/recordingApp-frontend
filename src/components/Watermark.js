@@ -77,37 +77,38 @@ export default function Watermark() {
 
     return (
         <>
-            <div className="fixed left-0 right-0 bottom-0 top-0" style={{ backgroundColor: "#5A67D9" }}>
+            <div className="fixed left-0 right-0 bottom-0 top-0 overflow-y-auto" style={{ backgroundColor: "#5A67D9" }}>
                 <Navbar />
                 <img src={DesignElement4} alt="" className="absolute bottom-0 left-0 p-3 w-32" />
                 <img src={DesignElement4} alt="" className="absolute right-0 p-3 w-32" style={{ top: 75 }} />
-                <div className={"bg-white relative w-2/3 mt-10 mx-auto rounded p-5" + (modalIsOpen ? " hidden" : " block")}>
+                <div className={"flex flex-col items-center justify-center bg-white relative w-11/12 lg:w-2/3 mt-10 mb-8 mx-auto rounded p-5" + (modalIsOpen ? " hidden" : " block")} style={{ height: "calc(100% - 150px)" }}>
                     <img src={DesignElement3} alt="" className="w-32 absolute top-0 transform rotate-90" style={{ right: -20 }} />
                     <img src={DesignElement3} alt="" className="w-32 absolute bottom-0 transform -rotate-90" style={{ left: -20 }} />
 
-                    <i onClick={() => history.goBack()} className="fa fa-arrow-left cursor-pointer text-gray-600 text-xl" />
-                    <p className="text-center font-montserratSemiBold mt-5 text-lg">Upload logo (png format) to add as watermark</p>
-                    <label className="w-5/12 transition duration-500 ease-in-out mt-12 mx-auto flex flex-col items-center pt-4 pb-3 bg-white text-indigo-600 rounded-lg border-dashed border-4 cursor-pointer" style={{ borderColor: "rgba(90, 103, 217, 0.2)" }}>
+                    <i onClick={() => history.goBack()} className="absolute top-0 left-0 p-5 fa fa-arrow-left cursor-pointer text-gray-600 text-xl" />
+                    <p className="text-center mb-10 font-montserratSemiBold text-lg">Upload logo (png format) to add as watermark</p>
+                    <label className="w-full sm:w-2/3 lg:w-5/12 transition duration-500 ease-in-out flex flex-col items-center pt-4 pb-3 bg-white text-indigo-600 rounded-lg border-dashed border-4 cursor-pointer" style={{ borderColor: "rgba(90, 103, 217, 0.2)" }}>
                         <img src={Cloud_Upload_Icon} className="w-48" alt="" />
                         <span className="mt-2 font-montserratSemiBold text-base tracking-wide" style={{ color: "rgba(90, 103, 217, 0.5)" }}>Select a file</span>
                         <input onChange={onChangeHandler} type='file' id="logo" className="hidden" />
                     </label>
-                    <p className="text-center mt-5" style={{ color: "rgba(90, 103, 217, 0.5)" }}>{filename}</p>
-                    <button onClick={apply} className="block w-64 mx-auto py-2 text-white bg-green-700 rounded hover:bg-green-600 focus:outline-none mt-16 mb-10">Preview Video</button>
+                    <p className="mt-5 mb-10" style={{ color: "rgba(90, 103, 217, 0.5)" }}>{filename}</p>
+                    <button onClick={apply} className="block w-56 py-2 text-white bg-green-700 rounded hover:bg-green-600 focus:outline-none">Preview Video</button>
                 </div>
-                <div className={"bg-white relative w-2/3 mt-10 mx-auto rounded p-5" + (modalIsOpen ? " block" : " hidden")}>
+                <div className={"bg-white relative flex flex-col items-center justify-center w-11/12 lg:w-2/3 mt-10 mb-8 mx-auto rounded p-5" + (modalIsOpen ? " block" : " hidden")} style={{ height: "calc(100% - 150px)" }}>
                     <img src={DesignElement3} alt="" className="w-32 absolute top-0 transform rotate-90" style={{ right: -20 }} />
                     <img src={DesignElement3} alt="" className="w-32 absolute bottom-0 transform -rotate-90" style={{ left: -20 }} />
 
-                    <i onClick={() => setIsOpen(false)} className="fa fa-arrow-left cursor-pointer text-gray-600 text-xl" />
-                    <div className="w-2/3 mx-auto mt-5">
-                        <Player src={vidUrl}>
-                            <BigPlayButton position="center" />
-                            <LoadingSpinner />
-                            <ControlBar autoHide={false} />
-                        </Player>
+                    <i onClick={() => setIsOpen(false)} className="absolute top-0 left-0 p-5 fa fa-arrow-left cursor-pointer text-gray-600 text-xl" />
+                    <div className="w-full">
+                        <div className="w-full lg:w-2/3 mx-auto mb-5">
+                            <Player src={vidUrl}>
+                                <BigPlayButton position="center" />
+                                <LoadingSpinner />
+                            </Player>
+                        </div>
+                        <button onClick={() => saveChanges(location.state.index)} className="block w-64 mx-auto py-2 text-white bg-green-700 rounded hover:bg-green-600 focus:outline-none">Apply & Save Changes</button>
                     </div>
-                    <button onClick={() => saveChanges(location.state.index)} className="block w-64 mx-auto py-2 text-white bg-green-700 rounded hover:bg-green-600 focus:outline-none mt-10 mb-10">Apply & Save Changes</button>
                 </div>
             </div>
         </>
