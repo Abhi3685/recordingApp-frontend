@@ -1,5 +1,23 @@
 @import "~video-react/dist/video-react.css";
 
+.subtitlesWrapper::-webkit-scrollbar {
+  width: 5px;
+}
+
+.subtitlesWrapper::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+
+.subtitlesWrapper::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.timeline_thumb_Wrapper {
+  height: 100px !important;
+}
+
 .input-range__label--value {
   top: -2.2rem !important;
 }
@@ -12,7 +30,7 @@
 }
 .timeline_range_wrapper .input-range__track--active {
   background: rgba(0, 0, 0, 0.5) !important;
-  height: 120px;
+  height: 100px;
   border-radius: 0;
   border-top: 4px solid #ffd052;
   border-bottom: 4px solid #ffd052;
@@ -22,9 +40,9 @@
 }
 .timeline_range_wrapper .input-range__slider {
   border-radius: 0px;
-  height: 120px;
+  height: 100px;
   width: 8px;
-  margin-top: -120px;
+  margin-top: -100px;
   margin-left: 0;
   background: #ffd052;
   border: 0 !important;
@@ -126,11 +144,82 @@
   }
 }
 
-@media (min-width: 992px) and (max-width: 1199.98px) {
+@media (min-width: 901px) and (max-width: 1135px) {
+  .editorWrapper {
+    margin-bottom: 30px;
+  }
+  .trim-text {
+    margin-bottom: 20px;
+  }
+  .trim-start-input {
+    display: block;
+  }
+  .trim-input-separator {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+  .trim-end-input {
+    display: block;
+    margin-bottom: 10px;
+  }
 }
 
-@media (min-width: 1200px) and (max-width: 1400px) {
+@media (max-width: 900px) {
+  .editorWrapper {
+    height: auto !important;
+    margin-bottom: 30px;
+  }
+  .editorTopWrapper {
+    display: block;
+  }
+  .trimPlayerWrapper {
+    width: 95%;
+  }
+  .trimControls {
+    width: 100% !important;
+    flex-direction: column;
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+  .trim-text {
+    margin-right: 30px;
+    margin-bottom: 0;
+  }
+  .trim-inputs {
+    margin-bottom: 0;
+  }
+  .trimControlsUpper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .trimApplyBtn {
+    margin-bottom: 0;
+    margin-right: 15px;
+  }
+  .timeline_thumb_Wrapper {
+    height: 70px !important;
+  }
+  .timeline_range_wrapper .input-range__track--active {
+    height: 70px;
+  }
+  .timeline_range_wrapper .input-range__slider {
+    height: 70px;
+    margin-top: -70px;
+  }
 }
 
-@media (min-width: 1300px) {
+@media (max-width: 610px) {
+  .trimApplyBtn {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+  .trimControlsUpper {
+    flex-direction: column;
+  }
+  .trim-text {
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
 }

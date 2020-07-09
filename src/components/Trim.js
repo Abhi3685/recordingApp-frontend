@@ -117,15 +117,15 @@ export default function Trim() {
 
     return (
         <>
-            <div className="fixed left-0 right-0 bottom-0 top-0" style={{ backgroundColor: "#5A67D9" }}>
+            <div className="fixed left-0 overflow-y-auto right-0 bottom-0 top-0" style={{ backgroundColor: "#5A67D9" }}>
                 <Navbar />
                 <img src={DesignElement4} alt="" className="absolute bottom-0 left-0 p-3 w-32" />
                 <img src={DesignElement4} alt="" className="absolute right-0 p-3 w-32" style={{ top: 75 }} />
 
-                <div className="bg-white relative mt-8 mx-auto rounded px-5 py-8" style={{ width: '96%' }}>
-                    <div className="flex py-5 rounded-lg" style={{ backgroundColor: "rgba(90, 103, 217, 0.2)" }}>
+                <div className="bg-white editorWrapper relative mt-5 mx-auto rounded px-5 pb-8 flex flex-col" style={{ width: '96%' }}>
+                    <div className="flex flex-1 editorTopWrapper items-center py-5 mt-5 rounded-lg" style={{ backgroundColor: "rgba(90, 103, 217, 0.2)" }}>
                         <div className="flex-1">
-                            <div className="w-2/3 mx-auto">
+                            <div className="w-9/12 trimPlayerWrapper mx-auto">
                                 <Player src={location.state.url}>
                                     <BigPlayButton position="center" />
                                     <LoadingSpinner />
@@ -133,30 +133,34 @@ export default function Trim() {
                                 </Player>
                             </div>
                         </div>
-                        <div className="text-center font-montserratSemiBold mr-16 my-16 flex flex-col items-center justify-between" style={{ width: '30%' }}>
-                            <p className="text-lg">Cut from, sec: </p>
-                            <div className="mb-5">
-                                <input id="startTime" className="bg-transparent rounded border border-indigo-600 w-32 px-4 py-2" value={value.min} readOnly />
-                                <span className="text-lg mx-5">to</span>
-                                <input id="endTime" className="bg-transparent rounded border border-indigo-600 w-32 px-4 py-2" value={value.max} readOnly />
+                        <div className="text-center trimControls font-montserratSemiBold mr-16 my-16 flex flex-col items-center justify-between" style={{ width: '30%' }}>
+                            <div className="trimControlsUpper">
+                                <p className="text-lg trim-text mb-4">Cut from, sec: </p>
+                                <div className="mb-10 trim-inputs">
+                                    <input id="startTime" className="bg-transparent rounded trim-start-input border border-indigo-600 w-32 px-4 py-2" value={value.min} readOnly />
+                                    <span className="text-lg trim-input-separator mx-2 sm:mx-5">to</span>
+                                    <input id="endTime" className="bg-transparent rounded trim-end-input border border-indigo-600 w-32 px-4 py-2" value={value.max} readOnly />
+                                </div>
                             </div>
-                            <button onClick={() => apply(location.state.url, round(location.state.duration, 2), location.state.index)} className="bg-indigo-600 text-white py-2 rounded w-64">Apply Changes</button>
-                            <button onClick={() => history.goBack()} className="bg-indigo-600 text-white py-2 rounded w-64">Return to Dashboard</button>
+                            <div className="trimButtonsWrapper">
+                                <button onClick={() => apply(location.state.url, round(location.state.duration, 2), location.state.index)} className="trimApplyBtn bg-indigo-600 text-white py-2 mb-3 rounded w-64">Apply Changes</button>
+                                <button onClick={() => history.goBack()} className="trimBackBtn bg-indigo-600 text-white py-2 rounded w-64">Return to Dashboard</button>
+                            </div>
                         </div>
                     </div>
 
                     <div className="timeline_wrapper relative mt-5" style={{}}>
-                        <div style={{}} className="timeline_thumb_Wrapper">
-                            <img alt="" className="inline-block thumb-1 rounded-l-lg" style={{ width: '10%', height: '120px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="" className="inline-block thumb-2" style={{ width: '10%', height: '120px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="" className="inline-block thumb-3" style={{ width: '10%', height: '120px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="" className="inline-block thumb-4" style={{ width: '10%', height: '120px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="" className="inline-block thumb-5" style={{ width: '10%', height: '120px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="" className="inline-block thumb-6" style={{ width: '10%', height: '120px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="" className="inline-block thumb-7" style={{ width: '10%', height: '120px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="" className="inline-block thumb-8" style={{ width: '10%', height: '120px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="" className="inline-block thumb-9" style={{ width: '10%', height: '120px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
-                            <img alt="" className="inline-block thumb-10 rounded-r-lg" style={{ width: '10%', height: '120px' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                        <div style={{ height: 120 }} className="timeline_thumb_Wrapper">
+                            <img alt="" className="inline-block thumb-1 rounded-l-lg" style={{ width: '10%', height: '100%' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="" className="inline-block thumb-2" style={{ width: '10%', height: '100%' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="" className="inline-block thumb-3" style={{ width: '10%', height: '100%' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="" className="inline-block thumb-4" style={{ width: '10%', height: '100%' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="" className="inline-block thumb-5" style={{ width: '10%', height: '100%' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="" className="inline-block thumb-6" style={{ width: '10%', height: '100%' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="" className="inline-block thumb-7" style={{ width: '10%', height: '100%' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="" className="inline-block thumb-8" style={{ width: '10%', height: '100%' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="" className="inline-block thumb-9" style={{ width: '10%', height: '100%' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
+                            <img alt="" className="inline-block thumb-10 rounded-r-lg" style={{ width: '10%', height: '100%' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
                         </div>
                         <div style={{ position: 'absolute', top: 52, left: 40, right: 40 }} className="timeline_range_wrapper">
                             <InputRange
