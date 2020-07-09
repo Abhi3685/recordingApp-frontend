@@ -110,16 +110,16 @@ export default function AddText() {
 
     return (
         <>
-            <div className="fixed left-0 right-0 bottom-0 top-0" style={{ backgroundColor: "#5A67D9" }}>
+            <div className="fixed left-0 right-0 bottom-0 top-0" style={{ backgroundColor: "#5A67D9", overflow: 'auto' }}>
                 <Navbar />
                 <img src={DesignElement4} alt="" className="absolute bottom-0 left-0 p-3 w-32" />
                 <img src={DesignElement4} alt="" className="absolute right-0 p-3 w-32" style={{ top: 75 }} />
 
-                <div className="bg-white relative flex flex-col mt-5 mx-auto rounded px-5 py-5" style={{ width: '98%', height: "calc(100% - 110px)" }}>
+                <div className="bg-white relative flex flex-col mt-5 mx-auto rounded px-5 py-4" style={{ width: '97%', marginBottom: 15 }}>
 
-                    <div className="flex items-center mb-5 rounded-lg" style={{}}>
+                    <div className="addTextUpperWrapper flex items-center mb-5 rounded-lg">
                         <div className="flex-1">
-                            <div className="w-9/12 mx-auto">
+                            <div className="addTextPlayerWrapper w-8/12 mx-auto">
                                 <Player src={location.state.url}>
                                     <BigPlayButton position="center" />
                                     <LoadingSpinner />
@@ -127,18 +127,18 @@ export default function AddText() {
                                 </Player>
                             </div>
                         </div>
-                        <div className="text-center font-montserratSemiBold mr-16 flex flex-col items-center" style={{ width: '35%' }}>
+                        <div className="text-center subtitleContainer font-montserratSemiBold mr-16 flex flex-col items-center" style={{ width: '35%' }}>
                             <h1 className="text-xl mb-3">Video Subtitles</h1>
-                            <div style={{ height: 350 }} className="overflow-y-auto subtitlesWrapper pr-10">
+                            <div style={{ height: 300 }} className="overflow-y-auto subtitlesWrapper sm:pr-10">
                                 {
                                     Array(6).fill(0).map(i =>
                                         <div className="flex w-full mb-5">
                                             <div className="mr-5 w-64">
-                                                <img src={alarmClock} alt="" className="inline-block mr-3" /> 00:00:02,000<br />
-                                                <img src={alarmClock} alt="" className="inline-block mr-3" /> 00:00:05,000
+                                                <img src={alarmClock} alt="" className="hidden sm:inline-block mr-3" /> 00:00:02,000<br />
+                                                <img src={alarmClock} alt="" className="hidden sm:inline-block mr-3" /> 00:00:05,000
                                         </div>
                                             <div className="relative w-full px-3 py-1 rounded-lg" style={{ backgroundColor: "rgba(90, 103, 217, 0.2)" }}>
-                                                <p className="text-left text-sm font-montserratRegular" style={{ maxWidth: 220, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }}>Pretty Long Subtitle Coming here that you might want to not see and understand.</p>
+                                                <p className="text-left text-sm font-montserratRegular subtitleWrapper" style={{ maxWidth: 220, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }}>Pretty Long Subtitle Coming here that you might want to not see and understand.</p>
                                                 <i className="fa fa-trash absolute text-red-600" style={{ top: 15, right: 10 }} />
                                             </div>
                                         </div>
@@ -148,19 +148,19 @@ export default function AddText() {
                         </div>
                     </div>
 
-                    <div className="px-5 py-2 mb-5 rounded-lg" style={{ backgroundColor: "rgba(90, 103, 217, 0.2)" }}>
-                        <div className="flex justify-between font-montserratBold mb-3">
+                    <div className="px-5 py-3 rounded-lg" style={{ backgroundColor: "rgba(90, 103, 217, 0.2)" }}>
+                        <div className="flex items-center justify-between font-montserratBold">
                             <p>Enter Text: </p>
-                            <div className="flex">
+                            <div className="hidden items-center md:flex">
                                 <p className="mr-3">Text Duration: </p>
-                                <input type="text" className="w-40" />
+                                <input type="text" className="w-40 px-4 py-1 border border-gray-600 rounded-lg focus:outline-none opacity-50" />
                                 <span className="mx-3">to</span>
-                                <input type="text" className="w-40" />
+                                <input type="text" className="w-40 px-4 py-1 border border-gray-600 rounded-lg focus:outline-none opacity-50" />
                             </div>
                         </div>
-                        <input type="text" className="w-full mb-3" />
-                        <div className="flex items-center mt-1">
-                            <div className="flex-1 px-5 pt-10 pb-5 border-4 border-dashed" style={{ borderColor: "rgba(90, 103, 217, 0.2)" }}>
+                        <input type="text" className="w-full my-3 px-4 py-2 border border-gray-600 rounded-lg focus:outline-none" />
+                        <div className="flex addTextControls items-center mt-1">
+                            <div className="flex-1 sliderWrapper px-5 pt-10 pb-5 border-4 border-dashed" style={{ borderColor: "rgba(90, 103, 217, 0.2)" }}>
                                 <InputRange
                                     maxValue={round(location.state.duration, 2)}
                                     minValue={0}
@@ -175,7 +175,7 @@ export default function AddText() {
                                         setValue({ min, max });
                                     }} />
                             </div>
-                            <div className="flex flex-col ml-10 w-56">
+                            <div className="flex addTextBtnWrapper flex-col ml-10 w-56">
                                 <button className="bg-indigo-600 text-white py-2 rounded w-full mb-2">Add Subtitle</button>
                                 <button className="bg-indigo-600 text-white py-2 rounded w-full">Return to Dashboard</button>
                             </div>
@@ -207,7 +207,7 @@ export default function AddText() {
                     </div>
                     <div className="controlsWrapper bg-gray-500 h-64 p-5">
                         <label className="block mb-2">Enter Text: </label>
-                        <input type="text" id="textToAdd" className="mb-5 focus:outline-none focus:border-indigo-600 w-full border-2 border-gray-400 rounded py-2 px-3 text-gray-700 mb-2" />
+                        <input type="text" id="textToAdd" className="focus:outline-none focus:border-indigo-600 w-full border-2 border-gray-400 rounded py-2 px-3 text-gray-700 mb-2" />
                         <InputRange
                             maxValue={round(location.state.duration, 2)}
                             minValue={0}

@@ -1,19 +1,5 @@
 @import "~video-react/dist/video-react.css";
 
-.subtitlesWrapper::-webkit-scrollbar {
-  width: 5px;
-}
-
-.subtitlesWrapper::-webkit-scrollbar-track {
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
-}
-
-.subtitlesWrapper::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background-color: rgba(0, 0, 0, 0.6);
-}
-
 .timeline_thumb_Wrapper {
   height: 100px !important;
 }
@@ -208,6 +194,24 @@
     height: 70px;
     margin-top: -70px;
   }
+
+  .addTextUpperWrapper {
+    display: block;
+  }
+  .addTextPlayerWrapper {
+    width: 95% !important;
+  }
+  .subtitleContainer {
+    width: 100% !important;
+    margin: 20px auto;
+  }
+  .subtitlesWrapper {
+    width: 100%;
+  }
+  .subtitleWrapper {
+    max-width: none;
+    padding-right: 20px;
+  }
 }
 
 @media (max-width: 610px) {
@@ -221,5 +225,33 @@
   .trim-text {
     margin-right: 0;
     margin-bottom: 15px;
+  }
+
+  .addTextControls {
+    flex-direction: column;
+  }
+  .sliderWrapper {
+    width: 100%;
+  }
+  .addTextBtnWrapper {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 30px;
+  }
+}
+
+@media (min-width: 500px) {
+  .subtitlesWrapper::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .subtitlesWrapper::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+  }
+
+  .subtitlesWrapper::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.6);
   }
 }
