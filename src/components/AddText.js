@@ -1,14 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react'
 import InputRange from 'react-input-range';
-import ReactPlayer from 'react-player'
 import 'react-input-range/lib/css/index.css';
 import { useLocation, useHistory } from 'react-router-dom';
 import Axios from 'axios';
 import Navbar from './Navbar';
-
 import DesignElement4 from '../assets/images/DesignElement4.png';
 import alarmClock from '../assets/images/alarmClock.png';
-import { Player, BigPlayButton, LoadingSpinner, ControlBar } from 'video-react';
+import {
+    Player,
+    BigPlayButton,
+    LoadingSpinner,
+    ControlBar,
+    ReplayControl,
+    ForwardControl,
+    CurrentTimeDisplay,
+    TimeDivider,
+    PlaybackRateMenuButton,
+    VolumeMenuButton
+} from 'video-react';
 import { formatTime } from '../utils';
 
 function round(value, precision) {
@@ -24,11 +33,13 @@ function readFile(url, setTextsArr) {
         data.split("\n\n").forEach(function (item) {
             var parts = item.split("\n");
             tmpArr.push({
-                duration: parts[0],
+                start: parts[0].split(" --> ")[0],
+                end: parts[0].split(" --> ")[1],
                 subtitle: parts[1]
             });
         });
         setTextsArr(tmpArr);
+        document.querySelector(".subtitlesWrapper").scrollTop = document.querySelector(".subtitlesWrapper").scrollHeight;
     });
 }
 
@@ -53,7 +64,7 @@ function removeBlock(idxToDelete, textsArr, setTextsArr, filename, setPlayerKey)
 function saveChanges(arr, filename) {
     var fileTxt = "WEBVTT";
     arr.forEach(block => {
-        fileTxt += "\n\n" + block.duration + "\n" + block.subtitle;
+        fileTxt += "\n\n" + block.start + " --> " + block.end + "\n" + block.subtitle;
     });
     Axios.post("http://localhost:8000/subtitle", {
         text: fileTxt,
@@ -68,24 +79,27 @@ function saveChanges(arr, filename) {
 
 function addText(textsArr, setTextsArr, filename, setPlayerKey) {
     var text = document.getElementById("textToAdd").value;
-    var startTime = document.getElementById("startTime").value;
-    var endTime = document.getElementById("endTime").value;
+    var startTime = document.getElementById("startTime").getAttribute("data-sec");
+    var endTime = document.getElementById("endTime").getAttribute("data-sec");
 
     var startSec = (startTime + "").split(".")[0];
     var startMilliSec = (startTime + "").split(".")[1] ? (startTime + "").split(".")[1] + "00" : "000";
     var endSec = (endTime + "").split(".")[0];
     var endMilliSec = (endTime + "").split(".")[1] ? (endTime + "").split(".")[1] + "00" : "000";
-    var subtitleDuration = hhmmss(startSec) + "." + startMilliSec + " --> " + hhmmss(endSec) + "." + endMilliSec;
 
     var newArr = [...textsArr];
     newArr.push({
-        duration: subtitleDuration,
+        start: hhmmss(startSec) + "." + startMilliSec,
+        end: hhmmss(endSec) + "." + endMilliSec,
         subtitle: text
     });
 
     saveChanges(newArr, filename);
     setTextsArr(newArr);
     setPlayerKey(new Date().getSeconds());
+    setTimeout(() => {
+        document.querySelector(".subtitlesWrapper").scrollTop = document.querySelector(".subtitlesWrapper").scrollHeight;
+    }, 100);
     document.getElementById("textToAdd").value = '';
 }
 
@@ -120,31 +134,48 @@ export default function AddText() {
                     <div className="addTextUpperWrapper flex items-center mb-5 rounded-lg">
                         <div className="flex-1">
                             <div className="addTextPlayerWrapper w-8/12 mx-auto">
-                                <Player src={location.state.url}>
+                                <Player key={playerKey} crossOrigin="anonymous">
+                                    <source src={location.state.url} />
+                                    <track label="English" kind="subtitles" srclang="en" src={"http://localhost:8000/" + location.state.publicId + ".vtt"} default></track>
+
                                     <BigPlayButton position="center" />
                                     <LoadingSpinner />
-                                    <ControlBar autoHide={false} />
+                                    <ControlBar autoHide={false}>
+                                        <ReplayControl seconds={10} order={1.1} />
+                                        <ForwardControl seconds={10} order={1.2} />
+                                        <CurrentTimeDisplay order={4.1} />
+                                        <TimeDivider order={4.2} />
+                                        <PlaybackRateMenuButton rates={[2, 1, 0.5, 0.25]} order={7.1} />
+                                        <VolumeMenuButton disabled />
+                                    </ControlBar>
                                 </Player>
                             </div>
                         </div>
                         <div className="text-center subtitleContainer font-montserratSemiBold mr-16 flex flex-col items-center" style={{ width: '35%' }}>
                             <h1 className="text-xl mb-3">Video Subtitles</h1>
-                            <div style={{ height: 300 }} className="overflow-y-auto subtitlesWrapper sm:pr-10">
-                                {
-                                    Array(6).fill(0).map(i =>
-                                        <div className="flex w-full mb-5">
-                                            <div className="mr-5 w-64">
-                                                <img src={alarmClock} alt="" className="hidden sm:inline-block mr-3" /> 00:00:02,000<br />
-                                                <img src={alarmClock} alt="" className="hidden sm:inline-block mr-3" /> 00:00:05,000
-                                        </div>
-                                            <div className="relative w-full px-3 py-1 rounded-lg" style={{ backgroundColor: "rgba(90, 103, 217, 0.2)" }}>
-                                                <p className="text-left text-sm font-montserratRegular subtitleWrapper" style={{ maxWidth: 220, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }}>Pretty Long Subtitle Coming here that you might want to not see and understand.</p>
-                                                <i className="fa fa-trash absolute text-red-600" style={{ top: 15, right: 10 }} />
-                                            </div>
-                                        </div>
-                                    )
-                                }
-                            </div>
+                            {
+                                textsArr.length > 0 ?
+                                    <div style={{ height: 300 }} className="overflow-y-auto subtitlesWrapper sm:pr-16">
+                                        {
+                                            textsArr.map((textBlock, idx) =>
+                                                <div key={idx} className="flex w-full my-3">
+                                                    <div className="mr-5 text-left" style={{ width: 280 }}>
+                                                        <img src={alarmClock} alt="" className="hidden sm:inline-block mr-3" /> {textBlock.start}<br />
+                                                        <img src={alarmClock} alt="" className="hidden sm:inline-block mr-3" /> {textBlock.end}
+                                                    </div>
+                                                    <div className="relative w-full px-3 py-1 rounded-lg" style={{ backgroundColor: "rgba(90, 103, 217, 0.2)" }}>
+                                                        <p className="text-left text-sm font-montserratRegular subtitleWrapper w-full" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }}>{textBlock.subtitle}</p>
+                                                        <i onClick={() => removeBlock(idx, textsArr, setTextsArr, location.state.publicId + ".vtt", setPlayerKey)} className="fa fa-trash absolute cursor-pointer text-red-600" style={{ top: 15, right: 10 }} />
+                                                    </div>
+                                                </div>
+                                            )
+                                        }
+                                    </div>
+                                    : <div className="flex flex-col -mt-10 text-gray-500 items-center justify-center h-full w-full" style={{ height: 300 }}>
+                                        <i className="fa fa-comment-alt mb-3 fa-3x" />
+                                        <p>No Subtitles Found!</p>
+                                    </div>
+                            }
                         </div>
                     </div>
 
@@ -153,12 +184,12 @@ export default function AddText() {
                             <p>Enter Text: </p>
                             <div className="hidden items-center md:flex">
                                 <p className="mr-3">Text Duration: </p>
-                                <input type="text" className="w-40 px-4 py-1 border border-gray-600 rounded-lg focus:outline-none opacity-50" />
+                                <input type="text" id="startTime" data-sec={value.min} className="w-40 px-4 py-1 border border-gray-600 rounded-lg focus:outline-none opacity-50" value={formatTime(value.min)} readOnly />
                                 <span className="mx-3">to</span>
-                                <input type="text" className="w-40 px-4 py-1 border border-gray-600 rounded-lg focus:outline-none opacity-50" />
+                                <input type="text" id="endTime" data-sec={value.max} className="w-40 px-4 py-1 border border-gray-600 rounded-lg focus:outline-none opacity-50" value={formatTime(value.max)} readOnly />
                             </div>
                         </div>
-                        <input type="text" className="w-full my-3 px-4 py-2 border border-gray-600 rounded-lg focus:outline-none" />
+                        <input id="textToAdd" type="text" placeholder="Subtitle Text Here ...." className="w-full my-3 px-4 py-2 border border-gray-600 rounded-lg focus:outline-none" />
                         <div className="flex addTextControls items-center mt-1">
                             <div className="flex-1 sliderWrapper px-5 pt-10 pb-5 border-4 border-dashed" style={{ borderColor: "rgba(90, 103, 217, 0.2)" }}>
                                 <InputRange
@@ -176,88 +207,14 @@ export default function AddText() {
                                     }} />
                             </div>
                             <div className="flex addTextBtnWrapper flex-col ml-10 w-56">
-                                <button className="bg-indigo-600 text-white py-2 rounded w-full mb-2">Add Subtitle</button>
-                                <button className="bg-indigo-600 text-white py-2 rounded w-full">Return to Dashboard</button>
+                                <button onClick={() => addText(textsArr, setTextsArr, location.state.publicId + ".vtt", setPlayerKey)} className="bg-indigo-600 text-white py-2 rounded w-full mb-2">Add Subtitle</button>
+                                <button onClick={() => history.goBack()} className="bg-indigo-600 text-white py-2 rounded w-full">Return to Dashboard</button>
                             </div>
                         </div>
                     </div>
 
                 </div>
             </div>
-
-            {/* <div style={{ width: '1530px', minWidth: '1530px' }} className="flex mainWrapper h-screen">
-                <div className="leftPart flex flex-col flex-1 bg-gray-800">
-                    <div className="playerWrapper flex flex-1 items-center justify-center">
-                        <ReactPlayer
-                            controls
-                            height="360px"
-                            key={playerKey}
-                            url={location.state.url}
-                            config={{
-                                attributes: {
-                                    crossOrigin: 'true'
-                                },
-                                file: {
-                                    tracks: [
-                                        { kind: 'subtitles', src: "http://localhost:8000/" + location.state.publicId + ".vtt", srcLang: 'en', default: true }
-                                    ]
-                                }
-                            }}
-                        />
-                    </div>
-                    <div className="controlsWrapper bg-gray-500 h-64 p-5">
-                        <label className="block mb-2">Enter Text: </label>
-                        <input type="text" id="textToAdd" className="focus:outline-none focus:border-indigo-600 w-full border-2 border-gray-400 rounded py-2 px-3 text-gray-700 mb-2" />
-                        <InputRange
-                            maxValue={round(location.state.duration, 2)}
-                            minValue={0}
-                            formatLabel={value => ``}
-                            step={.1}
-                            value={value}
-                            onChange={value => {
-                                if (value.min < 0) value.min = 0;
-                                if (value.max > location.state.duration) value.max = location.state.duration;
-                                var min = round(value.min, 2);
-                                var max = round(value.max, 2);
-                                setValue({ min, max });
-                            }} />
-
-                        <p className="mb-2 mt-5">Text duration: </p>
-                        <input id="startTime" className="rounded bg-gray-300 w-32 px-5 py-2" value={value.min} readOnly />
-                        <span className="ml-4 mr-4">to</span>
-                        <input id="endTime" className="rounded bg-gray-300 w-32 px-5 py-2" value={value.max} readOnly />
-                        <button onClick={() => addText(textsArr, setTextsArr, location.state.publicId + ".vtt", setPlayerKey)} className="bg-indigo-600 text-white px-8 py-2 rounded w-64 ml-40">Add Text</button>
-                    </div>
-                </div>
-                <div className="rightPart items-center flex-1">
-                    <div className="bg-gray-400 flex h-screen justify-center items-center">
-                        <div>
-                            <h2 className="text-center text-3xl mb-2 font-bold tracking-wide">Subtitle List</h2>
-                            <div id="webvtt_wrapper" style={{ height: '550px', width: '450px', overflow: 'auto' }} className="bg-gray-200 mx-auto rounded px-5 pb-5">
-                                {
-                                    textsArr.map((textBlock, idx) => {
-                                        return (
-                                            <div key={idx} className="flex w-full border-b-2 border-gray-500">
-                                                <div className="flex">
-                                                    <div className="flex flex-col py-4 pr-4 pl-2">
-                                                        <span className="text-md">{textBlock.duration}</span>
-                                                        <span className="text-md">{textBlock.subtitle}</span>
-                                                    </div>
-                                                </div>
-                                                <div className="flex flex-1 flex-grow w-full justify-end">
-                                                    <div className="flex mr-2">
-                                                        <button onClick={() => removeBlock(idx, textsArr, setTextsArr, location.state.publicId + ".vtt", setPlayerKey)} className="text-lg uppercase font-semibold text-red-400 hover:text-red-600 cursor-pointer focus:outline-none"><i className="fa fa-trash ml-1"></i></button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        );
-                                    })
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> */}
         </>
     )
 }

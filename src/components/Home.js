@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import DesignElement1 from '../assets/images/DesignElement1.png';
 import DesignElement2 from '../assets/images/DesignElement2.png';
 import home1 from '../assets/images/home1.png';
@@ -12,6 +12,11 @@ import { useHistory } from 'react-router-dom';
 
 export default function Home() {
     const history = useHistory();
+
+    useEffect(() => {
+        if (localStorage.getItem("UUID"))
+            history.replace('/dashboard');
+    }, [history])
 
     return (
         <>

@@ -90,10 +90,6 @@
   background: rgba(0, 0, 0, 0.5);
 }
 
-.video-react-volume-menu-button {
-  display: none;
-}
-
 @media (max-width: 575.98px) {
   .Modal {
     width: 88%;

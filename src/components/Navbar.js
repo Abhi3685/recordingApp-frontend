@@ -39,16 +39,6 @@ export default function Navbar({ newVideoHandler }) {
                                         <img alt="" src={userAvatar} style={{ width: '30px' }} />
                                         <p className="ml-5">{name}</p>
                                     </div>
-                                    <div className="font-montserratRegular border-b pb-4 mb-4 border-gray-400">
-                                        <p className="mb-3 font-montserratBold">Dashboard</p>
-                                        <p className="px-5 py-1 mb-1 text-white transition duration-300 ease-in bg-blue-500 rounded cursor-pointer"><i className="mr-2 fa fa-angle-right"></i> My Videos</p>
-                                        <p className="px-5 py-1 transition duration-300 ease-in rounded cursor-pointer hover:bg-blue-500 hover:text-white"><i className="mr-2 fa fa-angle-right"></i> My Pages</p>
-                                    </div>
-                                    <div className="font-montserratRegular border-b pb-4 mb-5 border-gray-400">
-                                        <p className="mb-3 font-montserratBold">Create</p>
-                                        <p onClick={newVideoHandler} className="px-5 py-1 mb-1 transition duration-300 ease-in rounded cursor-pointer hover:bg-blue-500 hover:text-white"><i className="mr-2 fa fa-plus-circle"></i> New Video</p>
-                                        <p className="px-5 py-1 transition duration-300 ease-in rounded cursor-pointer hover:bg-blue-500 hover:text-white"><i className="mr-2 fa fa-plus-circle"></i> New Page</p>
-                                    </div>
                                     <button onClick={() => { localStorage.removeItem("UUID"); localStorage.removeItem("username"); history.push("/"); }} className="py-2 w-full text-red-500 transition duration-300 ease-in border border-red-500 rounded hover:text-white hover:bg-red-500">Log out</button>
                                 </div> :
                                 <div className="navMenu">
