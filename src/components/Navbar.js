@@ -2,22 +2,30 @@ import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom';
 
 import userAvatar from '../assets/images/userAvatar.png';
+import logo from '../assets/images/logo.png';
 
-export default function Navbar({ newVideoHandler }) {
+export default function Navbar() {
     const token = localStorage.getItem("UUID");
     const name = localStorage.getItem("username");
     const history = useHistory();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+    const logoutHandler = () => {
+        localStorage.removeItem("UUID");
+        localStorage.removeItem("username");
+        history.push("/");
+    }
+
     return (
-        <div className="flex items-center justify-between px-10 py-5 border-b bg-white border-gray-300 navbarWrapper sm:px-20">
-            <div className="logoWrapper font-montserratBlack">
-                <p className="text-xl font-bold">LOGO</p>
+        <div className="flex items-center justify-between px-5 py-5 border-b bg-white border-gray-300 navbarWrapper sm:px-12">
+            <div className="logoWrapper font-montserratBlack flex items-center" style={{ margin: '-50px 0' }}>
+                <img src={logo} style={{ width: '85px' }} />
+                <p className="text-xl font-bold">RECCA</p>
             </div>
             <div className="hidden navMenuWrapper font-montserratBold sm:block">
                 {
                     token ?
-                        <div onClick={() => history.push("/dashboard")} className="flex items-center cursor-pointer navMenu">
+                        <div className="flex items-center navMenu">
                             <img alt="" src={userAvatar} style={{ width: '30px' }} />
                             <p className="ml-5">{name}</p>
                         </div> :
@@ -35,11 +43,11 @@ export default function Navbar({ newVideoHandler }) {
                         {
                             token ?
                                 <div>
-                                    <div onClick={() => history.push("/dashboard")} className="flex items-center border-b pb-4 mb-4 border-gray-400 navMenu">
+                                    <div className="flex items-center border-b pb-4 mb-4 border-gray-400 navMenu">
                                         <img alt="" src={userAvatar} style={{ width: '30px' }} />
                                         <p className="ml-5">{name}</p>
                                     </div>
-                                    <button onClick={() => { localStorage.removeItem("UUID"); localStorage.removeItem("username"); history.push("/"); }} className="py-2 w-full text-red-500 transition duration-300 ease-in border border-red-500 rounded hover:text-white hover:bg-red-500">Log out</button>
+                                    <button onClick={logoutHandler} className="py-2 w-full text-red-500 transition duration-300 ease-in border border-red-500 rounded hover:text-white hover:bg-red-500">Log out</button>
                                 </div> :
                                 <div className="navMenu">
                                     <p onClick={() => history.push('/')} className="mb-2">Home</p>

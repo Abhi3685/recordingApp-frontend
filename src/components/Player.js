@@ -1,10 +1,22 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { Player, BigPlayButton, LoadingSpinner, ControlBar } from 'video-react';
+import {
+    Player,
+    BigPlayButton,
+    LoadingSpinner,
+    ControlBar,
+    ReplayControl,
+    ForwardControl,
+    CurrentTimeDisplay,
+    TimeDivider,
+    PlaybackRateMenuButton,
+    VolumeMenuButton
+} from 'video-react';
+
 import Navbar from './Navbar';
 import DesignElement4 from '../assets/images/DesignElement4.png';
 
-export default function CustomPlayer() {
+const CustomPlayer = () => {
     let { videoId } = useParams();
 
     return (
@@ -16,14 +28,23 @@ export default function CustomPlayer() {
                 <div className="w-4/6 mx-auto mt-8 shadow-lg">
                     <Player
                         poster={"https://res.cloudinary.com/dhhtvk50h/video/upload/" + videoId + ".jpg"}
-                        src={"https://res.cloudinary.com/dhhtvk50h/video/upload/" + videoId + ".mp4"}
+                        src={"https://res.cloudinary.com/dhhtvk50h/video/upload/" + videoId + ".mkv"}
                     >
                         <BigPlayButton position="center" />
                         <LoadingSpinner />
-                        <ControlBar autoHide={false} />
+                        <ControlBar autoHide={false}>
+                            <ReplayControl seconds={10} order={1.1} />
+                            <ForwardControl seconds={10} order={1.2} />
+                            <CurrentTimeDisplay order={4.1} />
+                            <TimeDivider order={4.2} />
+                            <PlaybackRateMenuButton rates={[2, 1, 0.5, 0.25]} order={7.1} />
+                            <VolumeMenuButton disabled />
+                        </ControlBar>
                     </Player>
                 </div>
             </div>
         </>
     )
 }
+
+export default CustomPlayer;
