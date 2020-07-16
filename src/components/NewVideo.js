@@ -36,9 +36,13 @@ export default function NewVideo({ visible, hide }) {
   function handleModeChange(e) {
     if (e.target.value === 'Screen Only') {
       document.querySelector(".dragCircle").style.display = 'none';
+      document.querySelector(".audioSelect").classList.add("opacity-50");
+      document.querySelector(".audioSelect").setAttribute('disabled', true);
       clearConfig();
     } else {
       start();
+      document.querySelector(".audioSelect").classList.remove("opacity-50");
+      document.querySelector(".audioSelect").removeAttribute('disabled');
       document.querySelector(".dragCircle").style.display = 'block';
     }
   }
@@ -71,9 +75,9 @@ export default function NewVideo({ visible, hide }) {
 
   return (
     visible && <>
-      <div className="flex items-center justify-center config_wrapper absolute inset-0" style={{ background: "rgba(0,0,0,0.4)" }}>
+      <div className="absolute inset-0 flex items-center justify-center config_wrapper" style={{ background: "rgba(0,0,0,0.4)" }}>
 
-        <div className="px-5 py-6 bg-gray-200 rounded shadow-md w-3/12" style={{}}>
+        <div className="w-6/12 px-5 py-6 bg-gray-200 rounded shadow-md lg:w-3/12" style={{}}>
           <label>Recording Mode</label><br />
           <div className="relative mb-5">
             <select onChange={handleModeChange} className="block w-full px-4 py-2 pr-8 leading-tight bg-white border border-gray-400 rounded shadow appearance-none hover:border-gray-500 focus:outline-none focus:shadow-outline" name="mode_options">
@@ -86,7 +90,7 @@ export default function NewVideo({ visible, hide }) {
           </div>
           <label>Microphone Audio</label><br />
           <div className="relative mb-5">
-            <select className="block w-full px-4 py-2 pr-8 leading-tight bg-white border border-gray-400 rounded shadow appearance-none hover:border-gray-500 focus:outline-none focus:shadow-outline" name="isAudioEnabled">
+            <select className="block w-full px-4 py-2 pr-8 leading-tight bg-white border border-gray-400 rounded shadow appearance-none audioSelect hover:border-gray-500 focus:outline-none focus:shadow-outline" name="isAudioEnabled">
               <option>Yes</option>
               <option>No</option>
             </select>
@@ -95,7 +99,7 @@ export default function NewVideo({ visible, hide }) {
             </div>
           </div>
 
-          <br /><br />
+          <br />
           <button className="block w-full px-8 py-2 mb-2 text-white bg-indigo-600 rounded shadow-md" onClick={() => { getConfig(); }}>Start Recording</button>
           <button className="block w-full px-8 py-2 mb-3 text-white bg-red-600 rounded shadow-md" onClick={() => { clearConfig(); hide(); }}>Cancel</button>
 
