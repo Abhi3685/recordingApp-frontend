@@ -36,13 +36,14 @@ export default function NewVideo({ visible, hide }) {
   function handleModeChange(e) {
     if (e.target.value === 'Screen Only') {
       document.querySelector(".dragCircle").style.display = 'none';
-      document.querySelector(".audioSelect").classList.add("opacity-50");
-      document.querySelector(".audioSelect").setAttribute('disabled', true);
+      document.getElementsByName("isAudioEnabled")[0].classList.remove("opacity-50");
+      document.getElementsByName("isAudioEnabled")[0].removeAttribute('disabled');
       clearConfig();
     } else {
       start();
-      document.querySelector(".audioSelect").classList.remove("opacity-50");
-      document.querySelector(".audioSelect").removeAttribute('disabled');
+      document.getElementsByName("isAudioEnabled")[0].classList.add("opacity-50");
+      document.getElementsByName("isAudioEnabled")[0].value = 'Yes';
+      document.getElementsByName("isAudioEnabled")[0].setAttribute('disabled', true);
       document.querySelector(".dragCircle").style.display = 'block';
     }
   }
@@ -77,7 +78,7 @@ export default function NewVideo({ visible, hide }) {
     visible && <>
       <div className="absolute inset-0 flex items-center justify-center config_wrapper" style={{ background: "rgba(0,0,0,0.4)" }}>
 
-        <div className="w-6/12 px-5 py-6 bg-gray-200 rounded shadow-md lg:w-3/12" style={{}}>
+        <div className="w-6/12 px-5 py-6 bg-gray-200 rounded shadow-md lg:w-3/12">
           <label>Recording Mode</label><br />
           <div className="relative mb-5">
             <select onChange={handleModeChange} className="block w-full px-4 py-2 pr-8 leading-tight bg-white border border-gray-400 rounded shadow appearance-none hover:border-gray-500 focus:outline-none focus:shadow-outline" name="mode_options">
@@ -90,7 +91,7 @@ export default function NewVideo({ visible, hide }) {
           </div>
           <label>Microphone Audio</label><br />
           <div className="relative mb-5">
-            <select className="block w-full px-4 py-2 pr-8 leading-tight bg-white border border-gray-400 rounded shadow appearance-none audioSelect hover:border-gray-500 focus:outline-none focus:shadow-outline" name="isAudioEnabled">
+            <select disabled className="block w-full px-4 py-2 pr-8 leading-tight bg-white border border-gray-400 rounded shadow opacity-50 appearance-none hover:border-gray-500 focus:outline-none focus:shadow-outline" name="isAudioEnabled">
               <option>Yes</option>
               <option>No</option>
             </select>

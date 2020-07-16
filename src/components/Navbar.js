@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom';
 
-import userAvatar from '../assets/images/userAvatar.png';
+import userAvatar from '../assets/images/userAvatar_sidebar.png';
 import logo from '../assets/images/logo.png';
 
 export default function Navbar() {
@@ -17,17 +17,17 @@ export default function Navbar() {
     }
 
     return (
-        <div className="flex items-center justify-between px-5 py-5 border-b bg-white border-gray-300 navbarWrapper sm:px-12">
-            <div className="logoWrapper font-montserratBlack flex items-center" style={{ margin: '-50px 0' }}>
+        <div className="flex items-center justify-between px-5 py-5 bg-white border-b border-gray-300 navbarWrapper sm:px-12">
+            <div className="flex items-center logoWrapper" style={{ margin: '-50px 0' }}>
                 <img src={logo} style={{ width: '85px' }} />
-                <p className="text-xl font-bold">RECCA</p>
+                <p className="text-xl font-montserratExtraBold" style={{ color: '#787ECF' }}>RECCA</p>
             </div>
             <div className="hidden navMenuWrapper font-montserratBold sm:block">
                 {
                     token ?
                         <div className="flex items-center navMenu">
                             <img alt="" src={userAvatar} style={{ width: '30px' }} />
-                            <p className="ml-5">{name}</p>
+                            <p className="ml-4">{name}</p>
                         </div> :
                         <div className="navMenu">
                             <span className="cursor-pointer hover:underline" onClick={() => history.push('/')}>Home</span>
@@ -43,11 +43,11 @@ export default function Navbar() {
                         {
                             token ?
                                 <div>
-                                    <div className="flex items-center border-b pb-4 mb-4 border-gray-400 navMenu">
+                                    <div className="flex items-center pb-4 mb-4 border-b border-gray-400 navMenu">
                                         <img alt="" src={userAvatar} style={{ width: '30px' }} />
-                                        <p className="ml-5">{name}</p>
+                                        <p className="ml-4">{name}</p>
                                     </div>
-                                    <button onClick={logoutHandler} className="py-2 w-full text-red-500 transition duration-300 ease-in border border-red-500 rounded hover:text-white hover:bg-red-500">Log out</button>
+                                    <button onClick={logoutHandler} className="w-full py-2 text-red-500 transition duration-300 ease-in border border-red-500 rounded hover:text-white hover:bg-red-500">Log out</button>
                                 </div> :
                                 <div className="navMenu">
                                     <p onClick={() => history.push('/')} className="mb-2">Home</p>
