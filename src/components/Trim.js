@@ -3,12 +3,13 @@ import InputRange from 'react-input-range';
 import 'react-input-range/lib/css/index.css';
 import { useLocation, useHistory } from 'react-router-dom';
 import Axios from 'axios';
-import { Player, BigPlayButton, LoadingSpinner, ControlBar } from 'video-react';
+import ReactPlayer from 'react-player';
 
 import { db } from '../firebase';
 import Navbar from './Navbar';
 import DesignElement4 from '../assets/images/DesignElement4.png';
 import loader from '../assets/images/loader.gif';
+import processingGIF from '../assets/images/processing.gif';
 
 function round(value, precision) {
     var multiplier = Math.pow(10, precision || 0);
@@ -20,6 +21,7 @@ export default function Trim() {
     const history = useHistory();
     const [value, setValue] = useState({ min: 0, max: 0 });
     const [loading, setLoading] = useState(true);
+    const [processing, setProcessing] = useState(false);
 
     const willMount = useRef(true);
 
@@ -80,13 +82,13 @@ export default function Trim() {
             return;
         }
 
-        setLoading(true);
+        setProcessing(true);
         Axios.post('http://localhost:8000/trim', {
             userId: localStorage.getItem("UUID"),
             lowerLimit: min,
             upperLimit: max,
             duration,
-            url,
+            url: url.substr(0, url.length - 3) + "mp4?_s=vp-1.3.4",
             pid: location.state.publicId
         }).then(res => {
             if (res.data.code && res.data.code === "Success") {
@@ -106,11 +108,12 @@ export default function Trim() {
                     });
                 });
             } else {
+                setProcessing(false);
                 alert('Error: Unhandled Exception Occured!');
                 console.log(res);
             }
         }).catch(err => {
-            setLoading(false);
+            setProcessing(false);
             alert("Unknown Error Occured! Check log for details.");
             console.log(err);
         });
@@ -122,6 +125,14 @@ export default function Trim() {
                 <img src={loader} alt="" className="w-full md:w-8/12" />
             </div>}
 
+            {processing && <div className="absolute z-50 flex flex-col items-center justify-center w-full h-full bg-white" style={{ opacity: 0.98 }}>
+                <div className="flex items-center">
+                    <p className="text-5xl text-gray-600 font-montserratRegular">Processing video</p>
+                    <img src={processingGIF} alt="" className="w-40" />
+                </div>
+                <p className="font-montserratRegular text-lg"><b>Note:</b> It may take a couple of minutes.</p>
+            </div>}
+
             <div className="fixed top-0 bottom-0 left-0 right-0 overflow-y-auto" style={{ backgroundColor: "#5A67D9" }}>
                 <Navbar />
                 <img src={DesignElement4} alt="" className="absolute bottom-0 left-0 w-32 p-3" />
@@ -131,13 +142,15 @@ export default function Trim() {
                     <div className="flex items-center flex-1 py-5 mt-5 rounded-lg editorTopWrapper" style={{ backgroundColor: "rgba(90, 103, 217, 0.2)" }}>
                         <div className="flex-1">
                             <div className="w-9/12 mx-auto trimPlayerWrapper">
-                                <Player
-                                    src={location.state.url}
+                                <ReactPlayer
+                                    url={location.state.url}
+                                    controls
+                                    width='100%'
+                                    height='100%'
+                                    onProgress={onProgress}
+                                    onSeek={onSeek}
                                 >
-                                    <BigPlayButton position="center" />
-                                    <LoadingSpinner />
-                                    <ControlBar autoHide={false} />
-                                </Player>
+                                </ReactPlayer>
                             </div>
                         </div>
                         <div className="flex flex-col items-center justify-between my-16 mr-16 text-center trimControls font-montserratSemiBold" style={{ width: '30%' }}>
@@ -169,7 +182,7 @@ export default function Trim() {
                             <img alt="" className="inline-block thumb-9" style={{ width: '10%', height: '100%' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
                             <img alt="" className="inline-block rounded-r-lg thumb-10" style={{ width: '10%', height: '100%' }} src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/200.gif" />
                         </div>
-                        <div style={{ position: 'absolute', top: 52, left: 40, right: 40 }} className="timeline_range_wrapper">
+                        <div style={{ position: 'absolute', top: 52, width: '100%' }} className="timeline_range_wrapper">
                             <InputRange
                                 maxValue={round(location.state.duration, 2)}
                                 minValue={0}
