@@ -154,6 +154,16 @@ export default function Trim() {
                                     height='100%'
                                     onProgress={onProgress}
                                     onSeek={onSeek}
+                                    config={{
+                                        file: {
+                                            attributes: {
+                                                crossOrigin: 'true'
+                                            },
+                                            tracks: [
+                                                { kind: 'subtitles', src: "http://localhost:8000/" + location.state.publicId + ".vtt", srcLang: 'en', default: true }
+                                            ]
+                                        }
+                                    }}
                                 >
                                 </ReactPlayer>
                             </div>

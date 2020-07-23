@@ -1,17 +1,18 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useHistory } from 'react-router-dom';
 import Draggable from 'react-draggable';
 import RecordRTC from 'recordrtc';
 
 export default function NewVideo({ visible, hide }) {
   const history = useHistory();
+  const [hasHardware, setHasHardware] = useState(true);
   let recorder, myCamera;
 
   function captureCamera(callback) {
-    navigator.mediaDevices.getUserMedia({ video: true }).then(function (camera) {
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(function (camera) {
       callback(camera);
     }).catch(function (error) {
-      alert('Unable to capture your camera. Please check console logs.');
+      setHasHardware(false);
       console.error(error);
     });
   }
@@ -76,52 +77,63 @@ export default function NewVideo({ visible, hide }) {
 
   return (
     visible && <>
-      <div className="absolute inset-0 flex items-center justify-center config_wrapper" style={{ background: "rgba(0,0,0,0.4)" }}>
+      {
+        hasHardware ?
+          <div className="absolute inset-0 flex items-center justify-center config_wrapper" style={{ background: "rgba(0,0,0,0.4)" }}>
 
-        <div className="w-6/12 px-5 py-6 bg-gray-200 rounded shadow-md lg:w-3/12">
-          <label>Recording Mode</label><br />
-          <div className="relative mb-5">
-            <select onChange={handleModeChange} className="block w-full px-4 py-2 pr-8 leading-tight bg-white border border-gray-400 rounded shadow appearance-none hover:border-gray-500 focus:outline-none focus:shadow-outline" name="mode_options">
-              <option>Screen + Cam</option>
-              <option>Screen Only</option>
-            </select>
-            <div className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
-              <svg className="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+            <div className="w-6/12 px-5 py-6 bg-gray-200 rounded shadow-md lg:w-3/12">
+              <label>Recording Mode</label><br />
+              <div className="relative mb-5">
+                <select onChange={handleModeChange} className="block w-full px-4 py-2 pr-8 leading-tight bg-white border border-gray-400 rounded shadow appearance-none hover:border-gray-500 focus:outline-none focus:shadow-outline" name="mode_options">
+                  <option>Screen + Cam</option>
+                  <option>Screen Only</option>
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
+                  <svg className="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+                </div>
+              </div>
+              <label>Microphone Audio</label><br />
+              <div className="relative mb-5">
+                <select disabled className="block w-full px-4 py-2 pr-8 leading-tight bg-white border border-gray-400 rounded shadow opacity-50 appearance-none hover:border-gray-500 focus:outline-none focus:shadow-outline" name="isAudioEnabled">
+                  <option>Yes</option>
+                  <option>No</option>
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
+                  <svg className="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+                </div>
+              </div>
+
+              <br />
+              <button className="block w-full px-8 py-2 mb-2 text-white bg-indigo-600 rounded shadow-md" onClick={() => { getConfig(); }}>Start Recording</button>
+              <button className="block w-full px-8 py-2 mb-3 text-white bg-red-600 rounded shadow-md" onClick={() => { clearConfig(); hide(); }}>Cancel</button>
+
             </div>
-          </div>
-          <label>Microphone Audio</label><br />
-          <div className="relative mb-5">
-            <select disabled className="block w-full px-4 py-2 pr-8 leading-tight bg-white border border-gray-400 rounded shadow opacity-50 appearance-none hover:border-gray-500 focus:outline-none focus:shadow-outline" name="isAudioEnabled">
-              <option>Yes</option>
-              <option>No</option>
-            </select>
-            <div className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
-              <svg className="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+
+            <Draggable bounds=".config_wrapper">
+              <div className="dragCircle" style={{
+                position: 'absolute',
+                bottom: 0, left: 0,
+                width: '280px',
+                backgroundColor: '#000',
+                overflow: 'hidden',
+                height: '280px',
+                borderRadius: '50%',
+                cursor: 'move',
+                margin: 10
+              }}>
+                <video id="camera_preview" autoPlay style={{ width: '100%', height: '100%', transform: `scale(1.35) rotateY(180deg)` }}></video>
+              </div>
+            </Draggable>
+          </div> :
+          <div className="bg-gray-300 absolute inset-0 flex flex-col items-center z-50 justify-center" style={{ opacity: 0.95 }}>
+            <div className="flex items-center px-5">
+              <i className="fa invisible md:visible fa-close text-red-600 text-6xl" />
+              <p className="text-2xl mx-8 text-red-600">Unable to capture your camera or microphone.</p>
+              <i className="fa fa-close invisible md:visible text-red-600 text-6xl" />
             </div>
+            <button className="w-32 mt-8 px-8 py-2 mb-3 text-white bg-red-600 rounded shadow-md" onClick={hide}>Ok</button>
           </div>
-
-          <br />
-          <button className="block w-full px-8 py-2 mb-2 text-white bg-indigo-600 rounded shadow-md" onClick={() => { getConfig(); }}>Start Recording</button>
-          <button className="block w-full px-8 py-2 mb-3 text-white bg-red-600 rounded shadow-md" onClick={() => { clearConfig(); hide(); }}>Cancel</button>
-
-        </div>
-
-        <Draggable bounds=".config_wrapper">
-          <div className="dragCircle" style={{
-            position: 'absolute',
-            bottom: 0, left: 0,
-            width: '280px',
-            backgroundColor: '#000',
-            overflow: 'hidden',
-            height: '280px',
-            borderRadius: '50%',
-            cursor: 'move',
-            margin: 10
-          }}>
-            <video id="camera_preview" autoPlay style={{ width: '100%', height: '100%', transform: `scale(1.35) rotateY(180deg)` }}></video>
-          </div>
-        </Draggable>
-      </div>
+      }
     </>
   )
 }
