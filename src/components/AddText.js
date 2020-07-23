@@ -136,7 +136,7 @@ export default function AddText() {
                             <div className="addTextPlayerWrapper w-8/12 mx-auto">
                                 <Player key={playerKey} crossOrigin="anonymous">
                                     <source src={location.state.url} />
-                                    <track label="English" kind="subtitles" srclang="en" src={"http://localhost:8000/" + location.state.publicId + ".vtt"} default></track>
+                                    <track label="English" kind="subtitles" srcLang="en" src={"http://localhost:8000/" + location.state.publicId + ".vtt"} default></track>
 
                                     <BigPlayButton position="center" />
                                     <LoadingSpinner />
