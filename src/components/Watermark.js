@@ -3,7 +3,7 @@ import Axios from 'axios';
 import { useLocation, useHistory } from 'react-router-dom';
 import { db } from '../firebase';
 import Navbar from './Navbar';
-import { Player, BigPlayButton, LoadingSpinner, ControlBar } from 'video-react';
+import { Player, BigPlayButton, LoadingSpinner } from 'video-react';
 
 import DesignElement4 from '../assets/images/DesignElement4.png';
 import DesignElement3 from '../assets/images/DesignElement3.png';

@@ -1,23 +1,18 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import {
     Player,
     BigPlayButton,
     LoadingSpinner,
-    ControlBar,
-    ReplayControl,
-    ForwardControl,
-    CurrentTimeDisplay,
-    TimeDivider,
-    PlaybackRateMenuButton,
-    VolumeMenuButton
 } from 'video-react';
 
 import Navbar from './Navbar';
 import DesignElement4 from '../assets/images/DesignElement4.png';
+import DesignElement3 from '../assets/images/DesignElement3.png';
 
 const CustomPlayer = () => {
-    let { videoId } = useParams();
+    const { videoId } = useParams();
+    const history = useHistory();
 
     return (
         <>
@@ -25,21 +20,20 @@ const CustomPlayer = () => {
                 <Navbar />
                 <img src={DesignElement4} alt="" className="absolute bottom-0 left-0 p-3 ml-4 w-24 lg:w-32" />
                 <img src={DesignElement4} alt="" className="absolute right-0 p-3 w-24 lg:w-32 mr-4" style={{ top: 75 }} />
-                <div className="w-11/12 flex items-center md:9/12 lg:w-4/6 mx-auto mt-8 bg-white lg:bg-transparent shadow-lg" style={{ height: "calc(100% - 130px)" }}>
-                    <Player crossOrigin="anonymous">
-                        <source src={"https://res.cloudinary.com/dhhtvk50h/video/upload/" + videoId + ".mkv"} />
-                        <track label="English" kind="subtitles" srcLang="en" src={"http://localhost:8000/" + videoId + ".vtt"} default></track>
-                        <BigPlayButton position="center" />
-                        <LoadingSpinner />
-                        <ControlBar autoHide={false}>
-                            <ReplayControl seconds={10} order={1.1} />
-                            <ForwardControl seconds={10} order={1.2} />
-                            <CurrentTimeDisplay order={4.1} />
-                            <TimeDivider order={4.2} />
-                            <PlaybackRateMenuButton rates={[2, 1, 0.5, 0.25]} order={7.1} />
-                            <VolumeMenuButton disabled />
-                        </ControlBar>
-                    </Player>
+
+                <div className={"bg-white relative flex flex-col items-center justify-center w-11/12 lg:w-9/12 mt-10 mb-8 mx-auto rounded px-3 py-5 md:p-5"} style={{ height: "calc(100% - 150px)" }}>
+                    <img src={DesignElement3} alt="" className="absolute top-0 w-32 transform rotate-90" style={{ right: -20 }} />
+                    <img src={DesignElement3} alt="" className="absolute bottom-0 w-32 transform -rotate-90" style={{ left: -20 }} />
+
+                    <i onClick={() => history.goBack()} className="absolute top-0 left-0 p-5 text-xl text-gray-600 cursor-pointer fa fa-arrow-left" />
+                    <div className="w-full mx-auto lg:w-9/12">
+                        <Player crossOrigin="anonymous">
+                            <source src={"https://res.cloudinary.com/dhhtvk50h/video/upload/" + videoId + ".mkv"} />
+                            <track label="English" kind="subtitles" srcLang="en" src={"http://localhost:8000/" + videoId + ".vtt"} default></track>
+                            <BigPlayButton position="center" />
+                            <LoadingSpinner />
+                        </Player>
+                    </div>
                 </div>
             </div>
         </>
