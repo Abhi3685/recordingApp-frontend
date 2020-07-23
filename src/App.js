@@ -22,41 +22,17 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route exact path="/signup">
-          <Signup />
-        </Route>
-        <Route exact path="/signin">
-          <Signin />
-        </Route>
-        <Route path="/about">
-          <About />
-        </Route>
-        <Route path="/contact">
-          <Contact />
-        </Route>
-
-        <Route path="/player/:videoId">
-          <CustomPlayer />
-        </Route>
-        <Route path="/recorder">
-          <Recorder />
-        </Route>
-        <Route path="/trim">
-          <Trim />
-        </Route>
-        <Route path="/addText">
-          <AddText />
-        </Route>
-        <Route path="/watermark">
-          <Watermark />
-        </Route>
-        <Route path="/dashboard">
-          <Dashboard />
-        </Route>
-
-        <Route path="/">
-          <Home />
-        </Route>
+        <Route path="/signup"><Signup /></Route>
+        <Route path="/signin"><Signin /></Route>
+        <Route path="/about"><About /></Route>
+        <Route path="/contact"><Contact /></Route>
+        <Route path="/player/:videoId"><CustomPlayer /></Route>
+        <Route path="/recorder"><Recorder /></Route>
+        <Route path="/trim"><Trim /></Route>
+        <Route path="/addText"><AddText /></Route>
+        <Route path="/watermark"><Watermark /></Route>
+        <Route path="/dashboard"><Dashboard /></Route>
+        <Route path="/"><Home /></Route>
       </Switch>
     </Router>
   );
