@@ -30,7 +30,7 @@ function uploadToCloudinary(history) {
                 duration: res.data.duration,
                 createdAt: res.data.created_at,
                 url: videoUrl.substr(0, videoUrl.length - 3) + 'mkv',
-                thumb: res.data.secure_url.substr(0, res.data.secure_url.length - 3) + 'jpg',
+                thumb: videoUrl.substr(0, videoUrl.length - 3) + 'jpg',
                 publicId: res.data.public_id
             };
             db.collection('users').doc(localStorage.getItem("UUID")).update({

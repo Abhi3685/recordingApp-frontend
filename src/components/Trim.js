@@ -88,16 +88,21 @@ export default function Trim() {
             lowerLimit: min,
             upperLimit: max,
             duration,
-            url: url.substr(0, url.length - 3) + "mp4?_s=vp-1.3.4",
+            url,
             pid: location.state.publicId
         }).then(res => {
             if (res.data.code && res.data.code === "Success") {
                 db.collection('users').doc(localStorage.getItem("UUID")).get().then(doc => {
+                    var videoUrl = res.data.secure_url;
+                    var parts = videoUrl.split("/");
+                    parts.splice(-2, 1);
+                    videoUrl = parts.join("/");
+
                     var userVids = doc.data().videos;
                     userVids[index].duration = res.data.duration;
                     userVids[index].publicId = res.data.public_id;
-                    userVids[index].url = res.data.secure_url.substr(0, res.data.secure_url.length - 3) + 'mp4';
-                    userVids[index].thumb = res.data.secure_url.substr(0, res.data.secure_url.length - 3) + 'jpg';
+                    userVids[index].url = videoUrl;
+                    userVids[index].thumb = videoUrl.substr(0, videoUrl.length - 3) + 'jpg';
 
                     db.collection('users').doc(localStorage.getItem("UUID")).set({
                         fullname: doc.data().fullname,
