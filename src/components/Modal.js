@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 
 import DesignElement3 from '../assets/images/DesignElement3.png';
 
-export default function CustomModal({ isOpen, onClose, children }) {
+function CustomModal({ isOpen, onClose, children }) {
     return (
         <Modal
             isOpen={isOpen}
@@ -21,3 +21,5 @@ export default function CustomModal({ isOpen, onClose, children }) {
         </Modal>
     )
 }
+
+export default CustomModal;

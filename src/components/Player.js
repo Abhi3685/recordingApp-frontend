@@ -1,14 +1,11 @@
 import React from 'react'
 import { useParams, useHistory } from 'react-router-dom'
-import {
-    Player,
-    BigPlayButton,
-    LoadingSpinner,
-} from 'video-react';
+import { Player, BigPlayButton, LoadingSpinner } from 'video-react';
 
 import Navbar from './Navbar';
 import DesignElement4 from '../assets/images/DesignElement4.png';
 import DesignElement3 from '../assets/images/DesignElement3.png';
+import { leftIconClasses, playerModalClasses } from '../utils/classes';
 
 const CustomPlayer = () => {
     const { videoId } = useParams();
@@ -21,15 +18,21 @@ const CustomPlayer = () => {
                 <img src={DesignElement4} alt="" className="absolute bottom-0 left-0 p-3 ml-4 w-24 lg:w-32" />
                 <img src={DesignElement4} alt="" className="absolute right-0 p-3 w-24 lg:w-32 mr-4" style={{ top: 75 }} />
 
-                <div className={"bg-white relative flex flex-col items-center justify-center w-11/12 lg:w-9/12 mt-10 mb-8 mx-auto rounded px-3 py-5 md:p-5"} style={{ height: "calc(100% - 150px)" }}>
+                <div className={playerModalClasses} style={{ height: "calc(100% - 150px)" }}>
                     <img src={DesignElement3} alt="" className="absolute top-0 w-32 transform rotate-90" style={{ right: -20 }} />
                     <img src={DesignElement3} alt="" className="absolute bottom-0 w-32 transform -rotate-90" style={{ left: -20 }} />
 
-                    <i onClick={() => history.goBack()} className="absolute top-0 left-0 p-5 text-xl text-gray-600 cursor-pointer fa fa-arrow-left" />
+                    <i onClick={() => history.goBack()} className={leftIconClasses} />
                     <div className="w-full mx-auto lg:w-9/12">
                         <Player crossOrigin="anonymous">
                             <source src={"https://res.cloudinary.com/dhhtvk50h/video/upload/" + videoId + ".mkv"} />
-                            <track label="English" kind="subtitles" srcLang="en" src={"http://localhost:8000/" + videoId + ".vtt"} default></track>
+                            <track
+                                label="English"
+                                kind="subtitles"
+                                srcLang="en"
+                                src={"http://localhost:8000/" + videoId + ".vtt"}
+                                default
+                            />
                             <BigPlayButton position="center" />
                             <LoadingSpinner />
                         </Player>

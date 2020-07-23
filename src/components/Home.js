@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react'
+import { useHistory } from 'react-router-dom';
+
 import DesignElement1 from '../assets/images/DesignElement1.png';
 import DesignElement2 from '../assets/images/DesignElement2.png';
 import home1 from '../assets/images/home1.png';
@@ -8,9 +10,8 @@ import home4 from '../assets/images/home4.png';
 import home5 from '../assets/images/home5.png';
 import home6 from '../assets/images/home6.png';
 import Navbar from './Navbar';
-import { useHistory } from 'react-router-dom';
 
-export default function Home() {
+function Home() {
     const history = useHistory();
 
     useEffect(() => {
@@ -19,7 +20,7 @@ export default function Home() {
     }, [history])
 
     return (
-        <>
+        <React.Fragment>
             <Navbar />
             <img alt="" className="absolute right-0 hidden sm:block" src={DesignElement1} style={{ top: 150, width: 200 }} />
             <img alt="" className="absolute hidden lg:block" src={DesignElement2} style={{ bottom: 20, left: '33%' }} />
@@ -60,6 +61,8 @@ export default function Home() {
             <div className="footer lg:hidden border-t py-5">
                 <p className="text-center text-gray-700">&copy; Copyright {new Date().getFullYear()}. All Rights Reserved.</p>
             </div>
-        </>
+        </React.Fragment>
     )
 }
+
+export default Home;
