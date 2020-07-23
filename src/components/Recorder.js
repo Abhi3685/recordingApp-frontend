@@ -70,10 +70,11 @@ function Recorder() {
         }, function (error) {
             console.error(error);
             alert('Unable to capture your screen. Please check console logs.\n' + error);
+            window.location.href = '/dashboard';
         });
     }
 
-    function stopCallback(redirect) {
+    function stopCallback(action = 'stop') {
         recorder.stopRecording(function () {
             if (config.mode === "Screen + Cam" && config.audio === 1) {
                 streams.forEach(function (stream) {
@@ -99,7 +100,7 @@ function Recorder() {
                 });
             }
 
-            if (redirect) history.push("/dashboard");
+            if (action === 'cancel') history.push("/dashboard");
 
             getSeekableBlob(recorder.getBlob(), function (seekableBlob) {
                 blob = seekableBlob;
@@ -151,36 +152,7 @@ function Recorder() {
                             height: 240
                         }
                     });
-
-                    recorder.startRecording();
-                });
-            });
-        } else if (config.mode === "Screen + Cam" && config.audio === 0) {
-            captureScreen(function (screen) {
-                keepStreamActive(screen);
-                navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(camera => {
-                    keepStreamActive(camera);
-
-                    screen.width = window.screen.width;
-                    screen.height = window.screen.height;
-                    screen.fullcanvas = true;
-                    streams = [screen, camera];
-
-                    camera.width = 310;
-                    camera.height = 300;
-                    camera.top = pos.top + 100;
-                    camera.left = pos.left > 20 ? pos.left - 10 : pos.left;
-
-                    recorder = RecordRTC(streams, {
-                        type: 'video',
-                        mimeType: 'video/webm',
-                        disableLogs: true,
-                        canvas: {
-                            width: 320,
-                            height: 240
-                        }
-                    });
-
+                    setIsRecording(1);
                     recorder.startRecording();
                 });
             });
@@ -202,6 +174,7 @@ function Recorder() {
                             height: 240
                         }
                     });
+                    setIsRecording(1);
                     recorder.startRecording();
                 });
             });
@@ -223,11 +196,10 @@ function Recorder() {
                         height: 240
                     }
                 });
-
+                setIsRecording(1);
                 recorder.startRecording();
             });
         }
-        setIsRecording(1);
     }
 
     function addStreamStopListener(stream, callback) {
@@ -261,7 +233,7 @@ function Recorder() {
 
                 <div className="flex">
                     <button onClick={stopCallback} className="transition duration-300 ease-in focus:outline-none hover:bg-yellow-600 w-64 bg-yellow-500 px-5 py-3 rounded-lg font-montserratSemiBold ml-16">Stop Recording</button>
-                    <button onClick={() => stopCallback('redirect')} className="transition duration-300 ease-in focus:outline-none hover:bg-red-600 w-64 bg-red-500 px-5 py-3 rounded-lg font-montserratSemiBold ml-16">Cancel Recording</button>
+                    <button onClick={() => stopCallback('cancel')} className="transition duration-300 ease-in focus:outline-none hover:bg-red-600 w-64 bg-red-500 px-5 py-3 rounded-lg font-montserratSemiBold ml-16">Cancel Recording</button>
                 </div>
             </div>
 
