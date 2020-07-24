@@ -1,13 +1,53 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import RecordRTC, { getSeekableBlob } from 'recordrtc';
 import axios from 'axios';
 import { useLocation, useHistory } from 'react-router-dom';
-import { db } from '../firebase';
 import firebase from "firebase/app";
+import { Player, BigPlayButton, LoadingSpinner, ControlBar } from 'video-react';
+
+import { db } from '../firebase';
 import Navbar from './Navbar';
 import DesignElement4 from '../assets/images/DesignElement4.png';
 import DesignElement3 from '../assets/images/DesignElement3.png';
-import { Player, BigPlayButton, LoadingSpinner, ControlBar } from 'video-react';
+import { recordingWrapperClasses, recorderBtnClasses, recorderBtnClasses2 } from '../utils/classes';
+
+const addStreamStopListener = (stream, callback) => {
+    stream.addEventListener('ended', function () {
+        callback();
+        callback = function () { };
+    }, false);
+    stream.addEventListener('inactive', function () {
+        callback();
+        callback = function () { };
+    }, false);
+    stream.getTracks().forEach(function (track) {
+        track.addEventListener('ended', function () {
+            callback();
+            callback = function () { };
+        }, false);
+        track.addEventListener('inactive', function () {
+            callback();
+            callback = function () { };
+        }, false);
+    });
+}
+
+const keepStreamActive = (stream) => {
+    var video = document.createElement('video');
+    video.muted = true;
+    video.srcObject = stream;
+    video.style.display = 'none';
+    (document.body || document.documentElement).appendChild(video);
+}
+
+const invokeGetDisplayMedia = (success, error) => {
+    if (navigator.mediaDevices.getDisplayMedia) {
+        navigator.mediaDevices.getDisplayMedia({ video: true }).then(success).catch(error);
+    } else {
+        navigator.getDisplayMedia({ video: true }).then(success).catch(error);
+    }
+}
+
 
 let recorder, streams, blob, myScreen, myAudio;
 
@@ -49,32 +89,7 @@ function Recorder() {
     const [isRecording, setIsRecording] = useState(0);
     const [url, setUrl] = useState("");
 
-    useEffect(() => {
-        if (!navigator.getDisplayMedia && !navigator.mediaDevices.getDisplayMedia) {
-            var error = 'Your browser does NOT supports getDisplayMedia API.';
-            alert(error);
-            document.querySelector('video').style.display = 'none';
-            return;
-        }
-        start(pos, config);
-    }, [pos, config]);
-
-    function captureScreen(callback) {
-        invokeGetDisplayMedia(function (screen) {
-            addStreamStopListener(screen, function () {
-                if (stopCallback) {
-                    stopCallback();
-                }
-            });
-            callback(screen);
-        }, function (error) {
-            console.error(error);
-            alert('Unable to capture your screen. Please check console logs.\n' + error);
-            window.location.href = '/dashboard';
-        });
-    }
-
-    function stopCallback(action = 'stop') {
+    const stopCallback = useCallback((action = 'stop') => {
         recorder.stopRecording(function () {
             if (config.mode === "Screen + Cam" && config.audio === 1) {
                 streams.forEach(function (stream) {
@@ -108,26 +123,31 @@ function Recorder() {
                 setIsRecording(2);
             });
         });
-    }
+    }, [config, history])
 
-    function invokeGetDisplayMedia(success, error) {
-        if (navigator.mediaDevices.getDisplayMedia) {
-            navigator.mediaDevices.getDisplayMedia({ video: true }).then(success).catch(error);
-        } else {
-            navigator.getDisplayMedia({ video: true }).then(success).catch(error);
+    const captureScreen = useCallback((callback) => {
+        invokeGetDisplayMedia(function (screen) {
+            addStreamStopListener(screen, function () {
+                if (stopCallback) {
+                    stopCallback();
+                }
+            });
+            callback(screen);
+        }, function (error) {
+            console.error(error);
+            alert('Unable to capture your screen. Please check console logs.\n' + error);
+            history.replace('/dashboard');
+        });
+    }, [history, stopCallback])
+
+    useEffect(() => {
+        if (!navigator.getDisplayMedia && !navigator.mediaDevices.getDisplayMedia) {
+            var error = 'Your browser does NOT supports getDisplayMedia API.';
+            alert(error);
+            return;
         }
-    }
 
-    function keepStreamActive(stream) {
-        var video = document.createElement('video');
-        video.muted = true;
-        video.srcObject = stream;
-        video.style.display = 'none';
-        (document.body || document.documentElement).appendChild(video);
-    }
-
-    function start(pos, config) {
-        if (config.mode === "Screen + Cam" && config.audio === 1) {
+        if (config.mode === "Screen + Cam") {
             captureScreen(function (screen) {
                 keepStreamActive(screen);
                 navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(camera => {
@@ -200,70 +220,61 @@ function Recorder() {
                 recorder.startRecording();
             });
         }
-    }
-
-    function addStreamStopListener(stream, callback) {
-        stream.addEventListener('ended', function () {
-            callback();
-            callback = function () { };
-        }, false);
-        stream.addEventListener('inactive', function () {
-            callback();
-            callback = function () { };
-        }, false);
-        stream.getTracks().forEach(function (track) {
-            track.addEventListener('ended', function () {
-                callback();
-                callback = function () { };
-            }, false);
-            track.addEventListener('inactive', function () {
-                callback();
-                callback = function () { };
-            }, false);
-        });
-    }
+    }, [pos, config, captureScreen]);
 
     return (
-        <>
-            <div style={{ background: 'rgba(0,0,0,0.7)' }} className={"absolute recordingWrapper inset-0 flex flex-col items-center justify-center" + (isRecording !== 1 ? " invisible" : "")}>
+        <React.Fragment>
+            <div style={{ background: 'rgba(0,0,0,0.7)' }} className={recordingWrapperClasses + (isRecording !== 1 && " invisible")}>
                 <div className="flex items-center">
-                    <img src={"https://media0.giphy.com/media/d96R9rpZMG2kAOUhSz/source.gif"} className="w-40" />
-                    <p className="text-white text-4xl font-montserratSemiBold">Recording</p>
+                    <img alt="" src={"https://media0.giphy.com/media/d96R9rpZMG2kAOUhSz/source.gif"} className="w-40" />
+                    <p className="text-4xl text-white font-montserratSemiBold">Recording</p>
                 </div>
 
                 <div className="flex">
-                    <button onClick={stopCallback} className="transition duration-300 ease-in focus:outline-none hover:bg-yellow-600 w-64 bg-yellow-500 px-5 py-3 rounded-lg font-montserratSemiBold ml-16">Stop Recording</button>
-                    <button onClick={() => stopCallback('cancel')} className="transition duration-300 ease-in focus:outline-none hover:bg-red-600 w-64 bg-red-500 px-5 py-3 rounded-lg font-montserratSemiBold ml-16">Cancel Recording</button>
+                    <button onClick={stopCallback} className={recorderBtnClasses + " bg-yellow-500 hover:bg-yellow-600"}>
+                        Stop Recording
+                    </button>
+                    <button
+                        onClick={() => stopCallback('cancel')}
+                        className={recorderBtnClasses + " bg-red-500 hover:bg-red-600"}
+                    >Cancel Recording</button>
                 </div>
             </div>
 
-            <div className={"absolute previewWrapper inset-0" + (isRecording !== 2 ? " invisible" : "")} style={{ backgroundColor: "#5A67D9" }}>
+            <div
+                className={"absolute previewWrapper inset-0" + (isRecording !== 2 && " invisible")}
+                style={{ backgroundColor: "#5A67D9" }}
+            >
                 <Navbar />
-                <img src={DesignElement4} alt="" className="absolute bottom-0 left-0 ml-8 p-3 w-32" />
-                <img src={DesignElement4} alt="" className="absolute right-0 p-3 w-32 mr-8" style={{ top: 75 }} />
-                <div className="bg-white relative w-2/3 mt-5 mx-auto rounded p-5">
-                    <img src={DesignElement3} alt="" className="w-32 absolute top-0 transform rotate-90" style={{ right: -20 }} />
-                    <img src={DesignElement3} alt="" className="w-32 absolute bottom-0 transform -rotate-90" style={{ left: -20 }} />
+                <img src={DesignElement4} alt="" className="absolute bottom-0 left-0 w-32 p-3 ml-8" />
+                <img src={DesignElement4} alt="" className="absolute right-0 w-32 p-3 mr-8" style={{ top: 75 }} />
+                <div className="relative w-2/3 p-5 mx-auto mt-5 bg-white rounded">
+                    <img src={DesignElement3} alt="" className="absolute top-0 w-32 transform rotate-90" style={{ right: -20 }} />
+                    <img src={DesignElement3} alt="" className="absolute bottom-0 w-32 transform -rotate-90" style={{ left: -20 }} />
 
                     <div className="w-9/12 mx-auto mt-5 mb-8 rounded-lg">
-                        <Player
-                            src={url}
-                            playsInline
-                            autoPlay
-                        >
+                        <Player src={url} playsInline autoPlay>
                             <BigPlayButton position="center" />
                             <LoadingSpinner />
                             <ControlBar autoHide={false} />
                         </Player>
                     </div>
                     <div className="flex justify-center">
-                        <button className="transition duration-200 ease-in focus:outline-none hover:bg-green-500 bg-green-600 shadow-md text-white px-8 py-2 rounded w-56 mr-8" onClick={() => uploadToCloudinary(history)}>Save to cloud</button>
-                        <button className="transition duration-200 ease-in focus:outline-none hover:bg-red-500 bg-red-600 shadow-md text-white px-8 py-2 rounded w-56" onClick={() => history.push("/dashboard")}>Destroy recording</button>
+                        <button
+                            className={recorderBtnClasses2 + " mr-8 bg-green-600 hover:bg-green-500"}
+                            onClick={() => uploadToCloudinary(history)}
+                        >Save to cloud</button>
+                        <button
+                            className={recorderBtnClasses2 + "bg-red-600 hover:bg-red-500"}
+                            onClick={() => history.push("/dashboard")}
+                        >Destroy recording</button>
                     </div>
-                    <p className="upload_msg invisible font-montserratSemiBold text-lg pt-5 text-center">Uploading ... Please Wait ....</p>
+                    <p className="invisible pt-5 text-lg text-center upload_msg font-montserratSemiBold">
+                        Uploading ... Please Wait ....
+                    </p>
                 </div>
             </div>
-        </>
+        </React.Fragment>
     )
 }
 

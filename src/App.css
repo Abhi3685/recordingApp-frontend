@@ -12,6 +12,11 @@
   height: 100px !important;
 }
 
+.timeline_thumb_Wrapper img {
+  width: 10%;
+  height: 100%;
+}
+
 .input-range__label--value {
   top: -2.2rem !important;
 }

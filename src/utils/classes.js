@@ -29,3 +29,20 @@ export const forgotBtnClasses = "w-full px-4 py-2 mb-2 text-white transition dur
 export const loginFormWrapperClasses = "relative flex flex-col justify-around flex-1 w-1/3 px-5 text-center border border-indigo-700 rounded-lg shadow-xl sm:px-10 sm:mx-10 md:mx-32 lg:mx-8 lg:flex-none";
 export const loginInputClasses = "block w-full px-3 py-2 text-gray-700 border-2 border-gray-400 rounded focus:outline-none focus:border-indigo-600";
 export const loginBtnClasses = "px-4 py-2 mb-5 text-lg font-bold text-white bg-green-700 rounded loginBtn hover:bg-green-600 focus:outline-none";
+
+export const signupInputClasses = "block w-full px-3 py-2 text-gray-700 border-2 border-gray-400 rounded focus:outline-none focus:border-indigo-600";
+export const signupFormWrapperClasses = "relative flex flex-col justify-around flex-1 w-1/3 px-5 text-center border border-indigo-700 rounded-lg shadow-xl sm:px-10 sm:mx-10 md:mx-32 lg:mx-8 lg:flex-none";
+export const signupBtnClasses = "px-4 py-2 text-lg font-bold text-white bg-green-700 rounded signupBtn hover:bg-green-600 focus:outline-none";
+
+export const newVideoSelectClasses = "block w-full px-4 py-2 pr-8 leading-tight bg-white border border-gray-400 rounded shadow appearance-none hover:border-gray-500 focus:outline-none focus:shadow-outline";
+export const newVideoBtnClasses = "block w-full px-8 py-2 text-white rounded shadow-md";
+
+export const recordingWrapperClasses = "absolute inset-0 flex flex-col items-center justify-center";
+export const recorderBtnClasses = "w-64 px-5 py-3 ml-16 transition duration-300 ease-in rounded-lg focus:outline-none font-montserratSemiBold";
+export const recorderBtnClasses2 = "w-56 px-8 py-2 text-white transition duration-200 ease-in rounded shadow-md focus:outline-none";
+
+export const processingWrapperClasses = "absolute z-50 flex flex-col items-center justify-center w-full h-full bg-white";
+export const trimApplyBtnClasses = "w-64 py-2 mb-3 text-sm text-white bg-indigo-600 rounded trimApplyBtn";
+export const trimBackBtnClasses = "w-64 py-2 text-sm text-white bg-indigo-600 rounded trimBackBtn";
+export const trimControlsClasses = "flex flex-col items-center justify-between my-16 mr-16 text-center trimControls font-montserratSemiBold";
+export const trimInputClasses = "w-32 px-4 py-2 bg-transparent border border-indigo-600 rounded";

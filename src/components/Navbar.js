@@ -37,11 +37,11 @@ function Navbar() {
                         </div>
                 }
             </div>
-            <div className="z-50 block font-montserratBold sm:hidden">
+            <div className="z-50 block font-montserratBold mobileMenu sm:hidden">
                 <i className="fa fa-bars" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ fontSize: '20px' }}></i>
                 {
                     isMobileMenuOpen &&
-                    <div className="absolute z-50 p-5 mx-5 bg-gray-200 left-0 right-0 rounded shadow-md" style={{ top: 60 }}>
+                    <div className="absolute left-0 right-0 z-50 p-5 mx-5 bg-gray-200 rounded shadow-md" style={{ top: 60 }}>
                         {
                             token ?
                                 <div>
