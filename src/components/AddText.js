@@ -3,63 +3,18 @@ import InputRange from 'react-input-range';
 import 'react-input-range/lib/css/index.css';
 import { useLocation, useHistory } from 'react-router-dom';
 import Axios from 'axios';
-import Navbar from './Navbar';
-import DesignElement4 from '../assets/images/DesignElement4.png';
-import alarmClock from '../assets/images/alarmClock.png';
 import {
     Player,
     BigPlayButton,
     LoadingSpinner,
-    ControlBar,
-    ReplayControl,
-    ForwardControl,
-    CurrentTimeDisplay,
-    TimeDivider,
-    PlaybackRateMenuButton,
-    VolumeMenuButton
+    ControlBar
 } from 'video-react';
-import { formatTime } from '../utils';
 
-function round(value, precision) {
-    var multiplier = Math.pow(10, precision || 0);
-    return Math.round(value * multiplier) / multiplier;
-}
-
-function readFile(url, setTextsArr) {
-    var tmpArr = [];
-    Axios.get(url).then(res => {
-        if (res.data.indexOf('\n') < 0) return;
-        var data = res.data.substring(res.data.indexOf("\n\n") + 2);
-        data.split("\n\n").forEach(function (item) {
-            var parts = item.split("\n");
-            tmpArr.push({
-                start: parts[0].split(" --> ")[0],
-                end: parts[0].split(" --> ")[1],
-                subtitle: parts[1]
-            });
-        });
-        setTextsArr(tmpArr);
-        document.querySelector(".subtitlesWrapper").scrollTop = document.querySelector(".subtitlesWrapper").scrollHeight;
-    });
-}
-
-function pad(num) {
-    return ("0" + num).slice(-2);
-}
-function hhmmss(secs) {
-    var minutes = Math.floor(secs / 60);
-    secs = secs % 60;
-    var hours = Math.floor(minutes / 60)
-    minutes = minutes % 60;
-    return `${pad(hours)}:${pad(minutes)}:${pad(secs)}`;
-}
-
-function removeBlock(idxToDelete, textsArr, setTextsArr, filename, setPlayerKey) {
-    var newArr = textsArr.filter((text, idx) => idxToDelete !== idx);
-    saveChanges(newArr, filename);
-    setTextsArr(newArr);
-    setPlayerKey(new Date().getSeconds());
-}
+import Navbar from './Navbar';
+import DesignElement4 from '../assets/images/DesignElement4.png';
+import alarmClock from '../assets/images/alarmClock.png';
+import { formatTime, round, hhmmss } from '../utils';
+import { addTextBtnClasses, addTextTimeInputClasses, addTextSubtitleInputClasses } from '../utils/classes';
 
 function saveChanges(arr, filename) {
     var fileTxt = "WEBVTT";
@@ -77,54 +32,79 @@ function saveChanges(arr, filename) {
     });
 }
 
-function addText(textsArr, setTextsArr, filename, setPlayerKey) {
-    var text = document.getElementById("textToAdd").value;
-    var startTime = document.getElementById("startTime").getAttribute("data-sec");
-    var endTime = document.getElementById("endTime").getAttribute("data-sec");
-
-    var startSec = (startTime + "").split(".")[0];
-    var startMilliSec = (startTime + "").split(".")[1] ? (startTime + "").split(".")[1] + "00" : "000";
-    var endSec = (endTime + "").split(".")[0];
-    var endMilliSec = (endTime + "").split(".")[1] ? (endTime + "").split(".")[1] + "00" : "000";
-
-    var newArr = [...textsArr];
-    newArr.push({
-        start: hhmmss(startSec) + "." + startMilliSec,
-        end: hhmmss(endSec) + "." + endMilliSec,
-        subtitle: text
-    });
-
-    saveChanges(newArr, filename);
-    setTextsArr(newArr);
-    setPlayerKey(new Date().getSeconds());
-    setTimeout(() => {
-        document.querySelector(".subtitlesWrapper").scrollTop = document.querySelector(".subtitlesWrapper").scrollHeight;
-    }, 100);
-    document.getElementById("textToAdd").value = '';
-}
-
-export default function AddText() {
-    const location = useLocation();
+function AddText() {
+    const { state } = useLocation();
     const history = useHistory();
     const willMount = useRef(true);
 
     if (willMount.current) {
-        if (!location.state) history.goBack();
+        if (!state) history.goBack();
         willMount.current = false;
     }
-    const min = (0 + location.state.duration * 0.3);
-    const max = (location.state.duration - location.state.duration * 0.3);
+
+    const min = (0 + state.duration * 0.3);
+    const max = (state.duration - state.duration * 0.3);
     const [value, setValue] = useState({ min: round(min, 1), max: round(max, 1) });
     const [textsArr, setTextsArr] = useState([]);
     const [playerKey, setPlayerKey] = useState(new Date().getTime());
+    const subtitleRef = useRef(null);
 
     useEffect(() => {
-        readFile("http://localhost:8000/" + location.state.publicId + ".vtt", setTextsArr);
-    }, [location.state.publicId]);
+        const url = "http://localhost:8000/" + state.publicId + ".vtt", tmpArr = [];
+        Axios.get(url).then(res => {
+            if (res.data.indexOf('\n') < 0) return;
+            var data = res.data.substring(res.data.indexOf("\n\n") + 2);
+            data.split("\n\n").forEach(function (item) {
+                var parts = item.split("\n");
+                tmpArr.push({
+                    start: parts[0].split(" --> ")[0],
+                    end: parts[0].split(" --> ")[1],
+                    subtitle: parts[1]
+                });
+            });
+            setTextsArr(tmpArr);
+            var subWrapperRef = document.querySelector(".subtitlesWrapper");
+            subWrapperRef.scrollTop = subWrapperRef.scrollHeight;
+        });
+    }, [state.publicId]);
+
+    const addText = (filename) => {
+        var text = subtitleRef.current.value;
+        var startTime = document.getElementById("startTime").getAttribute("data-sec");
+        var endTime = document.getElementById("endTime").getAttribute("data-sec");
+
+        var startSec = (startTime + "").split(".")[0];
+        var startMilliSec = (startTime + "").split(".")[1] ? (startTime + "").split(".")[1] + "00" : "000";
+        var endSec = (endTime + "").split(".")[0];
+        var endMilliSec = (endTime + "").split(".")[1] ? (endTime + "").split(".")[1] + "00" : "000";
+
+        var newArr = [...textsArr];
+        newArr.push({
+            start: hhmmss(startSec) + "." + startMilliSec,
+            end: hhmmss(endSec) + "." + endMilliSec,
+            subtitle: text
+        });
+
+        saveChanges(newArr, filename);
+        setTextsArr(newArr);
+        setPlayerKey(new Date().getSeconds());
+        setTimeout(() => {
+            var subWrapperRef = document.querySelector(".subtitlesWrapper");
+            subWrapperRef.scrollTop = subWrapperRef.scrollHeight;
+        }, 100);
+        subtitleRef.current.value = '';
+    }
+
+    const removeBlock = (idxToDelete, filename) => {
+        var newArr = textsArr.filter((text, idx) => idxToDelete !== idx);
+        saveChanges(newArr, filename);
+        setTextsArr(newArr);
+        setPlayerKey(new Date().getSeconds());
+    }
 
     return (
-        <>
-            <div className="fixed left-0 right-0 bottom-0 top-0" style={{ backgroundColor: "#5A67D9", overflow: 'auto' }}>
+        <React.Fragment>
+            <div className="fixed inset-0" style={{ backgroundColor: "#5A67D9", overflow: 'auto' }}>
                 <Navbar />
                 <img src={DesignElement4} alt="" className="absolute bottom-0 left-0 p-3 w-32" />
                 <img src={DesignElement4} alt="" className="absolute right-0 p-3 w-32" style={{ top: 75 }} />
@@ -135,19 +115,16 @@ export default function AddText() {
                         <div className="flex-1">
                             <div className="addTextPlayerWrapper w-8/12 mx-auto">
                                 <Player key={playerKey} crossOrigin="anonymous">
-                                    <source src={location.state.url} />
-                                    <track label="English" kind="subtitles" srcLang="en" src={"http://localhost:8000/" + location.state.publicId + ".vtt"} default></track>
+                                    <source src={state.url} />
+                                    <track
+                                        label="English" kind="subtitles" srcLang="en"
+                                        src={"http://localhost:8000/" + state.publicId + ".vtt"}
+                                        default
+                                    />
 
                                     <BigPlayButton position="center" />
                                     <LoadingSpinner />
-                                    <ControlBar autoHide={false}>
-                                        <ReplayControl seconds={10} order={1.1} />
-                                        <ForwardControl seconds={10} order={1.2} />
-                                        <CurrentTimeDisplay order={4.1} />
-                                        <TimeDivider order={4.2} />
-                                        <PlaybackRateMenuButton rates={[2, 1, 0.5, 0.25]} order={7.1} />
-                                        <VolumeMenuButton disabled />
-                                    </ControlBar>
+                                    <ControlBar autoHide={false} />
                                 </Player>
                             </div>
                         </div>
@@ -164,8 +141,12 @@ export default function AddText() {
                                                         <img src={alarmClock} alt="" className="hidden sm:inline-block mr-3" /> {textBlock.end}
                                                     </div>
                                                     <div className="relative w-full px-3 py-1 rounded-lg" style={{ backgroundColor: "rgba(90, 103, 217, 0.2)" }}>
-                                                        <p className="text-left text-sm font-montserratRegular subtitleWrapper w-full" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }}>{textBlock.subtitle}</p>
-                                                        <i onClick={() => removeBlock(idx, textsArr, setTextsArr, location.state.publicId + ".vtt", setPlayerKey)} className="fa fa-trash absolute cursor-pointer text-red-600" style={{ top: 15, right: 10 }} />
+                                                        <p className="text-left text-sm font-montserratRegular subtitleWrapper w-full">{textBlock.subtitle}</p>
+                                                        <i
+                                                            onClick={() => removeBlock(idx, state.publicId + ".vtt")}
+                                                            className="fa fa-trash absolute cursor-pointer text-red-600"
+                                                            style={{ top: 15, right: 10 }}
+                                                        />
                                                     </div>
                                                 </div>
                                             )
@@ -184,37 +165,55 @@ export default function AddText() {
                             <p>Enter Text: </p>
                             <div className="hidden items-center md:flex">
                                 <p className="mr-3">Text Duration: </p>
-                                <input type="text" id="startTime" data-sec={value.min} className="w-40 px-4 py-1 border border-gray-600 rounded-lg focus:outline-none opacity-50" value={formatTime(value.min)} readOnly />
+                                <input
+                                    id="startTime"
+                                    data-sec={value.min}
+                                    className={addTextTimeInputClasses}
+                                    value={formatTime(value.min)} readOnly
+                                />
                                 <span className="mx-3">to</span>
-                                <input type="text" id="endTime" data-sec={value.max} className="w-40 px-4 py-1 border border-gray-600 rounded-lg focus:outline-none opacity-50" value={formatTime(value.max)} readOnly />
+                                <input
+                                    id="endTime"
+                                    data-sec={value.max}
+                                    className={addTextTimeInputClasses}
+                                    value={formatTime(value.max)} readOnly
+                                />
                             </div>
                         </div>
-                        <input id="textToAdd" type="text" placeholder="Subtitle Text Here ...." className="w-full my-3 px-4 py-2 border border-gray-600 rounded-lg focus:outline-none" />
+                        <input
+                            ref={subtitleRef}
+                            id="textToAdd"
+                            placeholder="Subtitle Text Here ...."
+                            className={addTextSubtitleInputClasses}
+                        />
                         <div className="flex addTextControls items-center mt-1">
                             <div className="flex-1 sliderWrapper px-5 pt-10 pb-5 border-4 border-dashed" style={{ borderColor: "rgba(90, 103, 217, 0.2)" }}>
                                 <InputRange
-                                    maxValue={round(location.state.duration, 2)}
+                                    maxValue={round(state.duration, 2)}
                                     minValue={0}
                                     formatLabel={value => formatTime(value)}
                                     step={.1}
                                     value={value}
                                     onChange={value => {
                                         if (value.min < 0) value.min = 0;
-                                        if (value.max > location.state.duration) value.max = location.state.duration;
+                                        if (value.max > state.duration) value.max = state.duration;
                                         var min = round(value.min, 2);
                                         var max = round(value.max, 2);
                                         setValue({ min, max });
-                                    }} />
+                                    }}
+                                />
                             </div>
                             <div className="flex addTextBtnWrapper flex-col ml-10 w-56">
-                                <button onClick={() => addText(textsArr, setTextsArr, location.state.publicId + ".vtt", setPlayerKey)} className="bg-indigo-600 text-white py-2 rounded w-full mb-2">Add Subtitle</button>
-                                <button onClick={() => history.goBack()} className="bg-indigo-600 text-white py-2 rounded w-full">Return to Dashboard</button>
+                                <button onClick={() => addText(state.publicId + ".vtt")} className={addTextBtnClasses + " mb-2"}>Add Subtitle</button>
+                                <button onClick={() => history.goBack()} className={addTextBtnClasses}>Return to Dashboard</button>
                             </div>
                         </div>
                     </div>
 
                 </div>
             </div>
-        </>
+        </React.Fragment>
     )
 }
+
+export default AddText;

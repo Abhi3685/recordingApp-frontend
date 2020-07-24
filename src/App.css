@@ -1,5 +1,13 @@
 @import "~video-react/dist/video-react.css";
 
+.subtitleWrapper {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .timeline_thumb_Wrapper {
   height: 100px !important;
 }
