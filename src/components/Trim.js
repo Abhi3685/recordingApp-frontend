@@ -10,7 +10,7 @@ import Navbar from './Navbar';
 import DesignElement4 from '../assets/images/DesignElement4.png';
 import Loader from './Loader';
 import processingGIF from '../assets/images/processing.gif';
-import { round } from '../utils';
+import { round, API_URL } from '../utils';
 import {
     processingWrapperClasses,
     trimApplyBtnClasses,
@@ -42,7 +42,7 @@ function Trim() {
                     crossOrigin: 'true'
                 },
                 tracks: [
-                    { kind: 'subtitles', src: "http://localhost:8000/" + state.publicId + ".vtt", srcLang: 'en', default: true }
+                    { kind: 'subtitles', src: API_URL + "/" + state.publicId + ".vtt", srcLang: 'en', default: true }
                 ]
             }
         }
@@ -96,7 +96,7 @@ function Trim() {
         }
 
         setProcessing(true);
-        Axios.post('http://localhost:8000/trim', {
+        Axios.post(API_URL + '/trim', {
             userId: localStorage.getItem("UUID"),
             lowerLimit: min,
             upperLimit: max,

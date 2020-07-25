@@ -39,3 +39,5 @@ export function hhmmss(secs) {
     minutes = minutes % 60;
     return `${pad(hours)}:${pad(minutes)}:${pad(secs)}`;
 }
+
+export const API_URL = '/api';

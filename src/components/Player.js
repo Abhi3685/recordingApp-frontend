@@ -6,6 +6,7 @@ import Navbar from './Navbar';
 import DesignElement4 from '../assets/images/DesignElement4.png';
 import DesignElement3 from '../assets/images/DesignElement3.png';
 import { leftIconClasses, playerModalClasses } from '../utils/classes';
+import { API_URL } from '../utils';
 
 const CustomPlayer = () => {
     const { videoId } = useParams();
@@ -30,7 +31,7 @@ const CustomPlayer = () => {
                                 label="English"
                                 kind="subtitles"
                                 srcLang="en"
-                                src={"http://localhost:8000/" + videoId + ".vtt"}
+                                src={API_URL + "/" + videoId + ".vtt"}
                                 default
                             />
                             <BigPlayButton position="center" />

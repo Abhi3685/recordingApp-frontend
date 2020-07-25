@@ -13,7 +13,7 @@ import {
 import Navbar from './Navbar';
 import DesignElement4 from '../assets/images/DesignElement4.png';
 import alarmClock from '../assets/images/alarmClock.png';
-import { formatTime, round, hhmmss } from '../utils';
+import { formatTime, round, hhmmss, API_URL } from '../utils';
 import { addTextBtnClasses, addTextTimeInputClasses, addTextSubtitleInputClasses } from '../utils/classes';
 
 function saveChanges(arr, filename) {
@@ -21,7 +21,7 @@ function saveChanges(arr, filename) {
     arr.forEach(block => {
         fileTxt += "\n\n" + block.start + " --> " + block.end + "\n" + block.subtitle;
     });
-    Axios.post("http://localhost:8000/subtitle", {
+    Axios.post(API_URL + "/subtitle", {
         text: fileTxt,
         file: filename
     }).then(res => {
@@ -50,7 +50,7 @@ function AddText() {
     const subtitleRef = useRef(null);
 
     useEffect(() => {
-        const url = "http://localhost:8000/" + state.publicId + ".vtt", tmpArr = [];
+        const url = API_URL + "/" + state.publicId + ".vtt", tmpArr = [];
         Axios.get(url).then(res => {
             if (res.data.indexOf('\n') < 0) return;
             var data = res.data.substring(res.data.indexOf("\n\n") + 2);
@@ -118,7 +118,7 @@ function AddText() {
                                     <source src={state.url} />
                                     <track
                                         label="English" kind="subtitles" srcLang="en"
-                                        src={"http://localhost:8000/" + state.publicId + ".vtt"}
+                                        src={API_URL + "/" + state.publicId + ".vtt"}
                                         default
                                     />
 

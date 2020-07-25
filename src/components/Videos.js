@@ -7,10 +7,9 @@ import firebase from "firebase/app";
 import { db } from '../firebase';
 import moreIcon from '../assets/images/moreIcon.png';
 import doodle from '../assets/images/videos_doodle.png';
-import { formatTime } from '../utils';
+import { formatTime, API_URL, toggleMenu } from '../utils';
 import DesignElement from '../assets/images/DesignElement1.png';
 import { videoActionClasses, videoActionClasses2, recordVideoBtnClasses } from '../utils/classes';
-import { toggleMenu } from '../utils';
 
 function Videos({ videos, setVideos, recordVideo }) {
     const history = useHistory();
@@ -22,7 +21,7 @@ function Videos({ videos, setVideos, recordVideo }) {
             var newVideos = [...videos];
             newVideos.splice(index, 1);
             setVideos(newVideos);
-            Axios.delete("http://localhost:8000/video/" + video_Obj.publicId);
+            Axios.delete(API_URL + "/video/" + video_Obj.publicId);
         }).catch(err => {
             alert("Error: Unhandled Exception Occured!");
             console.log(err);
