@@ -42,7 +42,7 @@ function Videos({ videos, setVideos, recordVideo }) {
                             <div className="grid grid-flow-row gap-10 mr-10 font-montserratRegular sm:grid-cols-2 lg:grid-cols-3 xl:mr-64">
                                 {videos.map((video, index) =>
                                     <div className="relative" key={index}>
-                                        <div className="relative rounded-lg shadow-md cursor-pointer" onClick={() => history.push('/player/' + video.publicId)}>
+                                        <div className="relative rounded-lg shadow-md cursor-pointer" onClick={() => history.push('/player/' + video.publicId + '?subtitle=' + video.subtitle)}>
                                             <img src={video.thumb} alt="" className="rounded-lg" />
                                             <div className="absolute inset-0 rounded-lg thumb-overlay" style={{ background: "rgba(0, 0, 0, 0.1)" }}></div>
                                         </div>

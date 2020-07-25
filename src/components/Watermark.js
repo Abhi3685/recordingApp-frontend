@@ -75,8 +75,7 @@ function Watermark() {
 
             db.collection('users').doc(localStorage.getItem("UUID")).set({
                 fullname: doc.data().fullname,
-                videos: userVids,
-                pages: doc.data().pages
+                videos: userVids
             }).then(() => {
                 history.push('/dashboard');
             });

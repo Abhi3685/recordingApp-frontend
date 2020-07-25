@@ -1,19 +1,18 @@
 import React from 'react'
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useHistory, useLocation } from 'react-router-dom'
 import { Player, BigPlayButton, LoadingSpinner } from 'video-react';
 
 import Navbar from './Navbar';
 import DesignElement4 from '../assets/images/DesignElement4.png';
 import DesignElement3 from '../assets/images/DesignElement3.png';
 import { leftIconClasses, playerModalClasses } from '../utils/classes';
-import { API_URL } from '../utils';
 
 const CustomPlayer = () => {
     const { videoId } = useParams();
     const history = useHistory();
 
     return (
-        <>
+        <React.Fragment>
             <div className="absolute inset-0" style={{ background: "#5A67D9" }}>
                 <Navbar />
                 <img src={DesignElement4} alt="" className="absolute bottom-0 left-0 p-3 ml-4 w-24 lg:w-32" />
@@ -31,7 +30,7 @@ const CustomPlayer = () => {
                                 label="English"
                                 kind="subtitles"
                                 srcLang="en"
-                                src={"/" + videoId + ".vtt"}
+                                src={new URLSearchParams(useLocation().search).get("subtitle")}
                                 default
                             />
                             <BigPlayButton position="center" />
@@ -40,7 +39,7 @@ const CustomPlayer = () => {
                     </div>
                 </div>
             </div>
-        </>
+        </React.Fragment>
     )
 }
 

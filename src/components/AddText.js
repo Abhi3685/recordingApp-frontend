@@ -11,26 +11,11 @@ import {
 } from 'video-react';
 
 import Navbar from './Navbar';
+import { db } from '../firebase';
 import DesignElement4 from '../assets/images/DesignElement4.png';
 import alarmClock from '../assets/images/alarmClock.png';
 import { formatTime, round, hhmmss, API_URL } from '../utils';
 import { addTextBtnClasses, addTextTimeInputClasses, addTextSubtitleInputClasses } from '../utils/classes';
-
-function saveChanges(arr, filename) {
-    var fileTxt = "WEBVTT";
-    arr.forEach(block => {
-        fileTxt += "\n\n" + block.start + " --> " + block.end + "\n" + block.subtitle;
-    });
-    Axios.post(API_URL + "/subtitle", {
-        text: fileTxt,
-        file: filename
-    }).then(res => {
-        console.log(res);
-    }).catch(err => {
-        alert("Error: Unhandled Exception Occured!");
-        console.log(err);
-    });
-}
 
 function AddText() {
     const { state } = useLocation();
@@ -47,11 +32,13 @@ function AddText() {
     const [value, setValue] = useState({ min: round(min, 1), max: round(max, 1) });
     const [textsArr, setTextsArr] = useState([]);
     const [playerKey, setPlayerKey] = useState(new Date().getTime());
+    const [subtitleURL, setSubtitleURL] = useState(state.subtitle);
+    const [loading, setLoading] = useState(false);
     const subtitleRef = useRef(null);
 
     useEffect(() => {
-        const url = "/" + state.publicId + ".vtt", tmpArr = [];
-        Axios.get(url).then(res => {
+        const tmpArr = [];
+        Axios.get(subtitleURL).then(res => {
             if (res.data.indexOf('\n') < 0) return;
             var data = res.data.substring(res.data.indexOf("\n\n") + 2);
             data.split("\n\n").forEach(function (item) {
@@ -66,10 +53,52 @@ function AddText() {
             var subWrapperRef = document.querySelector(".subtitlesWrapper");
             subWrapperRef.scrollTop = subWrapperRef.scrollHeight;
         });
-    }, [state.publicId]);
+        onbeforeunload = e => true;
+        return () => onbeforeunload = null;
+    }, [state.publicId, subtitleURL, history]);
+
+    function saveChanges(arr, filename) {
+        var fileTxt = "WEBVTT";
+        arr.forEach(block => {
+            fileTxt += "\n\n" + block.start + " --> " + block.end + "\n" + block.subtitle;
+        });
+        setLoading(true);
+        Axios.post(API_URL + "/api/subtitle", {
+            text: fileTxt,
+            file: filename
+        }).then(res => {
+            if (!res.data.code) { alert("Something Wrong Happened! Please try again."); return; }
+            setSubtitleURL(res.data.secure_url);
+            setTextsArr(arr);
+            setPlayerKey(new Date().getSeconds());
+            setTimeout(() => {
+                var subWrapperRef = document.querySelector(".subtitlesWrapper");
+                subWrapperRef.scrollTop = subWrapperRef.scrollHeight;
+            }, 100);
+            setLoading(false);
+            db.collection('users').doc(localStorage.getItem("UUID")).get().then(doc => {
+                var userVids = doc.data().videos;
+                userVids[state.index].subtitle = res.data.secure_url;
+                db.collection('users').doc(localStorage.getItem("UUID")).set({
+                    fullname: doc.data().fullname,
+                    videos: userVids
+                }).catch(err => {
+                    alert("Error: Unhandled Exception Occured!");
+                    console.log(err);
+                });
+            }).catch(err => {
+                alert("Error: Unhandled Exception Occured!");
+                console.log(err);
+            });
+        }).catch(err => {
+            alert("Error: Unhandled Exception Occured!");
+            console.log(err);
+        });
+    }
 
     const addText = (filename) => {
         var text = subtitleRef.current.value;
+        if (text === '') return;
         var startTime = document.getElementById("startTime").getAttribute("data-sec");
         var endTime = document.getElementById("endTime").getAttribute("data-sec");
 
@@ -86,20 +115,12 @@ function AddText() {
         });
 
         saveChanges(newArr, filename);
-        setTextsArr(newArr);
-        setPlayerKey(new Date().getSeconds());
-        setTimeout(() => {
-            var subWrapperRef = document.querySelector(".subtitlesWrapper");
-            subWrapperRef.scrollTop = subWrapperRef.scrollHeight;
-        }, 100);
         subtitleRef.current.value = '';
     }
 
     const removeBlock = (idxToDelete, filename) => {
         var newArr = textsArr.filter((text, idx) => idxToDelete !== idx);
         saveChanges(newArr, filename);
-        setTextsArr(newArr);
-        setPlayerKey(new Date().getSeconds());
     }
 
     return (
@@ -117,8 +138,10 @@ function AddText() {
                                 <Player key={playerKey} crossOrigin="anonymous">
                                     <source src={state.url} />
                                     <track
-                                        label="English" kind="subtitles" srcLang="en"
-                                        src={"/" + state.publicId + ".vtt"}
+                                        label="English"
+                                        kind="subtitles"
+                                        srcLang="en"
+                                        src={subtitleURL}
                                         default
                                     />
 
@@ -129,7 +152,11 @@ function AddText() {
                             </div>
                         </div>
                         <div className="text-center subtitleContainer font-montserratSemiBold mr-16 flex flex-col items-center" style={{ width: '35%' }}>
-                            <h1 className="text-xl mb-3">Video Subtitles</h1>
+                            <h1 className="text-xl mb-2">Video Subtitles
+                                <p className={"font-montserratRegular text-sm text-gray-600 ml-2" + (loading ? " inline-block" : " hidden")}>
+                                    ( Processing <i className="fa ml-1 fa-spinner"></i> )
+                                </p>
+                            </h1>
                             {
                                 textsArr.length > 0 ?
                                     <div style={{ height: 300 }} className="overflow-y-auto subtitlesWrapper sm:pr-16">

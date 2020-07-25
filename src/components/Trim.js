@@ -42,11 +42,11 @@ function Trim() {
                     crossOrigin: 'true'
                 },
                 tracks: [
-                    { kind: 'subtitles', src: "/" + state.publicId + ".vtt", srcLang: 'en', default: true }
+                    { kind: 'subtitles', src: state.subtitle, srcLang: 'en', default: true }
                 ]
             }
         }
-    }, [state.publicId])
+    }, [state.subtitle])
 
     useEffect(() => {
         const canvas = canvasRef.current, video = hiddenPlayerRef.current;
@@ -119,8 +119,7 @@ function Trim() {
 
                     db.collection('users').doc(localStorage.getItem("UUID")).set({
                         fullname: doc.data().fullname,
-                        videos: userVids,
-                        pages: doc.data().pages
+                        videos: userVids
                     }).then(() => {
                         history.push('/dashboard');
                     });
