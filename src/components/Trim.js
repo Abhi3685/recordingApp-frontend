@@ -42,7 +42,7 @@ function Trim() {
                     crossOrigin: 'true'
                 },
                 tracks: [
-                    { kind: 'subtitles', src: API_URL + "/" + state.publicId + ".vtt", srcLang: 'en', default: true }
+                    { kind: 'subtitles', src: "/" + state.publicId + ".vtt", srcLang: 'en', default: true }
                 ]
             }
         }

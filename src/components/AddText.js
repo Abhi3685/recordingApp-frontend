@@ -50,7 +50,7 @@ function AddText() {
     const subtitleRef = useRef(null);
 
     useEffect(() => {
-        const url = API_URL + "/" + state.publicId + ".vtt", tmpArr = [];
+        const url = "/" + state.publicId + ".vtt", tmpArr = [];
         Axios.get(url).then(res => {
             if (res.data.indexOf('\n') < 0) return;
             var data = res.data.substring(res.data.indexOf("\n\n") + 2);
@@ -118,7 +118,7 @@ function AddText() {
                                     <source src={state.url} />
                                     <track
                                         label="English" kind="subtitles" srcLang="en"
-                                        src={API_URL + "/" + state.publicId + ".vtt"}
+                                        src={"/" + state.publicId + ".vtt"}
                                         default
                                     />
 

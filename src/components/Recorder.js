@@ -224,7 +224,7 @@ function Recorder() {
 
     return (
         <React.Fragment>
-            <div style={{ background: 'rgba(0,0,0,0.7)' }} className={recordingWrapperClasses + (isRecording !== 1 && " invisible")}>
+            <div style={{ background: 'rgba(0,0,0,0.7)' }} className={recordingWrapperClasses + (isRecording !== 1 ? " invisible" : "")}>
                 <div className="flex items-center">
                     <img alt="" src={"https://media0.giphy.com/media/d96R9rpZMG2kAOUhSz/source.gif"} className="w-40" />
                     <p className="text-4xl text-white font-montserratSemiBold">Recording</p>
@@ -265,7 +265,7 @@ function Recorder() {
                             onClick={() => uploadToCloudinary(history)}
                         >Save to cloud</button>
                         <button
-                            className={recorderBtnClasses2 + "bg-red-600 hover:bg-red-500"}
+                            className={recorderBtnClasses2 + " bg-red-600 hover:bg-red-500"}
                             onClick={() => history.push("/dashboard")}
                         >Destroy recording</button>
                     </div>

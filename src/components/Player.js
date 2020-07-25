@@ -31,7 +31,7 @@ const CustomPlayer = () => {
                                 label="English"
                                 kind="subtitles"
                                 srcLang="en"
-                                src={API_URL + "/" + videoId + ".vtt"}
+                                src={"/" + videoId + ".vtt"}
                                 default
                             />
                             <BigPlayButton position="center" />

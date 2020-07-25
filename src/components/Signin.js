@@ -153,9 +153,6 @@ function Signin() {
                 <h1 className="mb-3 text-xl font-bold text-center">Reset Your Password</h1>
                 <form>
                     <div className="mb-5 text-left">
-                        <label className="block mb-2 tracking-wide text-gray-800" htmlFor="forgetemail">
-                            Your Email Address
-                        </label>
                         <input
                             ref={forgetEmailRef}
                             className={forgotEmailInputClasses}
