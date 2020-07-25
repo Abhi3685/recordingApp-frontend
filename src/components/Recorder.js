@@ -242,7 +242,7 @@ function Recorder() {
             </div>
 
             <div
-                className={"absolute previewWrapper inset-0" + (isRecording !== 2 && " invisible")}
+                className={"absolute previewWrapper inset-0" + (isRecording !== 2 ? " invisible" : "")}
                 style={{ backgroundColor: "#5A67D9" }}
             >
                 <Navbar />
