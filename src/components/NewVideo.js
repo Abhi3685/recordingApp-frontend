@@ -114,7 +114,7 @@ function NewVideo({ visible, hide }) {
             </div>
 
             <Draggable bounds=".config_wrapper">
-              <div className={"dragCircle" + (mode === 2 && " hidden")} style={{
+              <div className={"dragCircle" + (mode === 2 ? " hidden" : "")} style={{
                 width: '280px',
                 background: '#000000',
                 cursor: 'move',

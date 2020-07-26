@@ -7,7 +7,7 @@ import DesignElement1 from '../assets/images/DesignElement1.png';
 import SignupBanner from '../assets/images/signup.png';
 import { signupInputClasses, signupFormWrapperClasses, signupBtnClasses } from '../utils/classes';
 
-const Input = ({ ref, classList, name, type, placeholder, error }) => {
+const Input = React.forwardRef(({ classList, name, type, placeholder, error }, ref) => {
     return (
         <React.Fragment>
             <input
@@ -24,7 +24,7 @@ const Input = ({ ref, classList, name, type, placeholder, error }) => {
             }
         </React.Fragment>
     )
-}
+})
 
 function Signup() {
     const [error, setError] = useState({});

@@ -63,7 +63,7 @@ function AddText() {
             fileTxt += "\n\n" + block.start + " --> " + block.end + "\n" + block.subtitle;
         });
         setLoading(true);
-        Axios.post(API_URL + "/api/subtitle", {
+        Axios.post(API_URL + "/subtitle", {
             text: fileTxt,
             file: filename
         }).then(res => {
