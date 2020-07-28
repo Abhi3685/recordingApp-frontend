@@ -16,8 +16,10 @@ function Dashboard() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (!localStorage.getItem("UUID"))
+        if (!localStorage.getItem("UUID")) {
             history.replace('/');
+            return;
+        }
 
         db.collection('users').doc(localStorage.getItem("UUID")).get().then(doc => {
             setUser(doc.data().fullname);

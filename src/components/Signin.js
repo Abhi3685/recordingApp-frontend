@@ -151,7 +151,7 @@ function Signin() {
                 onClose={setIsOpen}
             >
                 <h1 className="mb-3 text-xl font-bold text-center">Reset Your Password</h1>
-                <form>
+                <form onSubmit={e => e.preventDefault()}>
                     <div className="mb-5 text-left">
                         <input
                             ref={forgetEmailRef}

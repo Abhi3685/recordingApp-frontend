@@ -91,19 +91,19 @@ function Recorder() {
 
     const stopCallback = useCallback((action = 'stop') => {
         recorder.stopRecording(function () {
-            if (config.mode === "Screen + Cam" && config.audio === 1) {
+            if (config.mode === 1 && config.audio === 1) {
                 streams.forEach(function (stream) {
                     stream.getTracks().forEach(function (track) {
                         track.stop();
                     });
                 });
-            } else if (config.mode === "Screen Only" && config.audio === 1) {
+            } else if (config.mode === 2 && config.audio === 1) {
                 [myScreen, myAudio].forEach(function (stream) {
                     stream.getTracks().forEach(function (track) {
                         track.stop();
                     });
                 });
-            } else if (config.mode === "Screen + Cam" && config.audio === 0) {
+            } else if (config.mode === 1 && config.audio === 0) {
                 streams.forEach(function (stream) {
                     stream.getTracks().forEach(function (track) {
                         track.stop();
@@ -147,7 +147,7 @@ function Recorder() {
             return;
         }
 
-        if (config.mode === "Screen + Cam") {
+        if (config.mode === 1) {
             captureScreen(function (screen) {
                 keepStreamActive(screen);
                 navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(camera => {
@@ -176,7 +176,7 @@ function Recorder() {
                     recorder.startRecording();
                 });
             });
-        } else if (config.mode === "Screen Only" && config.audio === 1) {
+        } else if (config.mode === 2 && config.audio === 1) {
             captureScreen(function (screen) {
                 keepStreamActive(screen);
                 navigator.mediaDevices.getUserMedia({ audio: true }).then(function (mic) {
