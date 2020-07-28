@@ -12,7 +12,7 @@ import {
   contactFormMsgClasses
 } from '../utils/classes';
 
-const Input = ({ ref, classList, name, placeholder, error }) => {
+const Input = React.forwardRef(({ classList, name, placeholder, error }, ref) => {
   return (
     <React.Fragment>
       <input
@@ -28,7 +28,7 @@ const Input = ({ ref, classList, name, placeholder, error }) => {
       }
     </React.Fragment>
   )
-}
+})
 
 function Contact() {
   const [error, setError] = useState({});

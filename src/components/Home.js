@@ -32,7 +32,7 @@ function Home() {
                     <div className="brandDescription mb-10 lg:mb-48">
                         <p className="font-montserratMediumLight">
                             The expressiveness of video with the convenience of messaging.
-                            Communicate more effectively wherever you work with Loom.
+                            Communicate more effectively wherever you work with Recca.
                         </p>
                     </div>
                     <div className="actionBtnWrapper flex justify-between w-64 mx-auto">
