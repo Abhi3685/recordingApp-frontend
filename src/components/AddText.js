@@ -1,21 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react'
-import InputRange from 'react-input-range';
-import 'react-input-range/lib/css/index.css';
-import { useLocation, useHistory } from 'react-router-dom';
-import Axios from 'axios';
+import { useLocation, useHistory } from 'react-router-dom'
+import Axios from 'axios'
+import InputRange from 'react-input-range'
+import 'react-input-range/lib/css/index.css'
 import {
     Player,
     BigPlayButton,
     LoadingSpinner,
     ControlBar
-} from 'video-react';
+} from 'video-react'
 
 import Navbar from './Navbar';
 import { db } from '../firebase';
 import DesignElement4 from '../assets/images/DesignElement4.png';
 import alarmClock from '../assets/images/alarmClock.png';
 import { formatTime, round, hhmmss, API_URL } from '../utils';
-import { addTextBtnClasses, addTextTimeInputClasses, addTextSubtitleInputClasses } from '../utils/classes';
+import { 
+    addTextBtnClasses, 
+    addTextTimeInputClasses, 
+    addTextSubtitleInputClasses 
+} from '../utils/classes';
 
 function AddText() {
     const { state } = useLocation();

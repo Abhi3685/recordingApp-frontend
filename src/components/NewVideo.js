@@ -2,6 +2,7 @@ import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { useHistory } from 'react-router-dom';
 import Draggable from 'react-draggable';
 import RecordRTC from 'recordrtc';
+
 import { newVideoSelectClasses, newVideoBtnClasses } from '../utils/classes';
 
 function NewVideo({ visible, hide }) {

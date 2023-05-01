@@ -24,7 +24,7 @@
     "video-react": "^0.14.1"
   },
   "scripts": {
-    "start": "npm run watch:css && react-scripts start",
+    "start": "npm run watch:css && react-scripts --openssl-legacy-provider start",
     "build": "npm run build:css && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
